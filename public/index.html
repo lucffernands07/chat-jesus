@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Converse com Jesus</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- CSS externo -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Manifest para instalação como app -->
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e1e1e">
+
+  <!-- Ícones para atalho na tela inicial -->
+  <link rel="icon" href="icons/icon-192.png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+</head>
+<body>
+  <header>
+    <button class="menu-btn" aria-label="Abrir menu" onclick="toggleMenu()" aria-expanded="false" aria-controls="sideMenu">☰</button>
+    <h1>Converse com Jesus</h1>
+  </header>
+
+  <!-- Menu lateral -->
+  <nav id="sideMenu" class="side-menu" aria-hidden="true" aria-label="Configurações">
+    <div class="menu-header">
+    <h3>Configurações</h3>
+    <!-- Botão para fechar o menu lateral -->
+      <button id="closeMenuBtn" aria-label="Fechar menu">
+        <img src="/icons/arrow-menu.svg" alt="Fechar" width="24" height="24"/>
+      </button>
+    </div>
+    <label>
+      <input type="checkbox" id="voiceToggle" checked />
+      Ativar voz
+    </label>
+    <label>
+      <input type="radio" name="voiceType" value="male" />
+      Voz masculina
+    </label>
+    <label>
+      <input type="radio" name="voiceType" value="female" checked />
+      Voz feminina
+    </label>
+  </nav>
+
+  <!-- Overlay escuro -->
+  <div id="overlay"></div>
+
+  <main class="container">
+    <div class="chat-box" id="chat-box" role="log" aria-live="polite" aria-relevant="additions"></div>
+
+    <form id="chat-form">
+      <input
+        type="text"
+        id="message-input"
+        placeholder="Digite sua mensagem..."
+        required
+        autocomplete="off"
+        aria-label="Mensagem para Jesus"
+      />
+      <div class="button-group">
+        <button class="chat-btn" type="submit">Enviar</button>
+        <button class="chat-btn" type="button" id="voice-btn" aria-label="Falar com Jesus">
+          Fale
+        </button>
+      </div>
+    </form>
+
+    <div class="loading" id="loading" style="display: none;">
+      <div class="spinner" aria-hidden="true"></div>
+      <span><strong>Jesus</strong> quer falar com você...</span>
+    </div>
+  </main>
+
+  <!-- Fundo escurecido -->
+<div id="installOverlay" class="install-overlay" style="display:none;"></div>
+
+<!-- Pop-up de instalação -->
+<div id="installPopup" class="install-popup" style="display:none;">
+  <h3>Instalar este App?</h3>
+  <p>Adicione à tela inicial para acesso rápido.</p>
+  <div class="buttons">
+    <button id="btnInstall">Instalar</button>
+    <button id="btnDismiss">Agora não</button>
+  </div>
+</div>
+  
+  <!-- JS externo -->
+  <script src="script.js"></script>
+
+</body>
+</html>

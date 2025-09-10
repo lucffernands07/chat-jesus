@@ -1,0 +1,355 @@
+/* Reset básico */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: url('https://raw.githubusercontent.com/lucffernands/chat-jesus/main/public/image/image-bkg-ceu.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+}
+
+/* Cabeçalho com menu */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 30px 10px 15px;
+  background-color: rgba(173, 216, 230, 0.8); /* azul claro com 80% de opacidade */
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  position: relative;
+}
+
+.menu-btn {
+  left: 15px;
+  font-size: 28px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 20px;
+  color: white;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.5); /* sombra suave */
+}
+
+/* Menu lateral */
+.side-menu {
+  background-color: rgba(211, 211, 211, 0.95); /* cinza claro com pouca transparência */
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.25);
+  position: fixed;
+  top: 0;
+  right: -260px;
+  width: 260px;
+  height: 100%;
+  padding: 20px;
+  transition: right 0.3s ease;
+  z-index: 1100;
+  overflow-y: auto;
+}
+
+.side-menu.open {
+  right: 0;
+}
+
+/* Cabeçalho do menu */
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.menu-header h3 {
+  color: #8b0000;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* Botão de fechar "X" */
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#closeMenuBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+#closeMenuBtn img {
+  display: block;
+  width: 24px;
+  height: 24px;
+  /* filtro aproximado do tom #8b0000 */
+  filter: sepia(1) saturate(7) hue-rotate(-10deg) brightness(0.7) contrast(1.04);
+}
+
+#closeMenuBtn:hover img {
+  opacity: 0.8;
+}
+
+/* Labels e inputs */
+.side-menu label {
+  display: block;
+  margin: 12px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.side-menu input[type="checkbox"],
+.side-menu input[type="radio"] {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+/* Overlay para clique fora */
+#overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+}
+
+#overlay.active {
+  display: block;
+}
+
+/* Container principal */
+.container {
+  max-width: 600px;
+  margin: 80px auto 40px auto;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+}
+
+/* Caixa de conversa */
+.chat-box {
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  max-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Formulário */
+form {
+  text-align: center;
+  margin-top: 20px;
+  padding: 20px;
+}
+
+input[type='text'] {
+  padding: 10px;
+  width: 90%;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.chat-btn {
+  min-width: 100px;
+  max-width: 150px;
+  flex: 1;
+  background: rgba(173, 216, 230, 0.7);
+  border: none;
+  border-radius: 50px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #003366;
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.2),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.5);
+  transition: all 0.2s ease-in-out;
+  backdrop-filter: blur(4px);
+}
+
+.chat-btn:hover {
+  background-color: #003cb3;
+}
+
+.chat-btn:active {
+  background-color: #3e8e41;
+  transform: scale(0.97);
+}
+
+.chat-btn:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(72, 239, 128, 0.7);
+}
+
+/* Mensagens */
+.user,
+.jesus {
+  margin: 10px 0;
+  padding: 10px 15px;
+  border-radius: 16px;
+  max-width: 80%;
+  word-wrap: break-word;
+  line-height: 1.5;
+}
+
+.user {
+  background: #dbeafe;
+  align-self: flex-end;
+  text-align: right;
+  margin-left: auto;
+}
+
+.jesus {
+  background: #fef9c3;
+  border-left: 4px solid #facc15;
+}
+
+.jesus strong {
+  color: #8b0000;
+}
+
+/* Loading */
+.loading {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: #fffbe6;
+  color: #444;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 15px;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+  text-align: center;
+  animation: glow 2s ease-in-out infinite;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #f2d024;
+  border-top: 3px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(255, 215, 0, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+  }
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+  .container {
+    margin: 20px;
+    padding: 15px;
+  }
+}
+
+/* Pop-up com fundo escurecido */
+.install-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 9998;
+}
+
+/* Pop-up centralizado */
+.install-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: lightgrey;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  text-align: center;
+  z-index: 9999;
+  max-width: 300px;
+  width: 90%;
+}
+
+.install-popup h3 {
+  margin-bottom: 10px;
+}
+
+.install-popup .buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.install-popup button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#btnInstall {
+  background: #0078d7;
+  color: white;
+}
+
+#btnDismiss {
+  background: #1e1e1e;
+  color: white;
+}
