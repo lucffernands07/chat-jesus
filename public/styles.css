@@ -28,6 +28,29 @@ header {
   position: relative;
 }
 
+/* Compartilhe*/
+.header-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.share-link {
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #fff;
+  background: #25d366; /* cor estilo WhatsApp */
+  padding: 6px 14px;
+  border-radius: 20px;
+  transition: background 0.3s ease;
+}
+
+.share-link:hover {
+  background: #1da851;
+}
+
 .menu-btn {
   left: 15px;
   font-size: 28px;
