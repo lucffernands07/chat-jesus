@@ -5,7 +5,7 @@ const voiceBtn = document.getElementById('voice-btn');
 const loadingIndicator = document.getElementById('loading');
 const sideMenu = document.getElementById('sideMenu');
 const voiceToggle = document.getElementById('voiceToggle');
-const voiceRadios = document.querySelectorAll('input[name="voiceType"]');
+const voiceOptionsContainer = document.getElementById("voiceOptions"); // novo container para vozes
 
 function appendMessage(sender, text) {
   const messageDiv = document.createElement('div');
@@ -21,6 +21,7 @@ function appendMessage(sender, text) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+// === VOZ DE JESUS ===
 function speakJesus(text) {
   if ('speechSynthesis' in window && isVoiceEnabled()) {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -37,27 +38,40 @@ function speakJesus(text) {
 }
 
 function getSelectedVoice() {
-  const selected = [...voiceRadios].find(radio => radio.checked)?.value;
   const voices = speechSynthesis.getVoices();
-
+  const selectedValue = document.querySelector("input[name='voice']:checked")?.value;
   if (!voices || voices.length === 0) return null;
+  return voices[selectedValue] || voices[0];
+}
 
-  let found = null;
+function populateVoiceOptions() {
+  const voices = speechSynthesis.getVoices();
+  if (!voices || voices.length === 0 || !voiceOptionsContainer) return;
 
-  if (selected === 'male') {
-    found =
-      voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('ricardo')) ||
-      voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('male')) ||
-      voices.find(v => v.lang === 'pt-BR' && !v.name.toLowerCase().includes('ana') && !v.name.toLowerCase().includes('female')) ||
-      voices.find(v => v.lang === 'pt-BR');
-  } else {
-    found =
-      voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('ana')) ||
-      voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('female')) ||
-      voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('google'));
+  voiceOptionsContainer.innerHTML = "";
+  voices.forEach((voice, i) => {
+    const label = document.createElement("label");
+    label.style.display = "block";
+
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = "voice";
+    input.value = i;
+    if (i === 0) input.checked = true;
+
+    input.addEventListener("change", saveSettings);
+
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(` Voz ${i} - ${voice.name} (${voice.lang})`));
+
+    voiceOptionsContainer.appendChild(label);
+  });
+
+  // restaura escolha salva
+  const savedIndex = localStorage.getItem("voiceIndex");
+  if (savedIndex && document.querySelector(`input[name='voice'][value='${savedIndex}']`)) {
+    document.querySelector(`input[name='voice'][value='${savedIndex}']`).checked = true;
   }
-
-  return found || voices.find(v => v.lang.startsWith('pt')) || voices[0];
 }
 
 function isVoiceEnabled() {
@@ -66,8 +80,8 @@ function isVoiceEnabled() {
 
 function saveSettings() {
   localStorage.setItem('voiceEnabled', voiceToggle.checked);
-  const selectedVoice = [...voiceRadios].find(radio => radio.checked)?.value;
-  if (selectedVoice) localStorage.setItem('voiceType', selectedVoice);
+  const selected = document.querySelector("input[name='voice']:checked")?.value;
+  if (selected) localStorage.setItem("voiceIndex", selected);
 }
 
 function loadSettings() {
@@ -78,20 +92,9 @@ function loadSettings() {
     voiceToggle.checked = true;
     localStorage.setItem('voiceEnabled', 'true');
   }
-
-  const voiceTypeStorage = localStorage.getItem('voiceType');
-  if (voiceTypeStorage) {
-    [...voiceRadios].forEach(radio => {
-      radio.checked = radio.value === voiceTypeStorage;
-    });
-  } else {
-    [...voiceRadios].forEach(radio => {
-      radio.checked = radio.value === 'male';
-    });
-    localStorage.setItem('voiceType', 'male');
-  }
 }
 
+// === CHAT ===
 chatForm.addEventListener('submit', async e => {
   e.preventDefault();
   const userMessage = messageInput.value.trim();
@@ -127,6 +130,7 @@ chatForm.addEventListener('submit', async e => {
   }
 });
 
+// === MICROFONE ===
 voiceBtn.addEventListener('click', () => {
   if (!('webkitSpeechRecognition' in window)) {
     voiceBtn.disabled = true;
@@ -152,15 +156,8 @@ voiceBtn.addEventListener('click', () => {
   };
 });
 
-voiceToggle.addEventListener('change', () => {
-  saveSettings();
-});
-
-voiceRadios.forEach(radio => {
-  radio.addEventListener('change', () => {
-    saveSettings();
-  });
-});
+// === MENU ===
+voiceToggle.addEventListener('change', saveSettings);
 
 function toggleMenu() {
   sideMenu.classList.toggle('open');
@@ -168,22 +165,20 @@ function toggleMenu() {
 
 window.onload = () => {
   loadSettings();
-
   if ('speechSynthesis' in window) {
-    speechSynthesis.onvoiceschanged = () => {
-      console.log("Vozes disponíveis:", speechSynthesis.getVoices());
-    };
-    speechSynthesis.getVoices();
+    speechSynthesis.onvoiceschanged = populateVoiceOptions;
+    populateVoiceOptions();
   }
 };
 
+// === SERVICE WORKER ===
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/service-worker.js")
     .then(() => console.log("Service Worker registrado com sucesso."))
     .catch(err => console.error("Erro ao registrar Service Worker:", err));
 }
 
-// Pop-up de instalação de app pelo navegador 
+// === PWA INSTALAÇÃO ===
 let deferredPrompt;
 const installPopup = document.getElementById('installPopup');
 const installOverlay = document.getElementById('installOverlay');
@@ -213,7 +208,7 @@ btnDismiss.addEventListener('click', () => {
   installOverlay.style.display = 'none';
 });
 
-// ==== NOVO CÓDIGO PARA FECHAR O MENU COM "X" E CLIQUE FORA ====
+// === FECHAR MENU COM X OU CLIQUE FORA ===
 const closeMenuBtn = document.getElementById('closeMenuBtn');
 if (closeMenuBtn) {
   closeMenuBtn.addEventListener('click', () => {
@@ -229,7 +224,7 @@ document.addEventListener('click', (event) => {
   }
 });
 
-// Atualiza link do botão Compartilhe para Vercel
+// === COMPARTILHAR ===
 document.addEventListener('DOMContentLoaded', () => {
   const shareBtn = document.getElementById('shareBtn');
   if (shareBtn) {
