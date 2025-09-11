@@ -13,7 +13,7 @@ Este é um aplicativo web onde você pode conversar com uma IA que simula Jesus,
 
 # 🚀 Deploy
 
-## Vercel
+### Vercel
 
 Você pode fazer deploy facilmente no [Vercel](https://vercel.com):
 
@@ -105,3 +105,4 @@ Este projeto é livre para uso pessoal e educacional. Nenhuma garantia é fornec
 
 Desenvolvido com fé e tecnologia.
 API: OpenRouter
+[Vercel](https://vercel.com)
