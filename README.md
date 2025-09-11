@@ -1,4 +1,5 @@
 # 🕊️ Chat com Jesus
+https://chat-jesus.vercel.app/
 
 Este é um aplicativo web onde você pode conversar com uma IA que simula Jesus, respondendo com sabedoria, compaixão e amor incondicional, usando o modelo `deepseek-chat` via OpenRouter.
 
