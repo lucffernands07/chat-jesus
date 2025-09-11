@@ -28,7 +28,6 @@ function speakJesus(text) {
     utterance.pitch = 1;
     utterance.rate = 1;
 
-    const voices = speechSynthesis.getVoices();
     const selectedVoice = getSelectedVoice();
     if (selectedVoice) utterance.voice = selectedVoice;
 
@@ -39,31 +38,27 @@ function speakJesus(text) {
 
 function getSelectedVoice() {
   const selected = [...voiceRadios].find(radio => radio.checked)?.value;
-  if (!selected) return null;
-
   const voices = speechSynthesis.getVoices();
+
+  if (!voices || voices.length === 0) return null;
+
+  let found = null;
+
   if (selected === 'male') {
-    // Tentativa de voz masculina pt-BR
-    return (
-      voices.find(
-        v =>
-          v.lang === 'pt-BR' &&
-          (v.name.toLowerCase().includes('male') ||
-            v.name.toLowerCase().includes('ricardo'))
-      ) || null
-    );
+    // Procura vozes masculinas pt-BR
+    found =
+      voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('ricardo')) ||
+      voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('male'));
   } else {
-    // Voz feminina padrão pt-BR
-    return (
-      voices.find(
-        v =>
-          v.lang === 'pt-BR' &&
-          (v.name.toLowerCase().includes('female') ||
-            v.name.toLowerCase().includes('ana') ||
-            v.name.toLowerCase().includes('google'))
-      ) || null
-    );
+    // Procura vozes femininas pt-BR
+    found =
+      voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('ana')) ||
+      voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('female')) ||
+      voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('google'));
   }
+
+  // Fallback: qualquer voz em português ou a primeira disponível
+  return found || voices.find(v => v.lang.startsWith('pt')) || voices[0];
 }
 
 function isVoiceEnabled() {
@@ -90,9 +85,9 @@ function loadSettings() {
       radio.checked = radio.value === voiceTypeStorage;
     });
   } else {
-    // padrão feminino
+    // padrão masculino
     [...voiceRadios].forEach(radio => {
-      radio.checked = radio.value === 'female';
+      radio.checked = radio.value === 'male';
     });
   }
 }
@@ -174,10 +169,13 @@ function toggleMenu() {
 window.onload = () => {
   loadSettings();
 
-  // Para garantir que as vozes estejam carregadas, força atualização
+  // Força carregar as vozes do SpeechSynthesis
   if ('speechSynthesis' in window) {
-    speechSynthesis.onvoiceschanged = () => {};
-  };
+    speechSynthesis.onvoiceschanged = () => {
+      console.log("Vozes disponíveis:", speechSynthesis.getVoices());
+    };
+    speechSynthesis.getVoices();
+  }
 };
 
 if ("serviceWorker" in navigator) {
@@ -185,7 +183,6 @@ if ("serviceWorker" in navigator) {
     .then(() => console.log("Service Worker registrado com sucesso."))
     .catch(err => console.error("Erro ao registrar Service Worker:", err));
 }
-
 
 // Pop-up de instalação de app pelo navegador 
 let deferredPrompt;
@@ -197,8 +194,6 @@ const btnDismiss = document.getElementById('btnDismiss');
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-
-  // Mostra pop-up e fundo escurecido
   installPopup.style.display = 'block';
   installOverlay.style.display = 'block';
 });
@@ -220,17 +215,13 @@ btnDismiss.addEventListener('click', () => {
 });
 
 // ==== NOVO CÓDIGO PARA FECHAR O MENU COM "X" E CLIQUE FORA ====
-
-// Botão "X" no menu lateral
 const closeMenuBtn = document.getElementById('closeMenuBtn');
-
 if (closeMenuBtn) {
   closeMenuBtn.addEventListener('click', () => {
     sideMenu.classList.remove('open');
   });
 }
 
-// Fecha o menu ao clicar fora
 document.addEventListener('click', (event) => {
   if (sideMenu.classList.contains('open')) {
     if (!sideMenu.contains(event.target) && !event.target.closest('.menu-btn')) {
@@ -244,10 +235,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const shareBtn = document.getElementById('shareBtn');
   if (shareBtn) {
     const shareUrl = 'https://chat-jesus.vercel.app/';
-    // Define href para fallback e permite clique normal
     shareBtn.href = `https://wa.me/?text=Vem%20conversar%20com%20Jesus%20neste%20link%20🙏❤️%20%0A${encodeURIComponent(shareUrl)}`;
 
-    // Adiciona evento para Web Share API
     shareBtn.addEventListener('click', (e) => {
       if (navigator.share) {
         e.preventDefault();
