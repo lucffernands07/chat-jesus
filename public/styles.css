@@ -72,30 +72,26 @@ header h1 {
   color: #fff8dc; /* dourado claro */
   text-align: center;
 
-  /* Efeito de brilho suave */
+  /* Brilho bem suave */
   text-shadow: 
-    0 0 5px rgba(255, 215, 0, 0.6),
-    0 0 10px rgba(255, 223, 0, 0.4),
-    0 0 20px rgba(255, 223, 100, 0.3);
+    0 0 3px rgba(255, 215, 0, 0.4),
+    0 0 6px rgba(255, 223, 0, 0.2);
 
-  animation: brilhoDourado 3s ease-in-out infinite alternate;
+  animation: brilhoSuave 4s ease-in-out infinite alternate;
 }
 
-@keyframes brilhoDourado {
+@keyframes brilhoSuave {
   from {
     text-shadow: 
-      0 0 5px rgba(255, 215, 0, 0.6),
-      0 0 10px rgba(255, 223, 0, 0.4),
-      0 0 20px rgba(255, 223, 100, 0.3);
+      0 0 3px rgba(255, 215, 0, 0.4),
+      0 0 6px rgba(255, 223, 0, 0.2);
   }
   to {
     text-shadow: 
-      0 0 10px rgba(255, 215, 0, 0.9),
-      0 0 20px rgba(255, 223, 0, 0.6),
-      0 0 30px rgba(255, 223, 100, 0.5);
+      0 0 6px rgba(255, 215, 0, 0.6),
+      0 0 12px rgba(255, 223, 0, 0.3);
   }
 }
-
 /* Menu lateral */
 .side-menu {
   background-color: rgba(211, 211, 211, 0.95); /* cinza claro com pouca transparência */
