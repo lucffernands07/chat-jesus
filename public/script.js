@@ -238,3 +238,24 @@ document.addEventListener('click', (event) => {
     }
   }
 });
+
+// Atualiza o botão "Compartilhe" para usar link fixo da Vercel
+const shareBtn = document.getElementById('shareBtn'); // id do botão no HTML
+if (shareBtn) {
+  shareBtn.addEventListener('click', () => {
+    const shareUrl = 'https://chat-jesus.vercel.app/';
+    if (navigator.share) {
+      // Para navegadores que suportam Web Share API
+      navigator.share({
+        title: 'Chat com Jesus',
+        text: 'Converse com Jesus usando este chat:',
+        url: shareUrl
+      }).catch(err => console.error('Erro ao compartilhar:', err));
+    } else {
+      // Fallback: copia para a área de transferência
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        alert('Link copiado: ' + shareUrl);
+      });
+    }
+  });
+}
