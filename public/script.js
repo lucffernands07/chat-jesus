@@ -239,23 +239,22 @@ document.addEventListener('click', (event) => {
   }
 });
 
-// Atualiza o botão "Compartilhe" para usar link fixo da Vercel
-const shareBtn = document.getElementById('shareBtn'); // id do botão no HTML
+// Atualiza link do botão Compartilhe para Vercel
+const shareBtn = document.getElementById('shareBtn');
 if (shareBtn) {
-  shareBtn.addEventListener('click', () => {
-    const shareUrl = 'https://chat-jesus.vercel.app/';
+  const shareUrl = 'https://chat-jesus.vercel.app/';
+  // Define href para fallback e permite clique normal
+  shareBtn.href = `https://wa.me/?text=Vem%20conversar%20com%20Jesus%20neste%20link%20🙏❤️%20%0A${encodeURIComponent(shareUrl)}`;
+  
+  // Adiciona evento para Web Share API
+  shareBtn.addEventListener('click', (e) => {
     if (navigator.share) {
-      // Para navegadores que suportam Web Share API
+      e.preventDefault();
       navigator.share({
         title: 'Chat com Jesus',
         text: 'Converse com Jesus usando este chat:',
         url: shareUrl
       }).catch(err => console.error('Erro ao compartilhar:', err));
-    } else {
-      // Fallback: copia para a área de transferência
-      navigator.clipboard.writeText(shareUrl).then(() => {
-        alert('Link copiado: ' + shareUrl);
-      });
     }
   });
 }
