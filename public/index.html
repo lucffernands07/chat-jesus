@@ -33,14 +33,12 @@
         <img src="/icons/arrow-menu.svg" alt="Fechar" width="24" height="24"/>
       </button>
     </div>
-
     <label>
       <input type="checkbox" id="voiceToggle" checked />
       Ativar voz
     </label>
-
     <div id="voiceOptions">
-      <!-- Radios dinâmicos serão preenchidos pelo script -->
+      <!-- Vozes serão preenchidas dinamicamente pelo script -->
     </div>
   </nav>
 
@@ -51,7 +49,7 @@
     <div class="chat-box" id="chat-box" role="log" aria-live="polite" aria-relevant="additions"></div>
 
     <form id="chat-form">
-      <input type="text" id="message-input" placeholder="Digite sua mensagem..." required autocomplete="off" aria-label="Mensagem para Jesus"/>
+      <input type="text" id="message-input" placeholder="Digite sua mensagem..." required autocomplete="off" aria-label="Mensagem para Jesus" />
       <div class="button-group">
         <button class="chat-btn" type="submit">Enviar</button>
         <button class="chat-btn" type="button" id="voice-btn" aria-label="Falar com Jesus">Fale</button>
@@ -77,6 +75,7 @@
     </div>
   </div>
 
+  <!-- Script externo -->
   <script src="script.js?v=1.3"></script>
 </body>
 </html>
