@@ -104,5 +104,7 @@ Este projeto é livre para uso pessoal e educacional. Nenhuma garantia é fornec
 # 🙏 Créditos
 
 Desenvolvido com fé e tecnologia.
+
 API: OpenRouter
+
 [Vercel](https://vercel.com)
