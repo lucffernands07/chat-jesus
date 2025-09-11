@@ -5,12 +5,9 @@ const voiceBtn = document.getElementById('voice-btn');
 const loadingIndicator = document.getElementById('loading');
 const sideMenu = document.getElementById('sideMenu');
 const voiceToggle = document.getElementById('voiceToggle');
-const voiceOptionsContainer = document.getElementById('voiceOptions');
-const shareBtn = document.getElementById('shareBtn');
+const voiceRadios = document.querySelectorAll('input[name="voiceType"]');
 const closeMenuBtn = document.getElementById('closeMenuBtn');
-
-let voicesList = [];
-let recognition = null;
+const shareBtn = document.getElementById('shareBtn');
 
 function appendMessage(sender, text) {
   const messageDiv = document.createElement('div');
@@ -21,6 +18,18 @@ function appendMessage(sender, text) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+function getSelectedVoice() {
+  const selected = [...voiceRadios].find(radio => radio.checked)?.value;
+  if (!selected) return null;
+
+  const voices = speechSynthesis.getVoices();
+  if (selected === 'male') {
+    return voices.find(v => v.lang === 'pt-BR' && (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('ricardo'))) || null;
+  } else {
+    return voices.find(v => v.lang === 'pt-BR' && (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('ana') || v.name.toLowerCase().includes('google'))) || null;
+  }
+}
+
 function speakJesus(text) {
   if ('speechSynthesis' in window && voiceToggle.checked) {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -28,66 +37,35 @@ function speakJesus(text) {
     utterance.pitch = 1;
     utterance.rate = 1;
 
-    const selectedVoiceIndex = parseInt(localStorage.getItem('selectedVoiceIndex') || "0", 10);
-    if (voicesList[selectedVoiceIndex]) {
-      utterance.voice = voicesList[selectedVoiceIndex];
-    }
+    const selectedVoice = getSelectedVoice();
+    if (selectedVoice) utterance.voice = selectedVoice;
 
     speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
   }
 }
 
-function populateVoiceOptions() {
-  voicesList = speechSynthesis.getVoices().filter(v => v.lang.startsWith('pt'));
-  if (!voiceOptionsContainer) return;
-
-  voiceOptionsContainer.innerHTML = '';
-  voicesList.forEach((voice, idx) => {
-    const label = document.createElement('label');
-    label.innerHTML = `<input type="radio" name="voiceType" value="${idx}"> Voz ${idx} - ${voice.name}`;
-    voiceOptionsContainer.appendChild(label);
-  });
-
-  const storedIndex = localStorage.getItem('selectedVoiceIndex') || "0";
-  const radio = voiceOptionsContainer.querySelector(`input[value="${storedIndex}"]`);
-  if (radio) radio.checked = true;
-
-  voiceOptionsContainer.querySelectorAll('input[name="voiceType"]').forEach(radio => {
-    radio.addEventListener('change', () => {
-      localStorage.setItem('selectedVoiceIndex', radio.value);
-    });
-  });
+function isVoiceEnabled() {
+  return localStorage.getItem('voiceEnabled') === 'true';
 }
 
-// Inicializa reconhecimento de voz
-if ('webkitSpeechRecognition' in window) {
-  recognition = new webkitSpeechRecognition();
-  recognition.lang = 'pt-BR';
-  recognition.continuous = false;
-
-  recognition.onresult = event => {
-    const transcript = event.results[0][0].transcript;
-    messageInput.value = transcript;
-    chatForm.dispatchEvent(new Event('submit'));
-  };
-
-  recognition.onerror = () => appendMessage('jesus', 'Não consegui entender sua voz.');
-} else {
-  voiceBtn.disabled = true;
-  voiceBtn.innerText = '🎙️ Indisponível';
+function saveSettings() {
+  localStorage.setItem('voiceEnabled', voiceToggle.checked);
+  const selectedVoice = [...voiceRadios].find(radio => radio.checked)?.value;
+  if (selectedVoice) localStorage.setItem('voiceType', selectedVoice);
 }
 
-voiceBtn.addEventListener('click', () => {
-  if (recognition) {
-    try {
-      recognition.start();
-    } catch (err) {
-      console.error('Erro ao iniciar reconhecimento de voz:', err);
-      appendMessage('jesus', 'Não consegui acessar o microfone.');
-    }
+function loadSettings() {
+  const voiceEnabledStorage = localStorage.getItem('voiceEnabled');
+  voiceToggle.checked = voiceEnabledStorage !== null ? voiceEnabledStorage === 'true' : true;
+
+  const voiceTypeStorage = localStorage.getItem('voiceType');
+  if (voiceTypeStorage) {
+    [...voiceRadios].forEach(radio => radio.checked = radio.value === voiceTypeStorage);
+  } else {
+    [...voiceRadios].forEach(radio => radio.checked = radio.value === 'female');
   }
-});
+}
 
 chatForm.addEventListener('submit', async e => {
   e.preventDefault();
@@ -114,38 +92,48 @@ chatForm.addEventListener('submit', async e => {
     } else {
       appendMessage('jesus', 'Desculpe, não recebi uma resposta.');
     }
-  } catch (err) {
+  } catch (error) {
     loadingIndicator.style.display = 'none';
-    console.error('Erro:', err);
+    console.error('Erro:', error);
     appendMessage('jesus', 'Erro ao se conectar com Jesus.');
   }
 });
+
+voiceBtn.addEventListener('click', () => {
+  if (!('webkitSpeechRecognition' in window)) {
+    voiceBtn.disabled = true;
+    voiceBtn.innerText = '🎙️ Indisponível';
+    return;
+  }
+
+  const recognition = new webkitSpeechRecognition();
+  recognition.lang = 'pt-BR';
+  recognition.continuous = false;
+  recognition.start();
+
+  recognition.onresult = event => {
+    const transcript = event.results[0][0].transcript;
+    messageInput.value = transcript;
+    chatForm.dispatchEvent(new Event('submit'));
+  };
+
+  recognition.onerror = () => appendMessage('jesus', 'Não consegui entender sua voz.');
+});
+
+voiceToggle.addEventListener('change', saveSettings);
+voiceRadios.forEach(radio => radio.addEventListener('change', saveSettings));
 
 function toggleMenu() {
   sideMenu.classList.toggle('open');
 }
 
 closeMenuBtn.addEventListener('click', () => sideMenu.classList.remove('open'));
-document.addEventListener('click', (e) => {
+document.addEventListener('click', e => {
   if (sideMenu.classList.contains('open') && !sideMenu.contains(e.target) && !e.target.closest('.menu-btn')) {
     sideMenu.classList.remove('open');
   }
 });
 
-// Botão Compartilhe
+// Compartilhar
 const shareUrl = 'https://chat-jesus.vercel.app/';
-shareBtn.href = `https://wa.me/?text=Vem%20conversar%20com%20Jesus%20neste%20link%20🙏❤️%20%0A${encodeURIComponent(shareUrl)}`;
-shareBtn.addEventListener('click', (e) => {
-  if (navigator.share) {
-    e.preventDefault();
-    navigator.share({ title: 'Chat com Jesus', text: 'Converse com Jesus usando este chat:', url: shareUrl })
-      .catch(err => console.error(err));
-  }
-});
-
-window.onload = () => {
-  if ('speechSynthesis' in window) {
-    speechSynthesis.onvoiceschanged = populateVoiceOptions;
-    populateVoiceOptions();
-  }
-};
+share
