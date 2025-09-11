@@ -31,7 +31,7 @@ function speakJesus(text) {
     const selectedVoice = getSelectedVoice();
     if (selectedVoice) utterance.voice = selectedVoice;
 
-    speechSynthesis.cancel(); // Evita sobreposição
+    speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
   }
 }
@@ -45,19 +45,18 @@ function getSelectedVoice() {
   let found = null;
 
   if (selected === 'male') {
-    // Procura vozes masculinas pt-BR
     found =
       voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('ricardo')) ||
-      voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('male'));
+      voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('male')) ||
+      voices.find(v => v.lang === 'pt-BR' && !v.name.toLowerCase().includes('ana') && !v.name.toLowerCase().includes('female')) ||
+      voices.find(v => v.lang === 'pt-BR');
   } else {
-    // Procura vozes femininas pt-BR
     found =
       voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('ana')) ||
       voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('female')) ||
       voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('google'));
   }
 
-  // Fallback: qualquer voz em português ou a primeira disponível
   return found || voices.find(v => v.lang.startsWith('pt')) || voices[0];
 }
 
@@ -77,6 +76,7 @@ function loadSettings() {
     voiceToggle.checked = voiceEnabledStorage === 'true';
   } else {
     voiceToggle.checked = true;
+    localStorage.setItem('voiceEnabled', 'true');
   }
 
   const voiceTypeStorage = localStorage.getItem('voiceType');
@@ -85,10 +85,10 @@ function loadSettings() {
       radio.checked = radio.value === voiceTypeStorage;
     });
   } else {
-    // padrão masculino
     [...voiceRadios].forEach(radio => {
       radio.checked = radio.value === 'male';
     });
+    localStorage.setItem('voiceType', 'male');
   }
 }
 
@@ -169,7 +169,6 @@ function toggleMenu() {
 window.onload = () => {
   loadSettings();
 
-  // Força carregar as vozes do SpeechSynthesis
   if ('speechSynthesis' in window) {
     speechSynthesis.onvoiceschanged = () => {
       console.log("Vozes disponíveis:", speechSynthesis.getVoices());
