@@ -105,6 +105,6 @@ Este projeto é livre para uso pessoal e educacional. Nenhuma garantia é fornec
 
 Desenvolvido com fé e tecnologia.
 
-API: OpenRouter
+[API OpenRouter](https://openrouter.ai)
 
 [Vercel](https://vercel.com)
