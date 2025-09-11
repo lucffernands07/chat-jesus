@@ -69,7 +69,7 @@ http://localhost:3000
 ---
 
 # 📁 Estrutura do projeto
-
+```
 chat-jesus/
 ├─ 📂 api/
 │  └─ 📄 chat.js
@@ -80,7 +80,7 @@ chat-jesus/
 ├─ 📄 .env
 ├─ 📄 vercel.js
 └─ 📄 package.json
-
+```
 
 ---
 
