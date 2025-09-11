@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <h1 class="glow-title" data-text="Converse com Jesus">Converse com Jesus</h1>
+  <title>Converse com Jesus</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- CSS externo -->
@@ -10,7 +10,7 @@
 
   <!-- Manifest para instalação como app -->
   <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1e1e1e">
+  <meta name="theme-color" content="#1e1e1e">
 
   <!-- Ícones para atalho na tela inicial -->
   <link rel="icon" href="icons/icon-192.png" sizes="192x192" />
@@ -18,36 +18,32 @@
 </head>
 <body>
   <header>
-  <button class="menu-btn" aria-label="Abrir menu" onclick="toggleMenu()" aria-expanded="false" aria-controls="sideMenu">☰</button>
-  <div class="header-title">
-    <h1>Converse com Jesus</h1>
-    <a id="shareBtn" target="_blank" class="share-link">
-      Compartilhe ❤️
-    </a>
-  </div>
-</header>
+    <button class="menu-btn" aria-label="Abrir menu" onclick="toggleMenu()" aria-expanded="false" aria-controls="sideMenu">☰</button>
+    <div class="header-title">
+      <h1>Converse com Jesus</h1>
+      <a id="shareBtn" target="_blank" class="share-link">
+        Compartilhe ❤️
+      </a>
+    </div>
+  </header>
 
   <!-- Menu lateral -->
   <nav id="sideMenu" class="side-menu" aria-hidden="true" aria-label="Configurações">
     <div class="menu-header">
-    <h3>Configurações</h3>
-    <!-- Botão para fechar o menu lateral -->
+      <h3>Configurações</h3>
       <button id="closeMenuBtn" aria-label="Fechar menu">
         <img src="/icons/arrow-menu.svg" alt="Fechar" width="24" height="24"/>
       </button>
     </div>
+
+    <!-- Ativar voz -->
     <label>
       <input type="checkbox" id="voiceToggle" checked />
       Ativar voz
     </label>
-    <label>
-      <input type="radio" name="voiceType" value="male" />
-      Voz masculina
-    </label>
-    <label>
-      <input type="radio" name="voiceType" value="female" checked />
-      Voz feminina
-    </label>
+
+    <!-- Opções de vozes dinâmicas (populadas pelo JS) -->
+    <div id="voiceOptions"></div>
   </nav>
 
   <!-- Overlay escuro -->
@@ -80,19 +76,19 @@
   </main>
 
   <!-- Fundo escurecido -->
-<div id="installOverlay" class="install-overlay" style="display:none;"></div>
+  <div id="installOverlay" class="install-overlay" style="display:none;"></div>
 
-<!-- Pop-up de instalação -->
-<div id="installPopup" class="install-popup" style="display:none;">
-  <h3>Instalar este App?</h3>
-  <p>Adicione à tela inicial para acesso rápido.</p>
-  <div class="buttons">
-    <button id="btnInstall">Instalar</button>
-    <button id="btnDismiss">Agora não</button>
+  <!-- Pop-up de instalação -->
+  <div id="installPopup" class="install-popup" style="display:none;">
+    <h3>Instalar este App?</h3>
+    <p>Adicione à tela inicial para acesso rápido.</p>
+    <div class="buttons">
+      <button id="btnInstall">Instalar</button>
+      <button id="btnDismiss">Agora não</button>
+    </div>
   </div>
-</div>
 
-  <script src="script.js"?v=1.2></script>
-
+  <!-- JS externo -->
+  <script src="script.js?v=1.2"></script>
 </body>
 </html>
