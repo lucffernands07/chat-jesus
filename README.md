@@ -2,54 +2,52 @@
 
 Este é um aplicativo web onde você pode conversar com uma IA que simula Jesus, respondendo com sabedoria, compaixão e amor incondicional, usando o modelo `deepseek-chat` via OpenRouter.
 
-## ✨ Funcionalidades
+# ✨ Funcionalidades
 
 - Chat em tempo real com Jesus
 - Interface simples e responsiva
 - Integração com API gratuita da [OpenRouter](https://openrouter.ai)
-- Fácil de clonar e rodar localmente ou no Render
+- Fácil de clonar e rodar localmente ou no Vercel/Render
 
 ---
 
-## 🚀 Deploy
+# 🚀 Deploy
 
-Você pode fazer deploy facilmente no [Render.com](https://render.com):
+## Vercel
 
-1. Faça login em [Render](https://render.com)
-2. Clique em **"New Web Service"**
+Você pode fazer deploy facilmente no [Vercel](https://vercel.com):
+
+1. Faça login em [Vercel](https://vercel.com)
+2. Clique em **"New Project"**
 3. Conecte seu repositório do GitHub
 4. Configure:
 
-- **Start Command:**  
-  ```bash
-  node server.js
+- **Framework Preset:** Node.js
+- **Root Directory:** `/` (raiz do projeto)
+- **Build & Output Settings:**  
+  - Build Command: `node server.js`
+  - Output Directory: `public`  
 
-Environment Variables:
+- **Environment Variables:**  
+```
+OPENROUTER_API_KEY=sua_chave_da_openrouter 
+```
+5. Clique em **Deploy**  
 
-Key	Value
-
-OPENROUTER_API_KEY	sua_chave_da_openrouter
-
-
-
-5. Clique em Deploy
-
-
-
+O Vercel vai gerar uma URL fixa para acessar o seu chat 24/7.
 
 ---
 
-💻 Rodar localmente
+## 💻 Rodar localmente
 
 Pré-requisitos:
 
-Node.js instalado (v14+)
-
-Conta na OpenRouter com chave de API
-
+- Node.js (v14+)
+- Conta na OpenRouter com chave de API
 
 Passos:
 
+```bash
 # Clone o repositório
 git clone https://github.com/seu-usuario/chat-jesus.git
 cd chat-jesus
@@ -66,48 +64,44 @@ node server.js
 
 Acesse:
 http://localhost:3000
-
+```
 
 ---
 
-📁 Estrutura do projeto
+# 📁 Estrutura do projeto
 
 chat-jesus/
-├── public/
-│   ├── index.html
-│   ├── styles.css
-│   └── script.js
-├── .env.example
-├── server.js
-├── package.json
+├─ 📂 api/
+│  └─ 📄 chat.js
+├─ 📂 public/
+│  ├─ 📄 index.html
+│  ├─ 📄 styles.css
+│  └─ 📄 script.js
+├─ 📄 .env
+├─ 📄 vercel.js
+└─ 📄 package.json
 
 
 ---
 
-🧠 Modelo Utilizado
+# 🧠 Modelo Utilizado
 
 deepseek/deepseek-chat-v3-0324
 
 Hospedado pela OpenRouter
-
 Simula Jesus com instruções no prompt system
-
 
 
 ---
 
-🛡️ Licença
+# 🛡️ Licença
 
 Este projeto é livre para uso pessoal e educacional. Nenhuma garantia é fornecida. Sinta-se à vontade para adaptá-lo.
 
 
 ---
 
-🙏 Créditos
+# 🙏 Créditos
 
 Desenvolvido com fé e tecnologia.
-API: https://openrouter.ai
-
----
-
-
+API: OpenRouter
