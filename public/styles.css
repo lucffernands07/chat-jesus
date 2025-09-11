@@ -67,6 +67,35 @@ header h1 {
   text-shadow: 1px 1px 3px rgba(0,0,0,0.5); /* sombra suave */
 }
 
+.header-title h1 {
+  font-size: 2rem;
+  color: #fff8dc; /* dourado claro */
+  text-align: center;
+
+  /* Efeito de brilho suave */
+  text-shadow: 
+    0 0 5px rgba(255, 215, 0, 0.6),
+    0 0 10px rgba(255, 223, 0, 0.4),
+    0 0 20px rgba(255, 223, 100, 0.3);
+
+  animation: brilhoDourado 3s ease-in-out infinite alternate;
+}
+
+@keyframes brilhoDourado {
+  from {
+    text-shadow: 
+      0 0 5px rgba(255, 215, 0, 0.6),
+      0 0 10px rgba(255, 223, 0, 0.4),
+      0 0 20px rgba(255, 223, 100, 0.3);
+  }
+  to {
+    text-shadow: 
+      0 0 10px rgba(255, 215, 0, 0.9),
+      0 0 20px rgba(255, 223, 0, 0.6),
+      0 0 30px rgba(255, 223, 100, 0.5);
+  }
+}
+
 /* Menu lateral */
 .side-menu {
   background-color: rgba(211, 211, 211, 0.95); /* cinza claro com pouca transparência */
