@@ -411,7 +411,7 @@ input[type='text'] {
   pointer-events: none;
 }
 
-/* Botão de falar */
+/* Botão de falar normal */
 #voice-btn {
   transition: all 0.3s ease;
   position: relative;
@@ -419,8 +419,10 @@ input[type='text'] {
 
 /* Botão quando o microfone está ativo */
 #voice-btn.listening {
+  background-color: #4caf50; /* verde */
+  color: #fff; /* texto branco */
   animation: pulse 1s infinite;
-  box-shadow: 0 0 12px #4caf50, 0 0 24px #4caf50; /* efeito visual apenas */
+  box-shadow: 0 0 12px #4caf50, 0 0 24px #4caf50;
 }
 
 /* Animação de pulso */
