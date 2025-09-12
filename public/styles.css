@@ -420,7 +420,7 @@ input[type='text'] {
 /* Botão quando o microfone está ativo */
 #voice-btn.listening {
   animation: pulse 1s infinite;
-  box-shadow: 0 0 12px #4caf50, 0 0 24px #4caf50; /* só efeito visual */
+  box-shadow: 0 0 12px #4caf50, 0 0 24px #4caf50; /* efeito visual apenas */
 }
 
 /* Animação de pulso */
