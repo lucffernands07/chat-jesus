@@ -140,33 +140,32 @@ voiceBtn.addEventListener('click', () => {
 
   const recognition = new webkitSpeechRecognition();
   recognition.lang = 'pt-BR';
-  recognition.continuous = true;
-  recognition.interimResults = true;
+  recognition.continuous = false;
 
-  voiceBtn.classList.add('listening'); // adiciona feedback visual
   recognition.start();
 
-  recognition.onresult = event => {
-    const transcript = Array.from(event.results)
-      .map(r => r[0].transcript)
-      .join('');
-    messageInput.value = transcript;
+  // Muda texto enquanto está gravando
+  voiceBtn.innerText = 'Falando...';
+  voiceBtn.style.color = 'white';
 
-    if (event.results[0].isFinal) {
-      chatForm.dispatchEvent(new Event('submit'));
-      recognition.stop();
-    }
+  recognition.onresult = event => {
+    const transcript = event.results[0][0].transcript;
+    messageInput.value = transcript;
+    chatForm.dispatchEvent(new Event('submit'));
   };
 
-  recognition.onerror = () => {
+  recognition.onerror = event => {
+    console.error('Erro no reconhecimento de voz:', event.error);
     appendMessage('jesus', 'Não consegui entender sua voz.');
-    recognition.stop();
   };
 
   recognition.onend = () => {
-    voiceBtn.classList.remove('listening'); // remove feedback visual
+    // Volta ao texto padrão
+    voiceBtn.innerText = 'Fale';
+    voiceBtn.style.color = 'white';
   };
 });
+
 
 // Toggle do menu lateral
 function toggleMenu() {
