@@ -101,7 +101,10 @@ function loadSettings() {
 chatForm.addEventListener('submit', async e => {
   e.preventDefault();
   const userMessage = messageInput.value.trim();
-  if (!userMessage) return;
+  if (!userMessage) {
+    appendMessage('jesus', '⚠️ Por favor, digite uma mensagem primeiro.');
+    return;
+}
 
   appendMessage('user', userMessage);
   messageInput.value = '';
