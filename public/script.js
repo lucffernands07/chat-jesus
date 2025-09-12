@@ -233,4 +233,4 @@ if (closeMenuBtn) {
   closeMenuBtn.addEventListener('click', () => {
     sideMenu.classList.remove('open');
   });
-}
+                       }
