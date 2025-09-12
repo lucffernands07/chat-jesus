@@ -162,7 +162,7 @@ voiceBtn.addEventListener('click', () => {
   recognition.onend = () => {
     // Volta ao texto padrão
     voiceBtn.innerText = 'Fale';
-    voiceBtn.style.color = 'white';
+    voiceBtn.style.color = '';
   };
 });
 
