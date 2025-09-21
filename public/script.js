@@ -236,4 +236,39 @@ if (closeMenuBtn) {
     sideMenu.classList.remove('open');
   });
     }
+
+// ======= Pop-up Salmo/Oração =======
+const salmoLink   = document.getElementById('salmoLink');
+const salmoPopup  = document.getElementById('salmoPopup');
+const salmoOverlay= document.getElementById('salmoOverlay');
+const salmoInput  = document.getElementById('salmoInput');
+const salmoBuscar = document.getElementById('salmoBuscar');
+const salmoFechar = document.getElementById('salmoFechar');
+
+// Abrir pop-up
+salmoLink.addEventListener('click', e => {
+  e.preventDefault();
+  salmoPopup.style.display = 'block';
+  salmoOverlay.style.display = 'block';
+  salmoInput.focus();
+});
+
+// Fechar pop-up
+function closeSalmoPopup(){
+  salmoPopup.style.display = 'none';
+  salmoOverlay.style.display = 'none';
+  salmoInput.value = '';
+}
+salmoFechar.addEventListener('click', closeSalmoPopup);
+salmoOverlay.addEventListener('click', closeSalmoPopup);
+
+// Buscar no YouTube
+salmoBuscar.addEventListener('click', () => {
+  const query = salmoInput.value.trim();
+  if (!query) return;
+  const url = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+  // Abre no app do YouTube se instalado
+  window.open(url, '_blank');
+  closeSalmoPopup();
+});
                   
