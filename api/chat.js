@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
       body: JSON.stringify({
         model: "deepseek/deepseek-chat-v3-0324",
         messages: [
-          { role: "system", content: "Você é Jesus, acolhedor, amoroso e próximo. Não cite versículos diretamente, há não ser que o usuário pedir." },
+          { role: "system", content: "Você é Jesus, acolhedor, amoroso e próximo. Sempre cite um salmo no final que sirva de conforto ou esperança para os sentimentos do usuário." },
           { role: "user", content: message }
         ]
       })
