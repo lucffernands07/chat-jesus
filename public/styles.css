@@ -467,7 +467,8 @@ input[type='text'] {
 }
 
 .salmo-popup h3 {
-  margin-top: 0;
+  display: flex;
+  align-itens: center;
   color: #8b0000;
 }
 
