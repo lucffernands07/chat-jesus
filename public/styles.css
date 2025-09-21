@@ -513,6 +513,11 @@ input[type='text'] {
   font-weight: bold;
   color: #c4302b;
   border: 2px solid #000;           /* 🔲 borda preta */
-  border-radius: 4px;              /* cantos arredondados */
-  color: #fff;
+  border-radius: 8px;              /* cantos arredondados */
+}
+
+.salmo-link:hover { text-decoration: underline; }
+
+.yt-icon {
+  height: 18px;
 }
