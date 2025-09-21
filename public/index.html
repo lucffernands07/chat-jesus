@@ -46,6 +46,15 @@
       <input type="radio" name="voiceType" value="female" checked />
       Voz feminina
     </label>
+
+    <!-- Link para pedir salmo/oração -->
+    <div class="menu-section">
+      <a href="#" id="salmoLink" class="salmo-link">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg"
+             alt="YouTube" class="yt-icon" />
+        Peça seu salmo ou oração
+      </a>
+    </div>
   </nav>
 
   <!-- Overlay escuro -->
@@ -84,9 +93,20 @@
   <div id="installPopup" class="install-popup" style="display:none;">
     <h3>Instalar este App?</h3>
     <p>Adicione à tela inicial para acesso rápido.</p>
-    <div class="buttons">
+    <div class="buttons">h
       <button id="btnInstall">Instalar</button>
       <button id="btnDismiss">Agora não</button>
+    </div>
+  </div>
+
+  <!-- Pop-up Salmo/Oração -->
+  <div id="salmoOverlay" class="salmo-overlay"></div>
+  <div id="salmoPopup" class="salmo-popup">
+    <h3>Buscar no YouTube</h3>
+    <input type="text" id="salmoInput" placeholder="Digite o salmo ou oração" />
+    <div class="salmo-buttons">
+      <button id="salmoBuscar">Buscar ▶</button>
+      <button id="salmoFechar">Cancelar</button>
     </div>
   </div>
 
