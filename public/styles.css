@@ -519,3 +519,25 @@ input[type='text'] {
 .yt-icon {
   height: 18px;
 }
+.salmo-link {
+  display: flex;
+  justify-content: space-between;   /* texto à esquerda, ícone à direita */
+  align-items: center;
+  gap: 10px;                         /* espaço entre texto e ícone */
+  background-color: #000;            /* fundo preto */
+  color: #fff;                       /* texto branco */
+  padding: 10px 14px;                 /* espaço interno */
+  border-radius: 12px;                /* cantos arredondados */
+  text-decoration: none;              /* remove sublinhado */
+  font-weight: bold;
+  transition: background 0.2s ease;
+}
+
+.salmo-link:hover {
+  background-color: #222;             /* leve mudança no hover */
+}
+
+.salmo-link .yt-icon {
+  width: 26px;                        /* tamanho do ícone */
+  height: auto;
+}
