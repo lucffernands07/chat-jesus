@@ -266,9 +266,19 @@ salmoOverlay.addEventListener('click', closeSalmoPopup);
 salmoBuscar.addEventListener('click', () => {
   const query = salmoInput.value.trim();
   if (!query) return;
-  const url = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
-  // Abre no app do YouTube se instalado
-  window.open(url, '_blank');
+
+  // Tenta abrir o aplicativo primeiro
+  const appUrl = `youtube://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+  const webUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+
+  // Abre o app, e se não houver app, cai no navegador
+  window.location.href = appUrl;
+
+  // fallback para navegador após pequeno delay
+  setTimeout(() => {
+    window.open(webUrl, '_blank');
+  }, 800);
+
   closeSalmoPopup();
 });
                   
