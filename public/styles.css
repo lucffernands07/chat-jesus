@@ -521,16 +521,26 @@ input[type='text'] {
 }
 .salmo-link {
   display: flex;
-  justify-content: space-between;   /* texto à esquerda, ícone à direita */
+  justify-content: space-between;  /* texto à esquerda, ícone à direita */
   align-items: center;
-  gap: 10px;                         /* espaço entre texto e ícone */
-  background-color: #000;            /* fundo preto */
-  color: #fff;                       /* texto branco */
-  padding: 10px 14px;                 /* espaço interno */
-  border-radius: 12px;                /* cantos arredondados */
-  text-decoration: none;              /* remove sublinhado */
+  gap: 10px;                        /* espaço entre texto e ícone */
+  border: 2px solid #000;           /* 🔲 borda preta */
+  border-radius: 12px;              /* cantos arredondados */
+  padding: 10px 14px;               /* espaço interno */
+  background-color: transparent;   /* sem fundo */
+  color: #fff;                      /* texto branco */
+  text-decoration: none;            /* remove sublinhado */
   font-weight: bold;
-  transition: background 0.2s ease;
+  transition: border-color 0.2s ease;
+}
+
+.salmo-link:hover {
+  border-color: #444;               /* borda um pouco mais clara ao passar o mouse */
+}
+
+.salmo-link .yt-icon {
+  width: 26px;                       /* tamanho do ícone */
+  height: auto;
 }
 
 .salmo-link:hover {
