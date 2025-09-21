@@ -512,8 +512,9 @@ input[type='text'] {
   text-decoration: none;
   font-weight: bold;
   color: #c4302b;
-  border: 2px solid #000;           /* 🔲 borda preta */
-  border-radius: 8px;              /* cantos arredondados */
+  border: 1px solid #000; /* 🔲 borda preta */
+  border-radius: 4px;    /* cantos arredondados */
+  padding: 0 10px;
 }
 
 .salmo-link:hover { text-decoration: underline; }
