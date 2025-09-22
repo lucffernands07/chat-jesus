@@ -529,7 +529,10 @@ input[type='text'] {
   }
 
 /* Altera a cor dos inputs quando marcados */
-.side-menu input[type="checkbox"],
-.side-menu input[type="radio"] {
+.side-menu input[type="checkbox"] {
   accent-color: #8b0000;  /* vermelho escuro */
+}
+
+.side-menu input[type="radio"] {
+  accent-color: #b22222;
 }
