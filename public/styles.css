@@ -520,15 +520,10 @@ input[type='text'] {
   padding: 10px;
 }
 
-.salmo-link img {
-  border-left: 1px solid #000; /* <<< linha vertical divisória */
-}
-
 .salmo-link:hover { text-decoration: underline; }
 
 .yt-icon {
   height: 28px;
-  margin-left: 10px;
 }
 
 .menu-separator {
