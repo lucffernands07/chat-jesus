@@ -521,7 +521,9 @@ input[type='text'] {
 }
 
 .salmo-link img {
-  border-left: 2px solid #000; /* <<< linha vertical divisória */
+  border-left: 1px solid #000; /* <<< linha vertical divisória */
+  padding-right: 5px;
+  margin: 0;
 }
 
 .salmo-link:hover { text-decoration: underline; }
