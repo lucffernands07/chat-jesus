@@ -525,5 +525,5 @@ input[type='text'] {
 }
 
 .menu-separator {
-  margin: 12px 0;             /* espaço acima e abaixo */
+  margin: 14px 0 12 0;             /* espaço acima e abaixo */
   }
