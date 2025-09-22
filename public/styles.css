@@ -524,8 +524,4 @@ input[type='text'] {
   height: 28px;
 }
 
-.menu-separator {
-  border: none;
-  border-top: 1px solid #444; /* cor da linha */
-  margin: 12px 0;             /* espaço acima e abaixo */
-  }
+
