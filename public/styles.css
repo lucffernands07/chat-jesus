@@ -527,3 +527,9 @@ input[type='text'] {
 .menu-separator {
   margin-top: 14px;   /* espaço acima */
   }
+
+/* Altera a cor dos inputs quando marcados */
+.side-menu input[type="checkbox"],
+.side-menu input[type="radio"] {
+  accent-color: #8b0000;  /* vermelho escuro */
+}
