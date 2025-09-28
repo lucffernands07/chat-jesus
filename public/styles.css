@@ -540,7 +540,7 @@ input[type='text'] {
   accent-color: #b22222;
 }
 
-/* Sugestão / Reclamação */ 
+/* === Formulário Sugestão === */ 
 .feedback {
   font-weight: bold;
   color: #c4302b;
@@ -559,9 +559,10 @@ input[type='text'] {
 .feedback textarea {
   width: 100%;
   margin: 10px 0;
+  border-radius: 4px;
 }
 
-/* === Pop-up Sugestão === */
+/* Pop-up Sugestão */
 .sugestao-overlay {
   display: none;
   position: fixed;
