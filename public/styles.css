@@ -444,7 +444,7 @@ input[type='text'] {
 }
 
 /* --- Pop-up Salmo/Oração --- */
-.salmo-overlay {
+.salmo-overlay, .sugestao-overlay {
   display: none;
   position: fixed;
   top: 0; left: 0;
@@ -453,7 +453,7 @@ input[type='text'] {
   z-index: 1200;
 }
 
-.salmo-popup {
+.salmo-popup, sugestao-popup {
   display: none;
   position: fixed;
   top: 50%; left: 50%;
@@ -560,4 +560,3 @@ input[type='text'] {
   width: 100%;
   margin: 10px 0;
 }
-
