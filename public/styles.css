@@ -556,7 +556,7 @@ input[type='text'] {
   margin: 0;
 }
 
-.feedback input {
+.feedback textarea {
   width: 500px;
 }
 
