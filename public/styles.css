@@ -548,3 +548,9 @@ input[type='text'] {
   margin: 0;
   padding: 10px;
 }
+
+.feedback form {
+  padding: 0;
+  width: 100px;
+  height: 50px;
+}
