@@ -60,13 +60,18 @@
 
     <hr class="menu-separator">
 
-    <!-- Sugestão / Reclamação -->
-<div class="feedback">
+<!-- Sugestão / Reclamação -->
+<div class="menu-section">
   <h4>Envie sua sugestão ou reclamação</h4>
-  <form id="sugestaoForm" action="https://formspree.io/f/xdkwapdz" method="POST" target="_blank">
+  <form id="sugestaoForm" action="https://formspree.io/f/xdkwapdz" method="POST">
     <textarea name="mensagem" placeholder="Digite aqui..." required></textarea>
     <button type="submit">Enviar</button>
   </form>
+</div>
+
+<!-- Pop-up de confirmação -->
+<div id="sugestaoPopup" class="sugestao-popup" style="display:none;">
+  Mensagem enviada com sucesso!
 </div>
     
   </nav>
