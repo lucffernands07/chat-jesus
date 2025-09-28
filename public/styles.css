@@ -569,6 +569,8 @@ input[type='text'] {
   background-color: #8b0000;
   color: #fff;
   border-radius: 4px;
+  border: none;
+  padding: 10px
 }
 
 /* Pop-up Sugestão */
