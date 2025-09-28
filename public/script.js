@@ -283,34 +283,45 @@ salmoBuscar.addEventListener('click', () => {
 });
 
 // Pop-up Feedback
-document.getElementById("sugestaoForm").addEventListener("submit", function(e){
-  e.preventDefault(); // evita abrir nova aba
+document.addEventListener("DOMContentLoaded", function () {
+  const sugestaoForm = document.getElementById("sugestaoForm");
+  const sugestaoOverlay = document.getElementById("sugestaoOverlay");
+  const sugestaoPopup   = document.getElementById("sugestaoPopup");
+  const sideMenu        = document.getElementById("sideMenu");
 
-  const overlay = document.getElementById("sugestaoOverlay");
-  const popup = document.getElementById("sugestaoPopup");
-  
-  overlay.style.display = "block";
-  popup.style.display = "flex";
+  if (sugestaoForm) {
+    sugestaoForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
 
-  // envia o form via fetch
-  fetch(this.action, {
-    method: "POST",
-    body: new FormData(this),
-    headers: { 'Accept': 'application/json' }
-  }).then(() => {
-    setTimeout(() => {
-      overlay.style.display = "none";
-      popup.style.display = "none";
-      this.reset();
-    }, 2000);
-  }).catch(() => {
-    popup.innerText = "Erro ao enviar, tente novamente!";
-    popup.style.color = "red";
-    setTimeout(() => {
-      overlay.style.display = "none";
-      popup.style.display = "none";
-      popup.innerText = "Mensagem enviada com sucesso!";
-      popup.style.color = "#008000";
-    }, 2000);
-  });
+      const formData = new FormData(sugestaoForm);
+
+      try {
+        // 🔑 Envia para Formspree
+        await fetch(sugestaoForm.action, {
+          method: "POST",
+          body: formData,
+          headers: { Accept: "application/json" }
+        });
+
+        // 🔑 Fecha o menu lateral, se aberto
+        sideMenu.classList.remove("open");
+
+        // 🔑 Mostra o pop-up
+        sugestaoOverlay.style.display = "block";
+        sugestaoPopup.style.display   = "block";
+
+        // 🔑 Reseta formulário
+        sugestaoForm.reset();
+
+        // 🔑 Fecha o pop-up depois de 2,5s
+        setTimeout(() => {
+          sugestaoOverlay.style.display = "none";
+          sugestaoPopup.style.display   = "none";
+        }, 2500);
+
+      } catch (err) {
+        alert("Não foi possível enviar. Tente novamente.");
+      }
+    });
+  }
 });
