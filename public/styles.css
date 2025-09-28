@@ -563,6 +563,12 @@ input[type='text'] {
   border-radius: 4px;
 }
 
+.feedback-btn {
+  width: 40%;
+  background-color: #8b0000;
+  border-radius: 4px;
+}
+
 /* Pop-up Sugestão */
 .sugestao-overlay {
   display: none;
