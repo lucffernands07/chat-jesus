@@ -283,30 +283,34 @@ salmoBuscar.addEventListener('click', () => {
 });
 
 // Pop-up Feedback
-const sugestaoForm = document.getElementById("sugestaoForm");
-const sugestaoPopup = document.getElementById("sugestaoPopup");
+document.getElementById("sugestaoForm").addEventListener("submit", function(e){
+  e.preventDefault(); // evita abrir nova aba
 
-sugestaoForm.addEventListener("submit", function(e) {
-  e.preventDefault();
+  const overlay = document.getElementById("sugestaoOverlay");
+  const popup = document.getElementById("sugestaoPopup");
+  
+  overlay.style.display = "block";
+  popup.style.display = "flex";
 
-  const form = e.target;
-
-  fetch(form.action, {
+  // envia o form via fetch
+  fetch(this.action, {
     method: "POST",
-    body: new FormData(form),
+    body: new FormData(this),
     headers: { 'Accept': 'application/json' }
-  })
-  .then(response => {
-    if (response.ok) {
-      // Mostrar pop-up
-      sugestaoPopup.style.display = "block";
-      // Resetar textarea
-      form.reset();
-      // Ocultar pop-up depois de 3 segundos
-      setTimeout(() => { sugestaoPopup.style.display = "none"; }, 3000);
-    } else {
-      alert("Ocorreu um erro, tente novamente.");
-    }
-  })
-  .catch(() => alert("Ocorreu um erro, tente novamente."));
+  }).then(() => {
+    setTimeout(() => {
+      overlay.style.display = "none";
+      popup.style.display = "none";
+      this.reset();
+    }, 2000);
+  }).catch(() => {
+    popup.innerText = "Erro ao enviar, tente novamente!";
+    popup.style.color = "red";
+    setTimeout(() => {
+      overlay.style.display = "none";
+      popup.style.display = "none";
+      popup.innerText = "Mensagem enviada com sucesso!";
+      popup.style.color = "#008000";
+    }, 2000);
+  });
 });
