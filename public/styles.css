@@ -543,7 +543,7 @@ input[type='text'] {
 /* === Formulário Sugestão === */ 
 .feedback {
   font-weight: bold;
-  color: #c4302b;
+  color: black;
   margin: 0;
   padding: 0 10px;
   display: flex;
