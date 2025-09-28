@@ -547,10 +547,11 @@ input[type='text'] {
   border-radius: 4px;    /* cantos arredondados */
   margin: 0;
   padding: 10px;
+  display: flex;
 }
 
 .feedback form {
   padding: 0;
-  width: 100px;
+  width: 100%;
   height: 50px;
 }
