@@ -548,6 +548,8 @@ input[type='text'] {
   margin: 0;
   padding: 10px;
   display: flex;
+  flex-direction: column;
+  align-itens: center;
 }
 
 .feedback form {
