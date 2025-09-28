@@ -281,4 +281,32 @@ salmoBuscar.addEventListener('click', () => {
 
   closeSalmoPopup();
 });
-                  
+
+// Pop-up Feedback
+const sugestaoForm = document.getElementById("sugestaoForm");
+const sugestaoPopup = document.getElementById("sugestaoPopup");
+
+sugestaoForm.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const form = e.target;
+
+  fetch(form.action, {
+    method: "POST",
+    body: new FormData(form),
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(response => {
+    if (response.ok) {
+      // Mostrar pop-up
+      sugestaoPopup.style.display = "block";
+      // Resetar textarea
+      form.reset();
+      // Ocultar pop-up depois de 3 segundos
+      setTimeout(() => { sugestaoPopup.style.display = "none"; }, 3000);
+    } else {
+      alert("Ocorreu um erro, tente novamente.");
+    }
+  })
+  .catch(() => alert("Ocorreu um erro, tente novamente."));
+});
