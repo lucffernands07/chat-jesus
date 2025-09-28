@@ -194,7 +194,7 @@ form {
 
 input[type='text'] {
   padding: 10px;
-  width: 90%;
+  width: 100%;
   max-width: 400px;
   border: 1px solid #ccc;
   border-radius: 20px;
