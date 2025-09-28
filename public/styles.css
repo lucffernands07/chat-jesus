@@ -551,7 +551,13 @@ input[type='text'] {
   align-itens: center;
 }
 
-.feedback form, h4 {
+.feedback h4 {
   padding: 0;
   margin: 0;
 }
+
+.feedback input {
+  margin-top: 10px;
+  width: 90%;
+}
+
