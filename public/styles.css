@@ -563,7 +563,7 @@ input[type='text'] {
   border-radius: 4px;
 }
 
-.feedback-btn {
+#feedback-btn {
   width: 40%;
   font-weight: bold;
   background-color: #8b0000;
