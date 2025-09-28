@@ -50,13 +50,13 @@
     <hr class="menu-separator">
 
     <!-- Link para pedir salmo/oração -->
-<div class="menu-section">
-  <a href="#" id="salmoLink" class="salmo-link">
-    Busque o seu salmo ou oração
-    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Logo_of_YouTube_%282015-2017%29.svg"
-         alt="YouTube" class="yt-icon" />
-  </a>
-</div>
+    <div class="menu-section">
+      <a href="#" id="salmoLink" class="salmo-link">
+        Busque o seu salmo ou oração
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Logo_of_YouTube_%282015-2017%29.svg"
+             alt="YouTube" class="yt-icon" />
+      </a>
+    </div>
   </nav>
 
   <!-- Overlay escuro -->
@@ -95,7 +95,7 @@
   <div id="installPopup" class="install-popup" style="display:none;">
     <h3>Instalar este App?</h3>
     <p>Adicione à tela inicial para acesso rápido.</p>
-    <div class="buttons">h
+    <div class="buttons">
       <button id="btnInstall">Instalar</button>
       <button id="btnDismiss">Agora não</button>
     </div>
@@ -112,6 +112,60 @@
     </div>
   </div>
 
+  <!-- ======= FORMULÁRIO DE SUGESTÃO / RECLAMAÇÃO ======= -->
+  <footer style="background:#f7f7f7;padding:20px;margin-top:20px;">
+    <h3>Envie uma sugestão ou reclamação</h3>
+
+    <form id="feedbackForm"
+          action="https://formspree.io/f/SEU_ENDPOINT"  <!-- 🔗 TROQUE AQUI -->
+          method="POST">
+
+      <label for="nome">Nome (opcional)</label><br>
+      <input type="text" name="nome" id="nome" placeholder="Seu nome"
+             style="width:100%;padding:8px;margin-bottom:10px;">
+
+      <label for="email">Email (opcional)</label><br>
+      <input type="email" name="email" id="email" placeholder="seuemail@gmail.com"
+             style="width:100%;padding:8px;margin-bottom:10px;">
+
+      <label for="mensagem">Mensagem*</label><br>
+      <textarea name="mensagem" id="mensagem" rows="4"
+                placeholder="Digite aqui sua sugestão ou reclamação"
+                style="width:100%;padding:8px;margin-bottom:10px;" required></textarea>
+
+      <input type="hidden" name="_subject" value="Nova mensagem do site Converse com Jesus">
+
+      <button type="submit"
+              style="padding:10px 20px;background:#4CAF50;color:#fff;border:none;border-radius:4px;cursor:pointer;">
+        Enviar
+      </button>
+    </form>
+
+    <p id="statusMsg" style="margin-top:10px;"></p>
+  </footer>
+
   <script src="script.js?v=1.7"></script>
+
+  <script>
+    // Feedback de envio sem recarregar
+    const form = document.getElementById('feedbackForm');
+    const statusMsg = document.getElementById('statusMsg');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const resp = await fetch(form.action, {
+        method: form.method,
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+      if (resp.ok) {
+        statusMsg.textContent = "✅ Obrigado! Sua mensagem foi enviada.";
+        form.reset();
+      } else {
+        statusMsg.textContent = "❌ Ocorreu um erro. Tente novamente.";
+      }
+    });
+  </script>
 </body>
-</html>
+        </html>
