@@ -543,8 +543,6 @@ input[type='text'] {
 .feedback {
   font-weight: bold;
   color: #c4302b;
-  border: 1px solid #000; /* 🔲 borda preta */
-  border-radius: 4px;    /* cantos arredondados */
   margin: 0;
   padding: 0 10px;
   display: flex;
