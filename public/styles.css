@@ -136,7 +136,7 @@ header h1 {
   margin: 12px 0;
   font-size: 16px;
   font-weight: bold;
-  color: #333;
+  color: #8b0000;
 }
 
 .side-menu input[type="checkbox"],
@@ -515,7 +515,7 @@ input[type='text'] {
   margin-botton: 20px;
   text-decoration: none;
   font-weight: bold;
-  color: #c4302b;
+  color: #8b0000;
   border: 1px solid #000; /* 🔲 borda preta */
   border-radius: 4px;    /* cantos arredondados */
   padding: 10px;
