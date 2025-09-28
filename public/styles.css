@@ -555,4 +555,5 @@ input[type='text'] {
 .feedback form {
   padding: 0;
   margin: 0;
+  width: 100;
 }
