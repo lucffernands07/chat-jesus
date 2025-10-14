@@ -133,86 +133,71 @@ chatForm.addEventListener('submit', async e => {
   }
 });
 
-// ===============================
-// Chat Bíblico — gratuito e local
-// ===============================
-document.getElementById("biblia-send").addEventListener("click", async () => {
-  const input = document.getElementById("biblia-input");
-  const userText = input.value.trim();
-  const chatBox = document.getElementById("biblia-chat-box");
+/* ============================================================
+   📖 CHAT 2 – Palavra de Sabedoria (gratuito e independente)
+   ============================================================ */
 
-  if (!userText) {
-    alert("Por favor, digite sua dificuldade antes de enviar 🙏");
-    return;
-  }
+const bibliaInput = document.getElementById("biblia-input");
+const bibliaSend = document.getElementById("biblia-send");
+const bibliaChatBox = document.getElementById("biblia-chat-box");
 
-  // Mostra a mensagem do usuário
-  const userMsg = document.createElement("div");
-  userMsg.className = "user-message";
-  userMsg.textContent = userText;
-  chatBox.appendChild(userMsg);
-  chatBox.scrollTop = chatBox.scrollHeight;
+// Versículos locais de fallback (caso API falhe)
+const versiculosLocais = [
+  { tema: "medo", texto: "O Senhor é a minha luz e a minha salvação; a quem temerei? (Salmos 27:1)" },
+  { tema: "tristeza", texto: "O choro pode durar uma noite, mas a alegria vem pela manhã. (Salmos 30:5)" },
+  { tema: "finanças", texto: "Buscai primeiro o reino de Deus, e todas as outras coisas vos serão acrescentadas. (Mateus 6:33)" },
+  { tema: "doença", texto: "Eu sou o Senhor que te sara. (Êxodo 15:26)" },
+  { tema: "angústia", texto: "Clama a mim, e responder-te-ei, e anunciar-te-ei coisas grandes. (Jeremias 33:3)" },
+  { tema: "fé", texto: "Ora, a fé é o firme fundamento das coisas que se esperam. (Hebreus 11:1)" },
+  { tema: "esperança", texto: "Os que esperam no Senhor renovarão as suas forças. (Isaías 40:31)" }
+];
 
-  input.value = "";
+// Cria mensagem no chat
+function addBibliaMessage(text, isUser = false) {
+  const msg = document.createElement("div");
+  msg.className = isUser ? "user-message" : "bot-message";
+  msg.textContent = text;
+  bibliaChatBox.appendChild(msg);
+  bibliaChatBox.scrollTop = bibliaChatBox.scrollHeight;
+}
 
-  // Mostra carregando
-  const loadingMsg = document.createElement("div");
-  loadingMsg.className = "bot-message";
-  loadingMsg.textContent = "Buscando uma palavra na Bíblia...";
-  chatBox.appendChild(loadingMsg);
-  chatBox.scrollTop = chatBox.scrollHeight;
-
+// Busca versículo na API pública
+async function buscarVersiculoBiblia(tema) {
   try {
-    // 🕊️ 1️⃣ Tenta buscar passagem na Bible API
-    const response = await fetch(`https://bible-api.com/${encodeURIComponent(userText)}?translation=almeida`);
-    let resultText = "";
+    const response = await fetch(`https://bible-api.com/${encodeURIComponent(tema)}?translation=almeida`);
+    const data = await response.json();
 
-    if (response.ok) {
-      const data = await response.json();
-
-      if (data.text) {
-        resultText = `📖 *${data.reference}*\n${data.text.trim()}`;
-      } else {
-        resultText = gerarMensagemInspirada(userText);
-      }
-    } else {
-      resultText = gerarMensagemInspirada(userText);
+    if (data && data.text) {
+      return `${data.text.trim()} (${data.reference})`;
     }
 
-    // Remove "carregando" e mostra a resposta
-    loadingMsg.remove();
-
-    const botMsg = document.createElement("div");
-    botMsg.className = "bot-message";
-    botMsg.textContent = resultText;
-    chatBox.appendChild(botMsg);
-    chatBox.scrollTop = chatBox.scrollHeight;
-
-  } catch (error) {
-    loadingMsg.remove();
-
-    const botMsg = document.createElement("div");
-    botMsg.className = "bot-message";
-    botMsg.textContent =
-      "Não consegui buscar agora, mas lembre-se: a fé é o caminho em todas as situações 🙏";
-    chatBox.appendChild(botMsg);
+    // Fallback se a API não encontrar
+    const local = versiculosLocais.find(v => tema.toLowerCase().includes(v.tema));
+    return local ? local.texto : "Confie no Senhor, e Ele te mostrará o caminho. (Provérbios 3:5)";
+  } catch {
+    const local = versiculosLocais.find(v => tema.toLowerCase().includes(v.tema));
+    return local ? local.texto : "Confie no Senhor, e Ele te mostrará o caminho. (Provérbios 3:5)";
   }
+}
+
+// Evento de envio do chat
+bibliaSend.addEventListener("click", async () => {
+  const texto = bibliaInput.value.trim();
+  if (!texto) return;
+
+  addBibliaMessage(texto, true);
+  bibliaInput.value = "";
+
+  const loading = document.createElement("div");
+  loading.className = "bot-message";
+  loading.textContent = "Buscando na Palavra...";
+  bibliaChatBox.appendChild(loading);
+
+  const resposta = await buscarVersiculoBiblia(texto);
+  loading.remove();
+
+  addBibliaMessage(resposta);
 });
-
-// ==============================
-// 🕊️ Função auxiliar — gera texto inspirado localmente
-// ==============================
-function gerarMensagemInspirada(tema) {
-  const mensagens = [
-    `Mesmo diante de "${tema}", lembre-se: Deus nunca abandona os que confiam Nele.`,
-    `Sobre "${tema}", busque ao Senhor em oração, pois Ele é o refúgio e fortaleza.`,
-    `Em meio a "${tema}", confie que o Espírito Santo te mostrará o caminho certo.`,
-    `Ainda que "${tema}" pareça difícil, Jesus te dará paz e força.`,
-    `Quando se trata de "${tema}", entregue tudo a Deus e descanse o coração.`
-  ];
-  return mensagens[Math.floor(Math.random() * mensagens.length)];
-        }
-
 // Configuração do botão de fala com feedback visual
 voiceBtn.addEventListener('click', () => {
   if (!('webkitSpeechRecognition' in window)) {
