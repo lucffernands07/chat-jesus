@@ -133,6 +133,86 @@ chatForm.addEventListener('submit', async e => {
   }
 });
 
+// ===============================
+// Chat Bíblico — gratuito e local
+// ===============================
+document.getElementById("biblia-send").addEventListener("click", async () => {
+  const input = document.getElementById("biblia-input");
+  const userText = input.value.trim();
+  const chatBox = document.getElementById("biblia-chat-box");
+
+  if (!userText) {
+    alert("Por favor, digite sua dificuldade antes de enviar 🙏");
+    return;
+  }
+
+  // Mostra a mensagem do usuário
+  const userMsg = document.createElement("div");
+  userMsg.className = "user-message";
+  userMsg.textContent = userText;
+  chatBox.appendChild(userMsg);
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  input.value = "";
+
+  // Mostra carregando
+  const loadingMsg = document.createElement("div");
+  loadingMsg.className = "bot-message";
+  loadingMsg.textContent = "Buscando uma palavra na Bíblia...";
+  chatBox.appendChild(loadingMsg);
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  try {
+    // 🕊️ 1️⃣ Tenta buscar passagem na Bible API
+    const response = await fetch(`https://bible-api.com/${encodeURIComponent(userText)}?translation=almeida`);
+    let resultText = "";
+
+    if (response.ok) {
+      const data = await response.json();
+
+      if (data.text) {
+        resultText = `📖 *${data.reference}*\n${data.text.trim()}`;
+      } else {
+        resultText = gerarMensagemInspirada(userText);
+      }
+    } else {
+      resultText = gerarMensagemInspirada(userText);
+    }
+
+    // Remove "carregando" e mostra a resposta
+    loadingMsg.remove();
+
+    const botMsg = document.createElement("div");
+    botMsg.className = "bot-message";
+    botMsg.textContent = resultText;
+    chatBox.appendChild(botMsg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+  } catch (error) {
+    loadingMsg.remove();
+
+    const botMsg = document.createElement("div");
+    botMsg.className = "bot-message";
+    botMsg.textContent =
+      "Não consegui buscar agora, mas lembre-se: a fé é o caminho em todas as situações 🙏";
+    chatBox.appendChild(botMsg);
+  }
+});
+
+// ==============================
+// 🕊️ Função auxiliar — gera texto inspirado localmente
+// ==============================
+function gerarMensagemInspirada(tema) {
+  const mensagens = [
+    `Mesmo diante de "${tema}", lembre-se: Deus nunca abandona os que confiam Nele.`,
+    `Sobre "${tema}", busque ao Senhor em oração, pois Ele é o refúgio e fortaleza.`,
+    `Em meio a "${tema}", confie que o Espírito Santo te mostrará o caminho certo.`,
+    `Ainda que "${tema}" pareça difícil, Jesus te dará paz e força.`,
+    `Quando se trata de "${tema}", entregue tudo a Deus e descanse o coração.`
+  ];
+  return mensagens[Math.floor(Math.random() * mensagens.length)];
+        }
+
 // Configuração do botão de fala com feedback visual
 voiceBtn.addEventListener('click', () => {
   if (!('webkitSpeechRecognition' in window)) {
