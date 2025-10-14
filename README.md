@@ -75,6 +75,10 @@ chat-jesus/
 ├─ 📂 api/
 │  └─ 📄 chat.js
 ├─ 📂 public/
+│  ├─ 📂 icon/
+│  └─ 📂 img/
+│  ├─ 📄 manifest.js
+│  ├─ 📄 service-worker.js
 │  ├─ 📄 index.html
 │  ├─ 📄 styles.css
 │  └─ 📄 script.js
