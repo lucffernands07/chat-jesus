@@ -79,6 +79,7 @@ chat-jesus/
 │  ├─ 📄 styles.css
 │  └─ 📄 script.js
 ├─ 📄 .env
+├─ 📄 README.md
 ├─ 📄 vercel.js
 └─ 📄 package.json
 ```
