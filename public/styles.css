@@ -607,7 +607,7 @@ input[type='text'] {
 .intro-text {
   text-align: center;
   font-style: italic;
-  color: grey;
+  color: darkgrey;
   opacity: 0.9;
   margin-bottom: 10px;
 }
