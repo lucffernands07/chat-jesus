@@ -602,3 +602,12 @@ input[type='text'] {
   font-weight: bold;
   z-index: 1310;          /* 🔑 ainda maior que o overlay */
 }
+
+/* Chat 2 */
+.intro-text {
+  text-align: center;
+  font-style: italic;
+  color: #fff;
+  opacity: 0.9;
+  margin-bottom: 10px;
+}
