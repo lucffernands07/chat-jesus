@@ -134,23 +134,12 @@ chatForm.addEventListener('submit', async e => {
 });
 
 /* ============================================================
-   📖 CHAT 2 – Palavra de Sabedoria (gratuito e independente)
+   📖 CHAT 2 – Palavra de Sabedoria (usa mesma API de Jesus)
    ============================================================ */
 
 const bibliaInput = document.getElementById("biblia-input");
 const bibliaSend = document.getElementById("biblia-send");
 const bibliaChatBox = document.getElementById("biblia-chat-box");
-
-// Versículos locais de fallback (caso API falhe)
-const versiculosLocais = [
-  { tema: "medo", texto: "O Senhor é a minha luz e a minha salvação; a quem temerei? (Salmos 27:1)" },
-  { tema: "tristeza", texto: "O choro pode durar uma noite, mas a alegria vem pela manhã. (Salmos 30:5)" },
-  { tema: "finanças", texto: "Buscai primeiro o reino de Deus, e todas as outras coisas vos serão acrescentadas. (Mateus 6:33)" },
-  { tema: "doença", texto: "Eu sou o Senhor que te sara. (Êxodo 15:26)" },
-  { tema: "angústia", texto: "Clama a mim, e responder-te-ei, e anunciar-te-ei coisas grandes. (Jeremias 33:3)" },
-  { tema: "fé", texto: "Ora, a fé é o firme fundamento das coisas que se esperam. (Hebreus 11:1)" },
-  { tema: "esperança", texto: "Os que esperam no Senhor renovarão as suas forças. (Isaías 40:31)" }
-];
 
 // Cria mensagem no chat
 function addBibliaMessage(text, isUser = false) {
@@ -161,22 +150,25 @@ function addBibliaMessage(text, isUser = false) {
   bibliaChatBox.scrollTop = bibliaChatBox.scrollHeight;
 }
 
-// Busca versículo na API pública
-async function buscarVersiculoBiblia(tema) {
+// Envia texto para a mesma API usada no chat de Jesus
+async function enviarBibliaMensagem(mensagemUsuario) {
+  const mensagemFinal = `A dificuldade relatada pelo usuário é: ${mensagemUsuario}. Traga um versículo que ensine como lidar com isso.`;
+
   try {
-    const response = await fetch(`https://bible-api.com/${encodeURIComponent(tema)}?translation=almeida`);
-    const data = await response.json();
+    const resposta = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: mensagemFinal }),
+    });
 
-    if (data && data.text) {
-      return `${data.text.trim()} (${data.reference})`;
+    const data = await resposta.json();
+    if (data.reply) {
+      addBibliaMessage(data.reply);
+    } else {
+      addBibliaMessage("Não consegui encontrar uma palavra agora, mas confie no Senhor.");
     }
-
-    // Fallback se a API não encontrar
-    const local = versiculosLocais.find(v => tema.toLowerCase().includes(v.tema));
-    return local ? local.texto : "Confie no Senhor, e Ele te mostrará o caminho. (Provérbios 3:5)";
-  } catch {
-    const local = versiculosLocais.find(v => tema.toLowerCase().includes(v.tema));
-    return local ? local.texto : "Confie no Senhor, e Ele te mostrará o caminho. (Provérbios 3:5)";
+  } catch (err) {
+    addBibliaMessage("Erro ao buscar a resposta. Tente novamente mais tarde.");
   }
 }
 
@@ -193,11 +185,10 @@ bibliaSend.addEventListener("click", async () => {
   loading.textContent = "Buscando na Palavra...";
   bibliaChatBox.appendChild(loading);
 
-  const resposta = await buscarVersiculoBiblia(texto);
+  await enviarBibliaMensagem(texto);
   loading.remove();
-
-  addBibliaMessage(resposta);
 });
+
 // Configuração do botão de fala com feedback visual
 voiceBtn.addEventListener('click', () => {
   if (!('webkitSpeechRecognition' in window)) {
