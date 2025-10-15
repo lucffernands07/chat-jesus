@@ -654,3 +654,20 @@ input[type='text'] {
 .chat-container + .chat-toggle {
   margin-top: 0;
 }
+
+/* controla visibilidade por classe em vez de style.display diretamente */
+.chat-container { display: none; }
+.chat-container.expanded { display: block; }
+
+/* botão toggle ativo */
+.chat-toggle.active {
+  background-color: #add8e6; /* azul claro */
+  color: #000;
+}
+
+/* botão ouvir estilo (usa a classe listenting aplicada pelo JS) */
+#voice-btn.listening {
+  background-color: #4caf50;
+  color: #fff;
+  box-shadow: 0 0 12px #4caf50, 0 0 24px #4caf50;
+}
