@@ -73,14 +73,18 @@
   </nav>
   
 <!--=== 🔹Chat 1: Jesus responde ===--->
-  
-  <!-- Overlay escuro -->
-  <div id="overlay"></div>
+<!-- Overlay escuro -->
+<div id="overlay"></div>
 
-  <main class="container">
-    
-    <h2 class="chat-title">🕊️Fale com Jesus</h2>
+<main class="container">
+  
+  <!-- Botão do Chat 1 -->
+  <button class="chat-toggle" id="toggle-jesus">🕊️ Fale com Jesus</button>
+
+  <!-- Conteúdo do Chat 1 -->
+  <div class="chat-container" id="chat-jesus-container">
     <div class="chat-box" id="chat-box" role="log" aria-live="polite" aria-relevant="additions"></div> 
+
     <form id="chat-form">
       <input
         type="text"
@@ -97,42 +101,42 @@
         </button>
       </div>
     </form>
+
     <div class="loading" id="loading" style="display: none;">
       <div class="spinner" aria-hidden="true"></div>
       <span><strong>Jesus</strong> quer falar com você...</span>
+    </div>
   </div>
 
-    <!--== 🔹Chat 2: Palavra de Sabedoria ==-->
-    
-<div id="biblia-chat" class="chat-container">
-  <h2 class="chat-title">📖 Palavra de Sabedoria</h2>
-  <div class="intro-text">
+  <!--== 🔹Chat 2: Palavra de Sabedoria ==-->
+  <button class="chat-toggle" id="toggle-biblia">📖 Palavra de Sabedoria</button>
+
+  <div class="chat-container" id="biblia-chat-container">
+    <div class="intro-text">
       Nos diga qual a sua dificuldade hoje e a palavra através da Bíblia trará uma resposta.
-  </div>
-  <div class="chat-box" id="biblia-chat-box">
-  </div>
-  <div class="bot-message">
-      <!-- Aqui vai o chat -->
-  </div>
-  <form id="biblia-form">
-  <input
-    type="text"
-    id="biblia-input"
-    placeholder="Digite sua dificuldade..."
-    required
-    autocomplete="off"
-    aria-label="Mensagem para Palavra de Sabedoria"
-  />
-  <div class="button-group">
-    <button class="chat-btn" type="submit">Enviar</button>
-    <button class="chat-btn" type="button" id="biblia-voice-btn" aria-label="Falar sua dificuldade">
-      Fale
-    </button>
-  </div>
-      </form>
-</div>
-  </main>
+    </div>
 
+    <div class="chat-box" id="biblia-chat-box"></div>
+
+    <form id="biblia-form">
+      <input
+        type="text"
+        id="biblia-input"
+        placeholder="Digite sua dificuldade..."
+        required
+        autocomplete="off"
+        aria-label="Mensagem para Palavra de Sabedoria"
+      />
+      <div class="button-group">
+        <button class="chat-btn" type="submit">Enviar</button>
+        <button class="chat-btn" type="button" id="biblia-voice-btn" aria-label="Falar sua dificuldade">
+          Fale
+        </button>
+      </div>
+    </form>
+  </div>
+
+  </main>
   <!-- Fundo escurecido instalação -->
   <div id="installOverlay" class="install-overlay" style="display:none;"></div>
 
