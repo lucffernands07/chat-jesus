@@ -225,6 +225,36 @@ voiceBtn.addEventListener('click', () => {
   };
 });
 
+/* ============================================================
+   📌 TOGGLE DOS CHATS
+   ============================================================ */
+
+const toggleJesusBtn = document.getElementById("toggle-jesus");
+const chatJesusContainer = document.getElementById("chat-jesus-container");
+
+const toggleBibliaBtn = document.getElementById("toggle-biblia");
+const bibliaChatContainer = document.getElementById("biblia-chat-container");
+
+// Inicialmente escondidos
+chatJesusContainer.style.display = "none";
+bibliaChatContainer.style.display = "none";
+
+// Função para alternar exibição de um chat
+function toggleChat(container, button) {
+  if (container.style.display === "none") {
+    container.style.display = "block";
+    button.style.backgroundColor = "#add8e6"; // azul claro
+    button.style.color = "#000";             // texto preto
+  } else {
+    container.style.display = "none";
+    button.style.backgroundColor = ""; // cor original
+    button.style.color = "";           // cor original
+  }
+}
+
+// Eventos de clique nos botões
+toggleJesusBtn.addEventListener("click", () => toggleChat(chatJesusContainer, toggleJesusBtn));
+toggleBibliaBtn.addEventListener("click", () => toggleChat(bibliaChatContainer, toggleBibliaBtn));
 
 // Toggle do menu lateral
 function toggleMenu() {
