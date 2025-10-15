@@ -114,12 +114,23 @@
   <div class="bot-message">
       <!-- Aqui vai o chat -->
   </div>
-  <div class="chat-input">
-    <input type="text" id="biblia-input" placeholder="Digite sua dificuldade...">
-    <button id="biblia-send">Enviar</button>
+  <form id="biblia-form">
+  <input
+    type="text"
+    id="biblia-input"
+    placeholder="Digite sua dificuldade..."
+    required
+    autocomplete="off"
+    aria-label="Mensagem para Palavra de Sabedoria"
+  />
+  <div class="button-group">
+    <button class="chat-btn" type="submit">Enviar</button>
+    <button class="chat-btn" type="button" id="biblia-voice-btn" aria-label="Falar sua dificuldade">
+      Fale
+    </button>
   </div>
+      </form>
 </div>
-
   </main>
 
   <!-- Fundo escurecido instalação -->
