@@ -627,11 +627,11 @@ input[type='text'] {
   margin-top: 10px;
 }
 
-#biblia-toggle {
+#toggle-biblia {
   background-color: #add8e6;
 }
 
-#jesus-toggle {
+#toggle-jesus {
   background-color: #9ec9db;
 }
 
