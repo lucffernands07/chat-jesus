@@ -611,3 +611,43 @@ input[type='text'] {
   opacity: 0.9;
   margin-bottom: 10px;
 }
+
+/* === 🔹 Botões de título dos chats === */
+.chat-toggle {
+  width: 100%;
+  background-color: #add8e6; /* azul claro */
+  color: #000;
+  border: none;
+  border-radius: 0;
+  padding: 12px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.chat-toggle:hover {
+  background-color: #9ec9db;
+}
+
+/* === 🔹 Área recolhível dos chats === */
+.chat-container {
+  display: none;
+  border: 1px solid #333;
+  border-top: none;
+  padding: 10px;
+  animation: expand 0.3s ease-out;
+  border-radius: 0 0 6px 6px;
+}
+
+@keyframes expand {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Remove espaçamento entre os dois blocos */
+.chat-container + .chat-toggle {
+  margin-top: 0;
+}
