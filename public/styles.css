@@ -615,7 +615,6 @@ input[type='text'] {
 /* === 🔹 Botões de título dos chats === */
 .chat-toggle {
   width: 100%;
-  background-color: #9ec9db; /* azul claro */
   color: #000;
   border: none;
   border-radius: 0;
@@ -628,8 +627,13 @@ input[type='text'] {
   margin-top: 10px;
 }
 
-.chat2-toggle {
+#biblia-toggle {
   background-color: #add8e6;
+}
+
+#jesus-toggle {
+  background-color: #9ec9db;
+}
 
 /* === 🔹 Área recolhível dos chats === */
 .chat-container {
