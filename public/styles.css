@@ -699,6 +699,11 @@ input[type='text'] {
 }
 
 /* ==== Rodapé do menu lateral (créditos) ==== */
+
+.footer {
+  margin: 0;
+  higth: 80px;
+
 .menu-footer {
   text-align: center;
   font-size: 0.85rem;
