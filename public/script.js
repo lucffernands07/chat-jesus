@@ -161,7 +161,7 @@ if (bibliaForm) {
     bibliaInput.value = "";
     const loading = document.createElement("div");
     loading.className = "bot-message";
-    loading.textContent = "Buscando na Palavra...";
+    loading.textContent = "Buscando a Palavra...";
     bibliaChatBox.appendChild(loading);
     await enviarBibliaMensagem(texto);
     loading.remove();
