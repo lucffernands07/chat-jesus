@@ -701,7 +701,7 @@ input[type='text'] {
 /* ==== Rodapé do menu lateral (créditos) ==== */
 
 .menu-footer {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
