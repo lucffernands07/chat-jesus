@@ -624,7 +624,6 @@ input[type='text'] {
   text-align: left;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-top: 10px;
 }
 
 #toggle-biblia {
