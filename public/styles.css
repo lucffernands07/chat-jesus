@@ -703,6 +703,7 @@ input[type='text'] {
   text-align: center;
   font-size: 0.85rem;
   color: #bbb;
+  background-color: black;
   padding: 15px 10px;
   line-height: 1.4;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
