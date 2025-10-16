@@ -697,3 +697,29 @@ input[type='text'] {
   display: flex;
   flex-direction: column;
 }
+
+/* ==== Rodapé do menu lateral (créditos) ==== */
+.menu-footer {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #bbb;
+  padding: 15px 10px;
+  line-height: 1.4;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 10px;
+}
+
+.menu-footer a {
+  color: #8ecae6;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.menu-footer a:hover {
+  color: #ffffff;
+}
+
+.menu-footer strong {
+  color: #f5f5f5;
+}
