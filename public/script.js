@@ -138,7 +138,7 @@ async function enviarBibliaMensagem(mensagemUsuario) {
     const resposta = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: mensagemFinal }),
+      body: JSON.stringify({ message: mensagemFinal, tipo: "biblia" }),
     });
     const data = await resposta.json();
     if (data.reply) {
