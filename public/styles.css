@@ -701,13 +701,13 @@ input[type='text'] {
 /* ==== Rodapé do menu lateral (créditos) ==== */
 
 .menu-footer {
-  position: absolute;
-  bottom: 10px;
+  position: fixed;
+  bottom: 0;
   left: 0;
   width: 100%;
   text-align: center;
   font-size: 0.85rem;
-  background-color: #212830;
+  background: #212830;
   color: #fff;
   padding: 10px 5px;
   border-top: 1px solid #333;
