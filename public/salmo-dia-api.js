@@ -3,7 +3,7 @@
 // Função para carregar o salmo do dia
 async function carregarSalmoDoDia() {
   try {
-    const response = await fetch("salmos.json"); // arquivo local
+    const response = await fetch("/salmos.json"); // arquivo local
     const salmos = await response.json();
 
     // Calcula o número do salmo com base no dia do ano (1 a 365 → 1 a 150)
