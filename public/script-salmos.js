@@ -1,57 +1,91 @@
 /* ============================
-   script-salmos.js
-   Lógica de busca e exibição de salmos
+   Script Salmos
    ============================ */
 
-let salmos = []; // array que vai receber o conteúdo de salmos.json
+let salmosData = [];
 
-// Carrega todos os salmos do arquivo JSON
+// Carrega o JSON dos salmos
 async function carregarSalmos() {
   try {
     const res = await fetch('salmos.json');
-    salmos = await res.json();
+    if (!res.ok) throw new Error('Não foi possível carregar o arquivo salmos.json');
+    salmosData = await res.json();
   } catch (err) {
     console.error('Erro ao carregar salmos:', err);
   }
 }
 
-// Busca um salmo com base em uma palavra-chave do usuário
-function buscarSalmoPorPalavra(chave) {
-  if (!salmos.length || !chave) return null;
-  const regex = new RegExp(chave, 'i'); // busca case-insensitive
-  const encontrados = salmos.filter(s => s.versiculos.some(v => regex.test(v)));
-  if (!encontrados.length) return null;
-  // Escolhe aleatório entre os encontrados
-  return encontrados[Math.floor(Math.random() * encontrados.length)];
+// Retorna um salmo aleatório baseado em palavra-chave
+function buscarSalmoPorPalavra(palavra) {
+  if (!salmosData.length) return null;
+  const encontrados = salmosData.filter(salmo =>
+    salmo.versiculos.some(v => v.toLowerCase().includes(palavra.toLowerCase()))
+  );
+  if (encontrados.length === 0) return null;
+  const aleatorio = encontrados[Math.floor(Math.random() * encontrados.length)];
+  return aleatorio;
 }
 
-// Pega o Salmo do dia (baseado na data)
-function pegarSalmoDoDia() {
-  if (!salmos.length) return null;
-  const hoje = new Date();
-  const diaDoAno = Math.floor((hoje - new Date(hoje.getFullYear(),0,0)) / 1000 / 60 / 60 / 24);
-  const index = diaDoAno % salmos.length;
-  return salmos[index];
+// Retorna o salmo do dia baseado na data
+function salmoDoDia() {
+  if (!salmosData.length) return null;
+  const dia = new Date().getDate(); // 1-31
+  // pega salmo baseado no dia (circular)
+  const index = (dia - 1) % salmosData.length;
+  return salmosData[index];
 }
 
-// Função principal para retornar salmo baseado na entrada do usuário
-function getSalmoParaUsuario(textoUsuario) {
-  let salmo = buscarSalmoPorPalavra(textoUsuario);
-  if (!salmo) {
-    salmo = pegarSalmoDoDia();
-  }
-  return salmo;
-}
-
-// Atualiza o container do Salmo na UI
-function mostrarSalmoNoContainer(salmo) {
+// Mostra o salmo no container
+function mostrarSalmo(salmo) {
   const container = document.getElementById('salmo-container');
-  const textoEl = document.getElementById('salmo-texto');
-  if (!container || !textoEl || !salmo) return;
+  const texto = document.getElementById('salmo-texto');
+  if (!container || !texto) return;
 
-  textoEl.innerHTML = `<strong>Salmo ${salmo.numero} ${salmo.titulo}</strong><br>${salmo.versiculos.join('<br>')}`;
+  if (!salmo) {
+    texto.textContent = 'Não foi possível carregar o Salmo de hoje 🙏';
+  } else {
+    texto.innerHTML = `<strong>Salmo ${salmo.numero}</strong><br>${salmo.versiculos.join('<br>')}`;
+  }
+
   container.style.display = 'block';
+  container.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Inicializa
-carregarSalmos();
+// ============================
+// Event listener do botão Salmo
+// ============================
+
+const salmoToggleBtn = document.getElementById('salmo-toggle');
+if (salmoToggleBtn) {
+  salmoToggleBtn.addEventListener('click', async () => {
+    if (!salmosData.length) await carregarSalmos();
+    const salmo = salmoDoDia();
+    mostrarSalmo(salmo);
+  });
+}
+
+// ============================
+// Função para integrar ao chat 1 ou 2
+// ============================
+
+// busca salmo aleatório por palavra-chave do usuário ou fallback para salmo do dia
+function getSalmoParaUsuario(mensagemUsuario) {
+  if (!salmosData.length) return null;
+  const palavras = mensagemUsuario
+    .toLowerCase()
+    .match(/\b\w+\b/g) || [];
+  for (let palavra of palavras) {
+    const salmo = buscarSalmoPorPalavra(palavra);
+    if (salmo) return salmo;
+  }
+  return salmoDoDia(); // fallback
+}
+
+// Exemplo de uso com chat:
+// const salmoUsuario = getSalmoParaUsuario("Senhor estou aflito");
+// mostrarSalmo(salmoUsuario);
+
+// ============================
+// Inicialização
+// ============================
+window.addEventListener('DOMContentLoaded', carregarSalmos);
