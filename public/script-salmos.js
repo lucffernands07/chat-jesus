@@ -1,5 +1,5 @@
 /* ============================
-   script-salmo.js
+   script-salmos.js
    Lógica de busca e exibição de salmos
    ============================ */
 
