@@ -8,19 +8,22 @@ module.exports = async (req, res) => {
     );
     const numeroSalmo = (diaDoAno % 150) + 1;
 
-    const url = `https://www.abibliadigital.com.br/api/verses/acf/sl/${numeroSalmo}`;
+    const url = `https://www.abibliadigital.com.br/api/verses/acf/sl/${numeroSalmo}/1`;
     const response = await fetch(url);
     const data = await response.json();
 
-    if (!response.ok || !data.verses) {
+    // Verifica se o texto existe
+    if (!response.ok || !data?.text) {
+      console.log("API sem texto válido:", data);
       return res.status(500).json({ error: "Falha ao obter salmo" });
     }
 
     res.status(200).json({
       numero: numeroSalmo,
-      texto: data.verses.map(v => v.text).join(" "),
+      texto: data.text,
     });
   } catch (err) {
+    console.error("Erro ao buscar salmo:", err);
     res.status(500).json({ error: "Erro ao buscar salmo" });
   }
 };
