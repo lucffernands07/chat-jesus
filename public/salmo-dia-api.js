@@ -1,39 +1,38 @@
-document.addEventListener("DOMContentLoaded", async () => {
-  const salmoToggle = document.getElementById("salmo-toggle");
-  const salmoContainer = document.getElementById("salmo-container");
-  const salmoTexto = document.getElementById("salmo-texto");
+const fetch = require("node-fetch");
 
-  salmoToggle.addEventListener("click", () => {
-    salmoContainer.style.display =
-      salmoContainer.style.display === "block" ? "none" : "block";
-  });
+module.exports = async (req, res) => {
+  try {
+    const hoje = new Date();
+    const diaDoAno = Math.floor(
+      (hoje - new Date(hoje.getFullYear(), 0, 0)) / 86400000
+    );
 
-  async function carregarSalmoDoDia() {
-    try {
-      const hoje = new Date();
-      const diaDoAno = Math.floor(
-        (hoje - new Date(hoje.getFullYear(), 0, 0)) / 86400000
-      );
-      const numeroSalmo = (diaDoAno % 150) + 1;
+    // 150 salmos — ciclo diário
+    const numeroSalmo = (diaDoAno % 150) + 1;
 
-      const url = `/api/salmo`;
-      console.log("📖 Buscando Salmo", numeroSalmo, "URL:", url);
+    const url = `https://bible-api.com/psalms%20${numeroSalmo}?translation=almeida`;
+    console.log("📖 Buscando Salmo", numeroSalmo, "URL:", url);
 
-      const resp = await fetch(url);
-      const data = await resp.json();
+    const response = await fetch(url);
+    const data = await response.json();
 
-      if (resp.ok && data.verses) {
-        const texto = data.verses.map(v => v.text).join(" ");
-        salmoTexto.textContent = texto.trim();
-      } else {
-        salmoTexto.textContent = "Não foi possível carregar o salmo de hoje 🙏";
-        console.warn("API sem texto válido:", data);
-      }
-    } catch (err) {
-      console.error("Erro ao carregar salmo:", err);
-      salmoTexto.textContent = "Erro ao carregar o salmo de hoje 🙏";
+    if (!data.text) {
+      console.log("⚠️ API sem texto válido:", data);
+      return res.status(500).json({ error: "Falha ao obter salmo" });
     }
-  }
 
-  carregarSalmoDoDia();
-});
+    // Formata o texto — quebra linhas e título
+    const textoFormatado = data.text
+      .replace(/\s{2,}/g, " ")
+      .replace(/\n/g, "\n")
+      .trim();
+
+    res.status(200).json({
+      numero: numeroSalmo,
+      texto: textoFormatado,
+    });
+  } catch (err) {
+    console.error("❌ Erro ao buscar salmo:", err);
+    res.status(500).json({ error: "Erro ao buscar salmo" });
+  }
+};
