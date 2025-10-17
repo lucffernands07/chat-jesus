@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
       const numeroSalmo = (diaDoAno % 150) + 1;
 
-      const url = `https://www.abibliadigital.com.br/api/verses/acf/sl/${numeroSalmo}`;
+      const url = `/api/salmo`;
       console.log("📖 Buscando Salmo", numeroSalmo, "URL:", url);
 
       const resp = await fetch(url);
