@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const salmoContainer = document.getElementById("salmo-container");
   const salmoTexto = document.getElementById("salmo-texto");
 
-  // Função para alternar visibilidade da caixa
   salmoToggle.addEventListener("click", () => {
     salmoContainer.style.display =
       salmoContainer.style.display === "block" ? "none" : "block";
@@ -17,16 +16,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
       const numeroSalmo = (diaDoAno % 150) + 1;
 
-      // ✅ Corrigido: espaço deve ser codificado como %20
-      const url = `https://bible-api.com/psalm%20${numeroSalmo}?translation=almeida`;
-
+      const url = `https://www.abibliadigital.com.br/api/verses/acf/sl/${numeroSalmo}`;
       console.log("📖 Buscando Salmo", numeroSalmo, "URL:", url);
 
       const resp = await fetch(url);
       const data = await resp.json();
 
-      if (resp.ok && data.text) {
-        salmoTexto.textContent = data.text.trim();
+      if (resp.ok && data.verses) {
+        const texto = data.verses.map(v => v.text).join(" ");
+        salmoTexto.textContent = texto.trim();
       } else {
         salmoTexto.textContent = "Não foi possível carregar o salmo de hoje 🙏";
         console.warn("API sem texto válido:", data);
