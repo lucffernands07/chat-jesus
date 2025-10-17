@@ -722,7 +722,7 @@ input[type='text'] {
   text-decoration: underline;
 }
 
-.salmo-toggle {
+#salmo-toggle {
   background-color: #DDE6EC; /* Fundo da caixa*/
   padding: 15px;
   border-radius: 0 0 8px 8px;
