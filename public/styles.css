@@ -729,3 +729,6 @@ input[type='text'] {
   border: 1px solid #ccc;
   margin-bottom: 15px;
 }
+
+#salmo-toggler {
+  background-color: #D6EFFF;
