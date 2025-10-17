@@ -10,6 +10,9 @@ const voiceRadios = document.querySelectorAll('input[name="voiceType"]');
 const closeMenuBtn = document.getElementById('closeMenuBtn');
 const shareBtn = document.getElementById('shareBtn');
 
+const salmo = getSalmoParaUsuario(userMessage);
+mostrarSalmoNoContainer(salmo);
+
 // Chat 2 elementos
 const bibliaInput = document.getElementById("biblia-input");
 const bibliaForm = document.getElementById("biblia-form");
