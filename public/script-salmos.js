@@ -6,8 +6,9 @@ const salmoToggle = document.getElementById('salmo-toggle');
 const salmoContainer = document.getElementById('salmo-container');
 const salmoTexto = document.getElementById('salmo-texto');
 
+// Caixa Salmo inicia fechado
 if (salmoContainer) {
-  salmoContainer.style.display = 'none'; // inicia fechado
+  salmoContainer.style.display = 'none'; 
 }
 
 let salmos = []; // será preenchido via fetch
