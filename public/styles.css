@@ -733,4 +733,10 @@ input[type='text'] {
 #salmo-conteudo {
   background-color: #f3f3f3; /* Fundo do texto*/
 }
+#salmo-container {
+  display: none; /* inicia fechado */
+}
 
+#salmo-container.expanded {
+  display: block; /* abre quando a classe é adicionada */
+}
