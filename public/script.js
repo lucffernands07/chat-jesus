@@ -92,36 +92,42 @@ function loadSettings() {
    ============================ */
 if (chatForm) {
   chatForm.addEventListener('submit', async e => {
-    e.preventDefault();
-    const userMessage = messageInput.value.trim();
-    if (!userMessage) {
-      appendMessage('jesus', '⚠️ Por favor, digite uma mensagem primeiro.');
-      return;
+  e.preventDefault();
+  const userMessage = messageInput.value.trim();
+  if (!userMessage) {
+    appendMessage('jesus', '⚠️ Por favor, digite uma mensagem primeiro.');
+    return;
+  }
+
+  appendMessage('user', userMessage);
+  messageInput.value = '';
+  loadingIndicator.style.display = 'flex';
+
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: userMessage }),
+    });
+    const data = await response.json();
+    loadingIndicator.style.display = 'none';
+    if (data && data.reply) {
+      appendMessage('jesus', data.reply);
+      speakJesus(data.reply);
+
+      // ✅ Aqui atualizamos o salmo com base na mensagem do chat 1
+      const salmo = getSalmoParaUsuario(userMessage);
+      mostrarSalmoNoContainer(salmo);
+
+    } else {
+      appendMessage('jesus', 'Desculpe, não recebi uma resposta.');
     }
-    appendMessage('user', userMessage);
-    messageInput.value = '';
-    loadingIndicator.style.display = 'flex';
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMessage }),
-      });
-      const data = await response.json();
-      loadingIndicator.style.display = 'none';
-      if (data && data.reply) {
-        appendMessage('jesus', data.reply);
-        speakJesus(data.reply);
-      } else {
-        appendMessage('jesus', 'Desculpe, não recebi uma resposta.');
-      }
-    } catch (err) {
-      loadingIndicator.style.display = 'none';
-      console.error('Erro:', err);
-      appendMessage('jesus', 'Erro ao se conectar com Jesus.');
-    }
-  });
-}
+  } catch (err) {
+    loadingIndicator.style.display = 'none';
+    console.error('Erro:', err);
+    appendMessage('jesus', 'Erro ao se conectar com Jesus.');
+  }
+});
 
 /* ============================
    Chat 2 — Palavra de Sabedoria (usa a mesma API)
@@ -156,19 +162,26 @@ async function enviarBibliaMensagem(mensagemUsuario) {
 
 // trata submit do formulário do chat bíblia (preserva acessibilidade teclado)
 if (bibliaForm) {
-  bibliaForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const texto = bibliaInput.value.trim();
-    if (!texto) return;
-    addBibliaMessage(texto, true);
-    bibliaInput.value = "";
-    const loading = document.createElement("div");
-    loading.className = "bot-message";
-    loading.textContent = "Buscando a Palavra...";
-    bibliaChatBox.appendChild(loading);
-    await enviarBibliaMensagem(texto);
-    loading.remove();
-  });
+   bibliaForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const texto = bibliaInput.value.trim();
+  if (!texto) return;
+
+  addBibliaMessage(texto, true);
+  bibliaInput.value = "";
+
+  const loading = document.createElement("div");
+  loading.className = "bot-message";
+  loading.textContent = "Buscando a Palavra...";
+  bibliaChatBox.appendChild(loading);
+
+  await enviarBibliaMensagem(texto);
+  loading.remove();
+
+  // ✅ Atualiza o salmo com base na mensagem do chat 2
+  const salmo = getSalmoParaUsuario(texto);
+  mostrarSalmoNoContainer(salmo);
+   });
 }
 
 /* ============================
