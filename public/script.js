@@ -149,7 +149,15 @@ if (chatForm) {
 function addBibliaMessage(text, isUser = false) {
   const msg = document.createElement("div");
   msg.className = isUser ? "user-message" : "bot-message";
-  msg.textContent = text;
+
+  // converte quebras de linha em <br> e aplica formatação Markdown simples
+  const html = text
+    .replace(/\n/g, '<br>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // **negrito**
+    .replace(/\*(.*?)\*/g, '<em>$1</em>') // *itálico*
+    .replace(/### (.*?)(<br>|$)/g, '<h4>$1</h4>'); // títulos estilo ###
+
+  msg.innerHTML = html;
   bibliaChatBox.appendChild(msg);
   bibliaChatBox.scrollTop = bibliaChatBox.scrollHeight;
 }
