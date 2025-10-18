@@ -89,3 +89,19 @@ if (salmoToggle && salmoContainer) {
    Inicialização
    ============================ */
 document.addEventListener('DOMContentLoaded', carregarSalmos);
+
+/* ============================
+   Exibir salmo no container
+   ============================ */
+function mostrarSalmoNoContainer(salmo) {
+  if (!salmo || !salmoTexto) return;
+
+  salmoContainer.classList.add('expanded'); // abre a caixa se estiver fechada
+
+  let html = `<strong>Salmo ${salmo.numero}</strong><br><br>`;
+  html += salmo.versiculos.join('<br><br>');
+  salmoTexto.innerHTML = html;
+
+  console.log(`📖 Salmo ${salmo.numero} exibido no container`);
+}
+
