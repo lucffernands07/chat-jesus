@@ -359,8 +359,6 @@ if (shareBtn) {
   });
 }
 
-let voicesList = [];
-
 // Função para carregar vozes disponíveis
 function loadVoices() {
   voicesList = speechSynthesis.getVoices();
