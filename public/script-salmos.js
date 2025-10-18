@@ -1,12 +1,12 @@
 /* ============================
-   Script Salmos — versão final (igual aos chats)
+   Script Salmos — versão final
    ============================ */
 
 const salmoToggle = document.getElementById('salmo-toggle');
 const salmoContainer = document.getElementById('salmo-container');
 const salmoTexto = document.getElementById('salmo-texto');
 
-let salmos = [];      // será preenchido via fetch
+let salmos = [];       // será preenchido via fetch
 let salmoAtual = null; // mantém o salmo fixo do dia
 
 /* ============================
@@ -17,12 +17,13 @@ async function carregarSalmos() {
     const response = await fetch('salmos.json');
     if (!response.ok) throw new Error('Falha ao carregar salmos.json');
     salmos = await response.json();
-    // Define o salmo do dia
+
+    // Define o salmo do dia assim que carregar
     salmoAtual = getSalmoDoDia();
-    mostrarSalmoNoContainer(salmoAtual);
+    // Não mostramos automaticamente aqui, só quando o usuário abrir
   } catch (error) {
     console.error('Erro ao carregar salmos:', error);
-    salmoTexto.textContent = 'Não foi possível carregar os salmos.';
+    if (salmoTexto) salmoTexto.textContent = 'Não foi possível carregar os salmos.';
   }
 }
 
@@ -49,7 +50,7 @@ function buscarSalmoPorPalavra(texto) {
 }
 
 /* ============================
-   Salmo do dia (fixo)
+   Salmo do dia (fixo, baseado na data)
    ============================ */
 function getSalmoDoDia() {
   if (!salmos || salmos.length === 0) return null;
@@ -72,21 +73,30 @@ function getSalmoParaUsuario(mensagemUsuario) {
    Exibir salmo formatado
    ============================ */
 function mostrarSalmoNoContainer(salmo) {
-  if (!salmo) return;
+  if (!salmo || !salmoTexto) return;
   let html = `<strong>Salmo ${salmo.numero}</strong><br><br>`;
   html += salmo.versiculos.join('<br><br>');
   salmoTexto.innerHTML = html;
-  // ❌ Não toca no style.display, só atualiza conteúdo
 }
 
 /* ============================
-   Toggle da caixa de salmo
+   Toggle visibilidade da caixa de salmo
    ============================ */
-if (salmoToggle) {
+if (salmoToggle && salmoContainer) {
+  // inicia fechado
+  salmoContainer.classList.remove('expanded');
+
   salmoToggle.addEventListener('click', () => {
-    salmoContainer.classList.toggle('expanded');
-    if (!salmoTexto.innerHTML.trim() && salmoAtual) {
-      mostrarSalmoNoContainer(salmoAtual);
+    const willOpen = !salmoContainer.classList.contains('expanded');
+
+    if (willOpen) {
+      salmoContainer.classList.add('expanded');
+      // Carrega salmo do dia se ainda não estiver preenchido
+      if (!salmoTexto.innerHTML.trim() && salmoAtual) {
+        mostrarSalmoNoContainer(salmoAtual);
+      }
+    } else {
+      salmoContainer.classList.remove('expanded');
     }
   });
 }
