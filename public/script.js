@@ -40,25 +40,28 @@ function appendMessage(sender, text) {
 }
 
 function speakJesus(text) {
-  if ('speechSynthesis' in window && isVoiceEnabled()) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'pt-BR';
-    utterance.pitch = 1;
-    utterance.rate = 1;
+  if (!('speechSynthesis' in window) || !isVoiceEnabled()) return;
 
-    const selected = [...voiceRadios].find(r => r.checked)?.value;
-    const voices = speechSynthesis.getVoices();
-    let found = null;
-    if (selected === 'male') {
-      found = voices.find(v => v.lang.startsWith('pt') && /ricardo|male/i.test(v.name)) || voices.find(v => v.lang.startsWith('pt'));
-    } else {
-      found = voices.find(v => v.lang.startsWith('pt') && /ana|female|google/i.test(v.name)) || voices.find(v => v.lang.startsWith('pt'));
-    }
-    if (found) utterance.voice = found;
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'pt-BR';
+  utterance.pitch = 1;
+  utterance.rate = 1;
 
-    speechSynthesis.cancel();
-    speechSynthesis.speak(utterance);
+  const selected = [...voiceRadios].find(r => r.checked)?.value;
+  let foundVoice = null;
+
+  if (selected === 'male') {
+    foundVoice = voicesList.find(v => v.lang.startsWith('pt') && /ricardo|male/i.test(v.name))
+                || voicesList.find(v => v.lang.startsWith('pt'));
+  } else {
+    foundVoice = voicesList.find(v => v.lang.startsWith('pt') && /ana|female|google/i.test(v.name))
+                || voicesList.find(v => v.lang.startsWith('pt'));
   }
+
+  if (foundVoice) utterance.voice = foundVoice;
+
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utterance);
 }
 
 function isVoiceEnabled() {
@@ -356,26 +359,38 @@ if (shareBtn) {
   });
 }
 
+let voicesList = [];
+
+// Função para carregar vozes disponíveis
+function loadVoices() {
+  voicesList = speechSynthesis.getVoices();
+  if (voicesList.length === 0) {
+    // Se ainda estiver vazia, tenta novamente após 100ms
+    setTimeout(loadVoices, 100);
+  }
+}
+
 window.onload = () => {
   loadSettings();
+
   if ('speechSynthesis' in window) {
-    speechSynthesis.onvoiceschanged = () => { voicesList = speechSynthesis.getVoices(); };
-    voicesList = speechSynthesis.getVoices();
+    speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices(); // primeira tentativa imediata
   }
 
   // ✅ Garante que os salmos sejam carregados antes de usar
   if (typeof carregarSalmos === 'function') {
     carregarSalmos();
   }
-   
-   // Registro do Service Worker
-   if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-         navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('✅ Service Worker registrado:', reg))
-            .catch(err => console.error('❌ Erro ao registrar SW:', err));
-      });
-   }
+
+  // Registro do Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('✅ Service Worker registrado:', reg))
+        .catch(err => console.error('❌ Erro ao registrar SW:', err));
+    });
+  }
 };
 
 // beforeinstallprompt (popup)
