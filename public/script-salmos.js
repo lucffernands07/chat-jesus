@@ -6,7 +6,7 @@ const salmoToggle = document.getElementById('salmo-toggle');
 const salmoContainer = document.getElementById('salmo-container');
 const salmoTexto = document.getElementById('salmo-texto');
 
-let salmos = [];       // será preenchido via fetch
+let salmos = [];      // será preenchido via fetch
 let salmoAtual = null; // mantém o salmo fixo do dia
 
 /* ============================
@@ -17,10 +17,14 @@ async function carregarSalmos() {
     const response = await fetch('salmos.json');
     if (!response.ok) throw new Error('Falha ao carregar salmos.json');
     salmos = await response.json();
-
     // Define o salmo do dia assim que carregar
     salmoAtual = getSalmoDoDia();
-    // Não mostramos automaticamente aqui, só quando o usuário abrir
+    // Não abre automaticamente; só preenche o container
+    if (salmoTexto) {
+      let html = `<strong>Salmo ${salmoAtual.numero}</strong><br><br>`;
+      html += salmoAtual.versiculos.join('<br><br>');
+      salmoTexto.innerHTML = html;
+    }
   } catch (error) {
     console.error('Erro ao carregar salmos:', error);
     if (salmoTexto) salmoTexto.textContent = 'Não foi possível carregar os salmos.';
@@ -70,34 +74,14 @@ function getSalmoParaUsuario(mensagemUsuario) {
 }
 
 /* ============================
-   Exibir salmo formatado
-   ============================ */
-function mostrarSalmoNoContainer(salmo) {
-  if (!salmo || !salmoTexto) return;
-  let html = `<strong>Salmo ${salmo.numero}</strong><br><br>`;
-  html += salmo.versiculos.join('<br><br>');
-  salmoTexto.innerHTML = html;
-}
-
-/* ============================
-   Toggle visibilidade da caixa de salmo
+   Alternar visibilidade da caixa de salmo
    ============================ */
 if (salmoToggle && salmoContainer) {
-  // inicia fechado
+  // Inicia fechado
   salmoContainer.classList.remove('expanded');
 
   salmoToggle.addEventListener('click', () => {
-    const willOpen = !salmoContainer.classList.contains('expanded');
-
-    if (willOpen) {
-      salmoContainer.classList.add('expanded');
-      // Carrega salmo do dia se ainda não estiver preenchido
-      if (!salmoTexto.innerHTML.trim() && salmoAtual) {
-        mostrarSalmoNoContainer(salmoAtual);
-      }
-    } else {
-      salmoContainer.classList.remove('expanded');
-    }
+    salmoContainer.classList.toggle('expanded');
   });
 }
 
