@@ -101,45 +101,46 @@ if (chatForm) {
     loadingIndicator.style.display = 'flex';
 
     try {
-  const response = await fetch('/api/chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: userMessage }),
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userMessage }),
+      });
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        console.warn('⚠️ Erro ao interpretar resposta do servidor:', parseError);
+        appendMessage('jesus', 'Desculpe, não entendi a resposta.');
+        loadingIndicator.style.display = 'none';
+        return;
+      }
+
+      loadingIndicator.style.display = 'none';
+
+      if (data && data.reply) {
+        appendMessage('jesus', data.reply);
+        speakJesus(data.reply);
+
+        // ✅ Atualiza o salmo com base na mensagem do chat 1
+        const salmo = getSalmoParaUsuario(userMessage);
+        mostrarSalmoNoContainer(salmo);
+      } else {
+        appendMessage('jesus', 'Desculpe, não recebi uma resposta.');
+      }
+
+    } catch (err) {
+      console.error('❌ Erro na conexão com /api/chat:', err);
+      loadingIndicator.style.display = 'none';
+      // só mostra mensagem se ainda não houve resposta
+      const lastMessage = chatBox.lastElementChild?.textContent || '';
+      if (!lastMessage.includes('Jesus:')) {
+        appendMessage('jesus', 'Erro ao se conectar com Jesus.');
+      }
+    }
   });
-
-  let data;
-  try {
-    data = await response.json();
-  } catch (parseError) {
-    console.warn('⚠️ Erro ao interpretar resposta do servidor:', parseError);
-    appendMessage('jesus', 'Desculpe, não entendi a resposta.');
-    loadingIndicator.style.display = 'none';
-    return;
-  }
-
-  loadingIndicator.style.display = 'none';
-
-  if (data && data.reply) {
-    appendMessage('jesus', data.reply);
-    speakJesus(data.reply);
-
-    // ✅ Atualiza o salmo com base na mensagem do chat 1
-    const salmo = getSalmoParaUsuario(userMessage);
-    mostrarSalmoNoContainer(salmo);
-  } else {
-    appendMessage('jesus', 'Desculpe, não recebi uma resposta.');
-  }
-
-} catch (err) {
-  console.error('❌ Erro na conexão com /api/chat:', err);
-  loadingIndicator.style.display = 'none';
-  // só mostra mensagem se ainda não houve resposta
-  const lastMessage = chatBox.lastElementChild?.textContent || '';
-  if (!lastMessage.includes('Jesus:')) {
-    appendMessage('jesus', 'Erro ao se conectar com Jesus.');
-  }
-});
-} 
+}
 
 /* ============================
    Chat 2 — Palavra de Sabedoria
