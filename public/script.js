@@ -367,6 +367,15 @@ window.onload = () => {
   if (typeof carregarSalmos === 'function') {
     carregarSalmos();
   }
+   
+   // Registro do Service Worker
+   if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+         navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('✅ Service Worker registrado:', reg))
+            .catch(err => console.error('❌ Erro ao registrar SW:', err));
+      });
+   }
 };
 
 // beforeinstallprompt (popup)
