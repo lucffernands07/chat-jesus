@@ -39,7 +39,18 @@ function appendMessage(sender, text) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-function speakJesus(text) {
+// ✅ Função para carregar vozes de forma confiável
+function getVoices() {
+  return new Promise(resolve => {
+    let voices = speechSynthesis.getVoices();
+    if (voices.length) resolve(voices);
+    else {
+      speechSynthesis.onvoiceschanged = () => resolve(speechSynthesis.getVoices());
+    }
+  });
+}
+
+async function speakJesus(text) {
   if (!('speechSynthesis' in window) || !isVoiceEnabled()) return;
 
   const utterance = new SpeechSynthesisUtterance(text);
@@ -47,18 +58,20 @@ function speakJesus(text) {
   utterance.pitch = 1;
   utterance.rate = 1;
 
-  const selected = [...voiceRadios].find(r => r.checked)?.value;
-  let foundVoice = null;
+  const selected = [...voiceRadios].find(r => r.checked)?.value || 'female';
+  const voices = await getVoices();
+
+  let voice;
 
   if (selected === 'male') {
-    foundVoice = voicesList.find(v => v.lang.startsWith('pt') && /ricardo|male/i.test(v.name))
-                || voicesList.find(v => v.lang.startsWith('pt'));
+    // voz masculina pt-BR mais próxima
+    voice = voices.find(v => v.lang.startsWith('pt') && /male|homem/i.test(v.name)) || voices.find(v => v.lang.startsWith('pt'));
   } else {
-    foundVoice = voicesList.find(v => v.lang.startsWith('pt') && /ana|female|google/i.test(v.name))
-                || voicesList.find(v => v.lang.startsWith('pt'));
+    // voz feminina pt-BR mais próxima
+    voice = voices.find(v => v.lang.startsWith('pt') && /female|mulher/i.test(v.name)) || voices.find(v => v.lang.startsWith('pt'));
   }
 
-  if (foundVoice) utterance.voice = foundVoice;
+  if (voice) utterance.voice = voice;
 
   speechSynthesis.cancel();
   speechSynthesis.speak(utterance);
@@ -136,7 +149,6 @@ if (chatForm) {
     } catch (err) {
       console.error('❌ Erro na conexão com /api/chat:', err);
       loadingIndicator.style.display = 'none';
-      // só mostra mensagem se ainda não houve resposta
       const lastMessage = chatBox.lastElementChild?.textContent || '';
       if (!lastMessage.includes('Jesus:')) {
         appendMessage('jesus', 'Erro ao se conectar com Jesus.');
@@ -153,12 +165,11 @@ function addBibliaMessage(text, isUser = false) {
   const msg = document.createElement("div");
   msg.className = isUser ? "user-message" : "bot-message";
 
-  // converte quebras de linha em <br> e aplica formatação Markdown simples
   const html = text
     .replace(/\n/g, '<br>')
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // **negrito**
-    .replace(/\*(.*?)\*/g, '<em>$1</em>') // *itálico*
-    .replace(/### (.*?)(<br>|$)/g, '<h4>$1</h4>'); // títulos estilo ###
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/### (.*?)(<br>|$)/g, '<h4>$1</h4>');
 
   msg.innerHTML = html;
   bibliaChatBox.appendChild(msg);
@@ -184,7 +195,6 @@ async function enviarBibliaMensagem(mensagemUsuario) {
   }
 }
 
-// trata submit do formulário do chat bíblia
 if (bibliaForm) {
   bibliaForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -202,7 +212,6 @@ if (bibliaForm) {
     await enviarBibliaMensagem(texto);
     loading.remove();
 
-    // ✅ Atualiza o salmo com base na mensagem do chat 2
     const salmo = getSalmoParaUsuario(texto);
     mostrarSalmoNoContainer(salmo);
   });
@@ -244,6 +253,12 @@ if (voiceBtn) {
     };
   });
 }
+
+// 🔊 Botão de falar a última mensagem de Jesus
+voiceBtn.addEventListener('dblclick', () => {
+  const lastMessage = Array.from(chatBox.querySelectorAll('.jesus')).pop();
+  if (lastMessage) speakJesus(lastMessage.textContent);
+});
 
 /* ============================
    Toggle dos chats (expansão)
@@ -359,15 +374,6 @@ if (shareBtn) {
   });
 }
 
-// Função para carregar vozes disponíveis
-function loadVoices() {
-  voicesList = speechSynthesis.getVoices();
-  if (voicesList.length === 0) {
-    // Se ainda estiver vazia, tenta novamente após 100ms
-    setTimeout(loadVoices, 100);
-  }
-}
-
 window.onload = () => {
   loadSettings();
 
@@ -376,7 +382,6 @@ window.onload = () => {
     loadVoices(); // primeira tentativa imediata
   }
 
-  // ✅ Garante que os salmos sejam carregados antes de usar
   if (typeof carregarSalmos === 'function') {
     carregarSalmos();
   }
@@ -421,7 +426,7 @@ if (btnDismiss) btnDismiss.addEventListener('click', () => {
 window.addEventListener('load', () => {
   if ('speechSynthesis' in window) {
     console.log('✅ speechSynthesis disponível');
-    loadVoices(); // tenta carregar as vozes
+    loadVoices();
   } else {
     console.error('❌ speechSynthesis NÃO disponível');
   }
