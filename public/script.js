@@ -305,9 +305,38 @@ function toggleChat(container, button) {
 document.addEventListener('DOMContentLoaded', () => {
   loadSettings();
 
-  // Inicializa toggles
-  if (toggleJesusBtn) toggleJesusBtn.addEventListener('click', e => { e.stopPropagation(); toggleChat(chatJesusContainer, toggleJesusBtn); });
-  if (toggleBibliaBtn) toggleBibliaBtn.addEventListener('click', e => { e.stopPropagation(); toggleChat(bibliaChatContainer, toggleBibliaBtn); });
+  // Inicializa toggles dos chats
+  if (toggleJesusBtn) toggleJesusBtn.addEventListener('click', e => { 
+    e.stopPropagation(); 
+    toggleChat(chatJesusContainer, toggleJesusBtn); 
+  });
+  if (toggleBibliaBtn) toggleBibliaBtn.addEventListener('click', e => { 
+    e.stopPropagation(); 
+    toggleChat(bibliaChatContainer, toggleBibliaBtn); 
+  });
+
+  // Inicializa menu lateral
+  if (shareBtn && sideMenu) {
+    shareBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      sideMenu.classList.toggle('open');
+    });
+  }
+  if (closeMenuBtn && sideMenu) {
+    closeMenuBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      sideMenu.classList.remove('open');
+    });
+  }
+  // Fechar menu ao clicar fora
+  document.addEventListener('click', e => {
+    if (sideMenu && sideMenu.classList.contains('open') &&
+        !sideMenu.contains(e.target) &&
+        !e.target.closest('.menu-btn')) {
+      sideMenu.classList.remove('open');
+    }
+  });
+  if (sideMenu) sideMenu.addEventListener('click', e => e.stopPropagation());
 
   // Inicializa speechSynthesis
   if ('speechSynthesis' in window) {
