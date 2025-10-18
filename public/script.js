@@ -113,8 +113,10 @@ if (chatForm) {
         speakJesus(data.reply);
 
         // ✅ Atualiza o salmo com base na mensagem do chat 1
-        const salmo = getSalmoParaUsuario(userMessage);
-        mostrarSalmoNoContainer(salmo);
+        if (typeof getSalmoParaUsuario === 'function' && salmos?.length > 0) {
+           const salmo = getSalmoParaUsuario(userMessage);
+           mostrarSalmoNoContainer(salmo);
+        }
 
       } else {
         appendMessage('jesus', 'Desculpe, não recebi uma resposta.');
