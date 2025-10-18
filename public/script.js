@@ -88,6 +88,7 @@ function loadSettings() {
    Chat 1 (Jesus) envio
    ============================ */
 if (chatForm) {
+if (chatForm) {
   chatForm.addEventListener('submit', async e => {
     e.preventDefault();
     const userMessage = messageInput.value.trim();
@@ -106,28 +107,47 @@ if (chatForm) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userMessage }),
       });
-      const data = await response.json();
+
+      // 🛡️ Proteção extra — garante JSON válido
+      if (!response.ok) {
+        throw new Error(`Erro HTTP: ${response.status}`);
+      }
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonErr) {
+        console.error('Erro ao processar JSON:', jsonErr);
+        appendMessage('jesus', '⚠️ Resposta inválida recebida do servidor.');
+        loadingIndicator.style.display = 'none';
+        return;
+      }
+
       loadingIndicator.style.display = 'none';
+
       if (data && data.reply) {
         appendMessage('jesus', data.reply);
         speakJesus(data.reply);
 
         // ✅ Atualiza o salmo com base na mensagem do chat 1
-        if (typeof getSalmoParaUsuario === 'function' && salmos?.length > 0) {
-           const salmo = getSalmoParaUsuario(userMessage);
-           mostrarSalmoNoContainer(salmo);
+        if (typeof getSalmoParaUsuario === 'function' && Array.isArray(salmos) && salmos.length > 0) {
+          try {
+            const salmo = getSalmoParaUsuario(userMessage);
+            mostrarSalmoNoContainer(salmo);
+          } catch (e) {
+            console.warn('Erro ao mostrar salmo:', e);
+          }
         }
-
       } else {
         appendMessage('jesus', 'Desculpe, não recebi uma resposta.');
       }
     } catch (err) {
       loadingIndicator.style.display = 'none';
-      console.error('Erro:', err);
+      console.error('Erro na comunicação:', err);
       appendMessage('jesus', 'Erro ao se conectar com Jesus.');
     }
   });
-} // <-- FECHAMENTO adicionado aqui
+}
 
 /* ============================
    Chat 2 — Palavra de Sabedoria
