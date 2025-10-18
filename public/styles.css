@@ -746,8 +746,15 @@ input[type='text'] {
 }
 
 #salmo-conteudo {
-  background-color: #f3f3f3; /* Fundo do texto*/
+  background-color: #fff8dc; /* amarelo claro estilo papel (cornsilk) */
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #f0e68c; /* leve borda dourada para realçar */
+  color: #333; /* texto escuro para contraste */
+  line-height: 1.6;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
+
 #salmo-container {
   display: none; /* inicia fechado */
 }
