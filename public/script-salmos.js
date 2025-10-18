@@ -6,6 +6,10 @@ const salmoToggle = document.getElementById('salmo-toggle');
 const salmoContainer = document.getElementById('salmo-container');
 const salmoTexto = document.getElementById('salmo-texto');
 
+if (salmoContainer) {
+  salmoContainer.style.display = 'none'; // inicia fechado
+}
+
 let salmos = []; // será preenchido via fetch
 let salmoAtual = null; // mantém o salmo fixo do dia
 
