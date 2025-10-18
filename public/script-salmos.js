@@ -1,100 +1,102 @@
 /* ============================
-   Script Salmos
+   Script Salmos — versão corrigida
    ============================ */
 
-// Container do salmo do dia
 const salmoToggle = document.getElementById('salmo-toggle');
 const salmoContainer = document.getElementById('salmo-container');
 const salmoTexto = document.getElementById('salmo-texto');
 
-// Array com todos os salmos (exemplo resumido, substituir pelo JSON completo)
-const salmos = [
-  {
-    numero: 1,
-    titulo: "",
-    versiculos: [
-      "Bem-aventurado o homem que não anda segundo o conselho dos ímpios.",
-      "Antes tem o seu prazer na lei do Senhor, e nela medita de dia e de noite."
-    ]
-  },
-  {
-    numero: 2,
-    titulo: "",
-    versiculos: [
-      "Por que se amotinam as nações?",
-      "Os reis da terra se levantam, e os príncipes consultam unidos contra o Senhor e contra o seu ungido."
-    ]
-  }
-  // ... adicionar todos os 150 salmos
-];
+let salmos = []; // será preenchido via fetch
+let salmoAtual = null; // mantém o salmo fixo do dia
 
 /* ============================
-   Função auxiliar para buscar salmo por palavra-chave
+   Carregar salmos do JSON
+   ============================ */
+async function carregarSalmos() {
+  try {
+    const response = await fetch('salmos.json');
+    if (!response.ok) throw new Error('Falha ao carregar salmos.json');
+    salmos = await response.json();
+    // Define o salmo do dia assim que carregar
+    salmoAtual = getSalmoDoDia();
+    mostrarSalmoNoContainer(salmoAtual);
+  } catch (error) {
+    console.error('Erro ao carregar salmos:', error);
+    salmoTexto.textContent = 'Não foi possível carregar os salmos.';
+  }
+}
+
+/* ============================
+   Buscar salmo por palavra-chave
    ============================ */
 function buscarSalmoPorPalavra(texto) {
+  if (!salmos || salmos.length === 0) return null;
   const palavras = texto.toLowerCase().match(/\b\w+\b/g) || [];
   const encontrados = [];
 
-  salmos.forEach(salmo => {
-    const todosVersiculos = salmo.versiculos.join(' ').toLowerCase();
-    if (palavras.some(p => todosVersiculos.includes(p))) {
+  for (const salmo of salmos) {
+    const versiculosTexto = salmo.versiculos.join(' ').toLowerCase();
+    if (palavras.some(p => versiculosTexto.includes(p))) {
       encontrados.push(salmo);
     }
-  });
+  }
 
   if (encontrados.length > 0) {
-    // Retorna aleatoriamente um dos salmos encontrados
-    return encontrados[Math.floor(Math.random() * encontrados.length)];
+    const aleatorio = Math.floor(Math.random() * encontrados.length);
+    return encontrados[aleatorio];
   }
   return null;
 }
 
 /* ============================
-   Função para obter o salmo do dia (baseado na data)
+   Salmo do dia (fixo, baseado na data)
    ============================ */
 function getSalmoDoDia() {
+  if (!salmos || salmos.length === 0) return null;
   const hoje = new Date();
-  const diaAno = Math.floor(
-    (hoje - new Date(hoje.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24
-  ); // número do dia no ano
-  const index = diaAno % salmos.length; // garante que fique dentro do array
+  const diaAno = Math.floor((hoje - new Date(hoje.getFullYear(), 0, 0)) / 86400000);
+  const index = diaAno % salmos.length;
   return salmos[index];
 }
 
 /* ============================
-   Função principal para obter o salmo
+   Obter salmo para mensagem do usuário
    ============================ */
 function getSalmoParaUsuario(mensagemUsuario) {
-  // Tenta buscar por palavra-chave
   const encontrado = buscarSalmoPorPalavra(mensagemUsuario);
   if (encontrado) return encontrado;
-  // Se não encontrou, retorna o salmo do dia
-  return getSalmoDoDia();
+  return salmoAtual || getSalmoDoDia();
 }
 
 /* ============================
-   Mostrar salmo no container
+   Exibir salmo formatado
    ============================ */
 function mostrarSalmoNoContainer(salmo) {
   if (!salmo) return;
-  let texto = `<strong>Salmo ${salmo.numero}</strong><br><br>`;
-  texto += salmo.versiculos.join('<br>');
-  salmoTexto.innerHTML = texto;
+  let html = `<strong>Salmo ${salmo.numero}</strong><br><br>`;
+  html += salmo.versiculos.join('<br><br>');
+  salmoTexto.innerHTML = html;
   salmoContainer.style.display = 'block';
 }
 
 /* ============================
-   Toggle do Salmo
+   Alternar visibilidade da caixa de salmo
    ============================ */
 if (salmoToggle) {
   salmoToggle.addEventListener('click', () => {
-    if (!salmoContainer) return;
     if (salmoContainer.style.display === 'block') {
       salmoContainer.style.display = 'none';
     } else {
       salmoContainer.style.display = 'block';
-      // Aqui pode ser chamada a função com a mensagem do chat 1 ou 2
-      // Exemplo: mostrarSalmoNoContainer(getSalmoParaUsuario('Senhor estou aflito'));
+      // Mostra o salmo do dia ao abrir, se ainda não estiver carregado
+      if (!salmoTexto.innerHTML.trim() && salmoAtual) {
+        mostrarSalmoNoContainer(salmoAtual);
+      }
     }
   });
 }
+
+/* ============================
+   Inicialização
+   ============================ */
+document.addEventListener('DOMContentLoaded', carregarSalmos);
