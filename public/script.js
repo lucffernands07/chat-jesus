@@ -105,6 +105,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ============================
+   Exibir mensagens no chat
+============================ */
+function appendMessage(sender, text) {
+  const messageDiv = document.createElement('div');
+  messageDiv.classList.add('message', sender === 'user' ? 'user' : 'jesus');
+  const senderName =
+    sender === 'user'
+      ? '<strong>Você:</strong>'
+      : '<strong style="color:#8B0000">Jesus:</strong>';
+  messageDiv.innerHTML = `${senderName} ${text}`;
+  chatBox.appendChild(messageDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+/* ============================
    Chat 1 (Jesus) envio
 ============================ */
 if (chatForm) {
