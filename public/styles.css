@@ -739,7 +739,6 @@ input[type='text'] {
 
 #salmo-toggle {
   background-color: #D0E9F9; /* Fundo da caixa*/
-  padding: 15px;
   border-radius: 0 0 8px 8px;
   border: 1px solid #ccc;
   margin-bottom: 15px;
