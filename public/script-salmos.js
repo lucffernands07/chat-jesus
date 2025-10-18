@@ -1,12 +1,12 @@
 /* ============================
-   Script Salmos — versão corrigida
+   Script Salmos — versão final (igual aos chats)
    ============================ */
 
 const salmoToggle = document.getElementById('salmo-toggle');
 const salmoContainer = document.getElementById('salmo-container');
 const salmoTexto = document.getElementById('salmo-texto');
 
-let salmos = []; // será preenchido via fetch
+let salmos = [];      // será preenchido via fetch
 let salmoAtual = null; // mantém o salmo fixo do dia
 
 /* ============================
@@ -17,7 +17,7 @@ async function carregarSalmos() {
     const response = await fetch('salmos.json');
     if (!response.ok) throw new Error('Falha ao carregar salmos.json');
     salmos = await response.json();
-    // Define o salmo do dia assim que carregar
+    // Define o salmo do dia
     salmoAtual = getSalmoDoDia();
     mostrarSalmoNoContainer(salmoAtual);
   } catch (error) {
@@ -49,7 +49,7 @@ function buscarSalmoPorPalavra(texto) {
 }
 
 /* ============================
-   Salmo do dia (fixo, baseado na data)
+   Salmo do dia (fixo)
    ============================ */
 function getSalmoDoDia() {
   if (!salmos || salmos.length === 0) return null;
@@ -76,11 +76,11 @@ function mostrarSalmoNoContainer(salmo) {
   let html = `<strong>Salmo ${salmo.numero}</strong><br><br>`;
   html += salmo.versiculos.join('<br><br>');
   salmoTexto.innerHTML = html;
-  salmoContainer.style.display = 'block';
+  // ❌ Não toca no style.display, só atualiza conteúdo
 }
 
 /* ============================
-   Alternar visibilidade da caixa de salmo
+   Toggle da caixa de salmo
    ============================ */
 if (salmoToggle) {
   salmoToggle.addEventListener('click', () => {
