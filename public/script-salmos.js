@@ -1,98 +1,55 @@
-/* ============================
-   script-salmos.js
-   ============================ */
+// ==========================
+// Script Salmos
+// ==========================
 
-// Supondo que você já tem um arquivo salmos.json com todos os salmos
-let todosSalmos = [];
+// Elementos do Salmo do Dia
+const salmoToggleBtn = document.getElementById('salmo-toggle');
+const salmoContainer = document.getElementById('salmo-container');
+const salmoTexto = document.getElementById('salmo-texto');
 
-async function carregarSalmos() {
-  try {
-    const response = await fetch('salmos.json');
-    todosSalmos = await response.json();
-  } catch (err) {
-    console.error('Erro ao carregar salmos:', err);
-  }
+// ===== Função toggle para abrir/fechar o salmo =====
+function toggleSalmo() {
+  if (!salmoContainer) return;
+  const isOpen = salmoContainer.style.display === 'block';
+  salmoContainer.style.display = isOpen ? 'none' : 'block';
 }
 
-// Chamar ao iniciar o app
-carregarSalmos();
-
-/* ============================
-   Função para pegar um salmo aleatório ou pelo dia
-   ============================ */
-function getSalmoDoDia() {
-  const hoje = new Date();
-  const index = (hoje.getDate() - 1) % todosSalmos.length;
-  return todosSalmos[index];
-}
-
-// Busca o salmo baseado na mensagem do usuário (Chat 1 ou Chat 2)
-function getSalmoParaUsuario(mensagem) {
-  if (!mensagem) return getSalmoDoDia();
-
-  const msgLower = mensagem.toLowerCase();
-  const salmosFiltrados = todosSalmos.filter(s => 
-    s.versiculos.some(v => v.toLowerCase().includes(msgLower))
-  );
-
-  if (salmosFiltrados.length > 0) {
-    const aleatorio = Math.floor(Math.random() * salmosFiltrados.length);
-    return salmosFiltrados[aleatorio];
-  }
-
-  return getSalmoDoDia();
-}
-
-/* ============================
-   Mostrar o salmo na caixa
-   ============================ */
+// ===== Função para mostrar o salmo =====
 function mostrarSalmoNoContainer(salmo) {
-  const container = document.getElementById('salmo-container');
-  const overlay = document.getElementById('salmoOverlay');
-
-  if (!container || !overlay || !salmo) return;
-
-  // Cria HTML dos versículos
-  const versiculosHtml = salmo.versiculos.map(v => `<p>${v}</p>`).join('');
-
-  container.innerHTML = `<h3>Salmo ${salmo.numero}</h3>${versiculosHtml}`;
-
-  // Mostrar container e overlay
-  container.style.display = 'block';
-  overlay.style.display = 'block';
-  container.scrollTop = 0;
+  if (!salmoTexto || !salmoContainer) return;
+  // junta título e versículos
+  const todosVersiculos = salmo.versiculos.join('\n');
+  salmoTexto.textContent = `Salmo ${salmo.numero}\n${todosVersiculos}`;
+  salmoContainer.style.display = 'block';
 }
 
-// Fechar a caixa de salmo
-function fecharSalmo() {
-  const container = document.getElementById('salmo-container');
-  const overlay = document.getElementById('salmoOverlay');
-  if (container) container.style.display = 'none';
-  if (overlay) overlay.style.display = 'none';
-}
-
-// Fechar ao clicar no overlay
-const salmoOverlay = document.getElementById('salmoOverlay');
-if (salmoOverlay) {
-  salmoOverlay.addEventListener('click', fecharSalmo);
-}
-
-// Toggle pelo botão "Salmo do Dia"
-const salmoToggle = document.getElementById('salmo-toggle');
-if (salmoToggle) {
-  salmoToggle.addEventListener('click', () => {
-    const container = document.getElementById('salmo-container');
-    const overlay = document.getElementById('salmoOverlay');
-    const isVisible = container.style.display === 'block';
-    if (isVisible) {
-      fecharSalmo();
-    } else {
-      const salmo = getSalmoDoDia();
-      mostrarSalmoNoContainer(salmo);
-    }
+// ===== Adiciona evento ao botão =====
+if (salmoToggleBtn) {
+  salmoToggleBtn.addEventListener('click', () => {
+    toggleSalmo();
   });
 }
 
-// Função pública que você pode chamar do script.js
-// Exemplo: const salmo = getSalmoParaUsuario(userMessage);
+// ===== Botão interno para fechar =====
+const btnFecharSalmo = document.createElement('button');
+btnFecharSalmo.textContent = 'Fechar';
+btnFecharSalmo.style.display = 'block';
+btnFecharSalmo.style.marginTop = '10px';
+btnFecharSalmo.addEventListener('click', () => {
+  if (salmoContainer) salmoContainer.style.display = 'none';
+});
+if (salmoContainer) salmoContainer.appendChild(btnFecharSalmo);
+
+// ===== Função para buscar salmo do usuário =====
+// Exemplo de uso: const salmo = getSalmoParaUsuario(userMessage);
 // mostrarSalmoNoContainer(salmo);
+function getSalmoParaUsuario(userMessage) {
+  // aqui você integra com o seu arquivo salmos.json
+  // e retorna o objeto do salmo correspondente
+  // ex: { numero: 17, versiculos: ["...", "..."] }
+  return { numero: 17, versiculos: ["Ouça, Senhor, a justa causa; atenda ao meu clamor; ouve a minha oração, que não procede de lábios enganosos.",
+                                    "Desde a tua presença saem os meus juízos; os teus olhos vêem a verdade.",
+                                    "Provas o meu coração de noite, visitas-me de manhã; tens-me examinado, e nada achaste.",
+                                    "O meu passo se firmou no caminho; os meus pés não vacilaram.",
+                                    "Clamei a ti, ó Deus, porque tu me ouviste; inclina a tua orelha a mim, ouve as minhas palavras."]};
+}
