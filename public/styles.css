@@ -672,29 +672,44 @@ input[type='text'] {
 }
 
 /* Espaçamento entre mensagens no chat 2 (Palavra de Sabedoria) */
-#biblia-chat-box .user-message,
-#biblia-chat-box .bot-message {
-  margin-bottom: 10px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  max-width: 90%;
-  line-height: 1.4;
-}
-
+/* Chat 2 — Balões iguais Chat 1 */
 #biblia-chat-box .user-message {
-  background-color: #d6e9ff; /* azul bem claro para usuário */
+  background-color: #dbeafe;  /* mesma cor do chat 1 usuário */
   align-self: flex-end;
+  text-align: right;
+  margin: 10px 0;
+  padding: 10px 15px;
+  border-radius: 16px;
+  max-width: 80%;
+  word-wrap: break-word;
+  line-height: 1.5;
 }
 
 #biblia-chat-box .bot-message {
-  background-color: #f3f3f3; /* cinza claro para resposta */
+  background-color: #fef9c3; /* mesma cor do chat 1 Jesus */
+  border-left: 4px solid #facc15;
   align-self: flex-start;
+  margin: 10px 0;
+  padding: 10px 15px;
+  border-radius: 16px;
+  max-width: 80%;
+  word-wrap: break-word;
+  line-height: 1.5;
 }
 
-/* faz o layout vertical e alinha as mensagens */
+#biblia-chat-box .bot-message strong {
+  color: #8b0000;
+}
+
+/* Garante que o container continue vertical e com scroll */
 #biblia-chat-box {
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  max-height: 400px; /* opcional, igual chat 1 */
+  padding: 10px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 /* ==== Rodapé do menu lateral (créditos) ==== */
