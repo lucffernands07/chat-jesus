@@ -24,7 +24,7 @@ const bibliaChatContainer = document.getElementById("biblia-chat-container");
 let voicesList = [];
 
 /* ============================
-   Funções de chat / voz (mantive sua lógica)
+   Funções de chat / voz
    ============================ */
 
 function appendMessage(sender, text) {
@@ -89,45 +89,46 @@ function loadSettings() {
    ============================ */
 if (chatForm) {
   chatForm.addEventListener('submit', async e => {
-  e.preventDefault();
-  const userMessage = messageInput.value.trim();
-  if (!userMessage) {
-    appendMessage('jesus', '⚠️ Por favor, digite uma mensagem primeiro.');
-    return;
-  }
-
-  appendMessage('user', userMessage);
-  messageInput.value = '';
-  loadingIndicator.style.display = 'flex';
-
-  try {
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: userMessage }),
-    });
-    const data = await response.json();
-    loadingIndicator.style.display = 'none';
-    if (data && data.reply) {
-      appendMessage('jesus', data.reply);
-      speakJesus(data.reply);
-
-      // ✅ Aqui atualizamos o salmo com base na mensagem do chat 1
-      const salmo = getSalmoParaUsuario(userMessage);
-      mostrarSalmoNoContainer(salmo);
-
-    } else {
-      appendMessage('jesus', 'Desculpe, não recebi uma resposta.');
+    e.preventDefault();
+    const userMessage = messageInput.value.trim();
+    if (!userMessage) {
+      appendMessage('jesus', '⚠️ Por favor, digite uma mensagem primeiro.');
+      return;
     }
-  } catch (err) {
-    loadingIndicator.style.display = 'none';
-    console.error('Erro:', err);
-    appendMessage('jesus', 'Erro ao se conectar com Jesus.');
-  }
-});
+
+    appendMessage('user', userMessage);
+    messageInput.value = '';
+    loadingIndicator.style.display = 'flex';
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userMessage }),
+      });
+      const data = await response.json();
+      loadingIndicator.style.display = 'none';
+      if (data && data.reply) {
+        appendMessage('jesus', data.reply);
+        speakJesus(data.reply);
+
+        // ✅ Atualiza o salmo com base na mensagem do chat 1
+        const salmo = getSalmoParaUsuario(userMessage);
+        mostrarSalmoNoContainer(salmo);
+
+      } else {
+        appendMessage('jesus', 'Desculpe, não recebi uma resposta.');
+      }
+    } catch (err) {
+      loadingIndicator.style.display = 'none';
+      console.error('Erro:', err);
+      appendMessage('jesus', 'Erro ao se conectar com Jesus.');
+    }
+  });
+} // <-- FECHAMENTO adicionado aqui
 
 /* ============================
-   Chat 2 — Palavra de Sabedoria (usa a mesma API)
+   Chat 2 — Palavra de Sabedoria
    ============================ */
 
 function addBibliaMessage(text, isUser = false) {
@@ -157,32 +158,32 @@ async function enviarBibliaMensagem(mensagemUsuario) {
   }
 }
 
-// trata submit do formulário do chat bíblia (preserva acessibilidade teclado)
+// trata submit do formulário do chat bíblia
 if (bibliaForm) {
-   bibliaForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const texto = bibliaInput.value.trim();
-  if (!texto) return;
+  bibliaForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const texto = bibliaInput.value.trim();
+    if (!texto) return;
 
-  addBibliaMessage(texto, true);
-  bibliaInput.value = "";
+    addBibliaMessage(texto, true);
+    bibliaInput.value = "";
 
-  const loading = document.createElement("div");
-  loading.className = "bot-message";
-  loading.textContent = "Buscando a Palavra...";
-  bibliaChatBox.appendChild(loading);
+    const loading = document.createElement("div");
+    loading.className = "bot-message";
+    loading.textContent = "Buscando a Palavra...";
+    bibliaChatBox.appendChild(loading);
 
-  await enviarBibliaMensagem(texto);
-  loading.remove();
+    await enviarBibliaMensagem(texto);
+    loading.remove();
 
-  // ✅ Atualiza o salmo com base na mensagem do chat 2
-  const salmo = getSalmoParaUsuario(texto);
-  mostrarSalmoNoContainer(salmo);
-   });
+    // ✅ Atualiza o salmo com base na mensagem do chat 2
+    const salmo = getSalmoParaUsuario(texto);
+    mostrarSalmoNoContainer(salmo);
+  });
 }
 
 /* ============================
-   Voz / reconhecimento (botão "Fale")
+   Voz / reconhecimento
    ============================ */
 if (voiceBtn) {
   voiceBtn.addEventListener('click', () => {
@@ -195,7 +196,6 @@ if (voiceBtn) {
     recognition.lang = 'pt-BR';
     recognition.continuous = false;
 
-    // feedback visual
     voiceBtn.classList.add('listening');
     voiceBtn.innerText = 'Falando...';
 
@@ -223,16 +223,13 @@ if (voiceBtn) {
    Toggle dos chats (expansão)
    ============================ */
 
-// Garante que containers comecem escondidos por CSS — caso não estejam, aplica
 if (chatJesusContainer) chatJesusContainer.classList.remove('expanded');
 if (bibliaChatContainer) bibliaChatContainer.classList.remove('expanded');
 
-// função genérica de toggle que alterna classe 'expanded'
 function toggleChat(container, button) {
   if (!container || !button) return;
   const willOpen = !container.classList.contains('expanded');
 
-  // fecha ambos antes de abrir (comportamento agrupado, se desejar)
   [chatJesusContainer, bibliaChatContainer].forEach(c => {
     if (c && c !== container) c.classList.remove('expanded');
   });
@@ -241,7 +238,6 @@ function toggleChat(container, button) {
   if (willOpen) {
     container.classList.add('expanded');
     button.classList.add('active');
-    // rolar para o container aberto (bom em mobile)
     setTimeout(() => container.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
   } else {
     container.classList.remove('expanded');
@@ -249,7 +245,6 @@ function toggleChat(container, button) {
   }
 }
 
-// proteções para não fechar o menu quando clicar nos toggles
 if (toggleJesusBtn) {
   toggleJesusBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -264,19 +259,16 @@ if (toggleBibliaBtn) {
 }
 
 /* ============================
-   Menu lateral: abrir/fechar e clique fora
+   Menu lateral
    ============================ */
 
 function toggleMenu() {
   sideMenu.classList.toggle('open');
 }
 
-// fechar menu com botão X
 if (closeMenuBtn) closeMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); sideMenu.classList.remove('open'); });
 
-// clique fora para fechar menu — só dispara se o menu estiver aberto
 document.addEventListener('click', (e) => {
-  // se o menu está aberto e o target não está dentro do menu nem é o botão do menu
   if (sideMenu.classList.contains('open')) {
     if (!sideMenu.contains(e.target) && !e.target.closest('.menu-btn')) {
       sideMenu.classList.remove('open');
@@ -284,11 +276,10 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// impede que cliques dentro do menu fechem por acidente
 if (sideMenu) sideMenu.addEventListener('click', (e) => e.stopPropagation());
 
 /* ============================
-   Salmo popup / YouTube (mantive sua lógica com fallback)
+   Salmo popup / YouTube
    ============================ */
 
 const salmoLink   = document.getElementById('salmoLink');
@@ -327,7 +318,7 @@ if (salmoBuscar) {
 }
 
 /* ============================
-   Share / install / outras inicializações
+   Share / install
    ============================ */
 
 if (shareBtn) {
@@ -345,13 +336,17 @@ if (shareBtn) {
 window.onload = () => {
   loadSettings();
   if ('speechSynthesis' in window) {
-    // força recarregar vozes quando estiverem prontas
     speechSynthesis.onvoiceschanged = () => { voicesList = speechSynthesis.getVoices(); };
     voicesList = speechSynthesis.getVoices();
   }
+
+  // ✅ Garante que os salmos sejam carregados antes de usar
+  if (typeof carregarSalmos === 'function') {
+    carregarSalmos();
+  }
 };
 
-// beforeinstallprompt (preserva seu popup)
+// beforeinstallprompt (popup)
 let deferredPrompt;
 const installPopup = document.getElementById('installPopup');
 const installOverlay = document.getElementById('installOverlay');
@@ -376,10 +371,3 @@ if (btnInstall) btnInstall.addEventListener('click', () => {
 if (btnDismiss) btnDismiss.addEventListener('click', () => {
   if (installPopup && installOverlay) { installPopup.style.display = 'none'; installOverlay.style.display = 'none'; }
 });
-
-/* ============================
-   Suporte para fechamento final (garantia)
-   ============================ */
-if (closeMenuBtn) {
-  closeMenuBtn.addEventListener('click', () => sideMenu.classList.remove('open'));
-                      }
