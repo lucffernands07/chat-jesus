@@ -416,4 +416,13 @@ if (btnInstall) btnInstall.addEventListener('click', () => {
 if (btnDismiss) btnDismiss.addEventListener('click', () => {
   if (installPopup && installOverlay) { installPopup.style.display = 'none'; installOverlay.style.display = 'none'; }
 });
-     
+
+// 🔊 Verifica se speechSynthesis está disponível após carregamento completo
+window.addEventListener('load', () => {
+  if ('speechSynthesis' in window) {
+    console.log('✅ speechSynthesis disponível');
+    loadVoices(); // tenta carregar as vozes
+  } else {
+    console.error('❌ speechSynthesis NÃO disponível');
+  }
+});
