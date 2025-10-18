@@ -6,11 +6,6 @@ const salmoToggle = document.getElementById('salmo-toggle');
 const salmoContainer = document.getElementById('salmo-container');
 const salmoTexto = document.getElementById('salmo-texto');
 
-// Caixa Salmo inicia fechado
-if (salmoContainer) {
-  salmoContainer.style.display = 'none'; 
-}
-
 let salmos = []; // será preenchido via fetch
 let salmoAtual = null; // mantém o salmo fixo do dia
 
@@ -89,14 +84,9 @@ function mostrarSalmoNoContainer(salmo) {
    ============================ */
 if (salmoToggle) {
   salmoToggle.addEventListener('click', () => {
-    if (salmoContainer.style.display === 'block') {
-      salmoContainer.style.display = 'none';
-    } else {
-      salmoContainer.style.display = 'block';
-      // Mostra o salmo do dia ao abrir, se ainda não estiver carregado
-      if (!salmoTexto.innerHTML.trim() && salmoAtual) {
-        mostrarSalmoNoContainer(salmoAtual);
-      }
+    salmoContainer.classList.toggle('expanded');
+    if (!salmoTexto.innerHTML.trim() && salmoAtual) {
+      mostrarSalmoNoContainer(salmoAtual);
     }
   });
 }
