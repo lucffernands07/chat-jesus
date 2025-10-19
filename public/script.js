@@ -106,8 +106,19 @@ if (chatForm) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userMessage }),
       });
-      const data = await response.json();
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        console.warn('⚠️ Erro ao interpretar resposta do servidor:', parseError);
+        appendMessage('jesus', 'Desculpe, não entendi a resposta.');
+        loadingIndicator.style.display = 'none';
+        return;
+      }
+
       loadingIndicator.style.display = 'none';
+
       if (data && data.reply) {
         appendMessage('jesus', data.reply);
         speakJesus(data.reply);
@@ -115,17 +126,21 @@ if (chatForm) {
         // ✅ Atualiza o salmo com base na mensagem do chat 1
         const salmo = getSalmoParaUsuario(userMessage);
         mostrarSalmoNoContainer(salmo);
-
       } else {
         appendMessage('jesus', 'Desculpe, não recebi uma resposta.');
       }
+
     } catch (err) {
+      console.error('❌ Erro na conexão com /api/chat:', err);
       loadingIndicator.style.display = 'none';
-      console.error('Erro:', err);
-      appendMessage('jesus', 'Erro ao se conectar com Jesus.');
+      // só mostra mensagem se ainda não houve resposta
+      const lastMessage = chatBox.lastElementChild?.textContent || '';
+      if (!lastMessage.includes('Jesus:')) {
+        appendMessage('jesus', 'Erro ao se conectar com Jesus.');
+      }
     }
   });
-} // <-- FECHAMENTO adicionado aqui
+}
 
 /* ============================
    Chat 2 — Palavra de Sabedoria
@@ -134,7 +149,15 @@ if (chatForm) {
 function addBibliaMessage(text, isUser = false) {
   const msg = document.createElement("div");
   msg.className = isUser ? "user-message" : "bot-message";
-  msg.textContent = text;
+
+  // converte quebras de linha em <br> e aplica formatação Markdown simples
+  const html = text
+    .replace(/\n/g, '<br>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // **negrito**
+    .replace(/\*(.*?)\*/g, '<em>$1</em>') // *itálico*
+    .replace(/### (.*?)(<br>|$)/g, '<h4>$1</h4>'); // títulos estilo ###
+
+  msg.innerHTML = html;
   bibliaChatBox.appendChild(msg);
   bibliaChatBox.scrollTop = bibliaChatBox.scrollHeight;
 }
@@ -344,6 +367,15 @@ window.onload = () => {
   if (typeof carregarSalmos === 'function') {
     carregarSalmos();
   }
+   
+   // Registro do Service Worker
+   if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+         navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('✅ Service Worker registrado:', reg))
+            .catch(err => console.error('❌ Erro ao registrar SW:', err));
+      });
+   }
 };
 
 // beforeinstallprompt (popup)
@@ -371,3 +403,4 @@ if (btnInstall) btnInstall.addEventListener('click', () => {
 if (btnDismiss) btnDismiss.addEventListener('click', () => {
   if (installPopup && installOverlay) { installPopup.style.display = 'none'; installOverlay.style.display = 'none'; }
 });
+     
