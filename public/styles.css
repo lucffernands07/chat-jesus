@@ -637,7 +637,7 @@ input[type='text'] {
 /* === 🔹 Área recolhível dos chats === */
 .chat-container {
   display: none;
-  border: 1px solid #333;
+  border: 1px solid #fff;
   border-top: none;
   padding: 10px;
   animation: expand 0.3s ease-out;
