@@ -39,11 +39,6 @@ function appendMessage(sender, text) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-/* ============================
-   Voz / síntese de fala
-   ============================ */
-
-// Função que fala com voz de Jesus
 function speakJesus(text) {
   if ('speechSynthesis' in window && isVoiceEnabled()) {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -51,168 +46,43 @@ function speakJesus(text) {
     utterance.pitch = 1;
     utterance.rate = 1;
 
+    const selected = [...voiceRadios].find(r => r.checked)?.value;
     const voices = speechSynthesis.getVoices();
-    const selectedVoice = getSelectedVoice();
-    if (selectedVoice) utterance.voice = selectedVoice;
+    let found = null;
+    if (selected === 'male') {
+      found = voices.find(v => v.lang.startsWith('pt') && /ricardo|male/i.test(v.name)) || voices.find(v => v.lang.startsWith('pt'));
+    } else {
+      found = voices.find(v => v.lang.startsWith('pt') && /ana|female|google/i.test(v.name)) || voices.find(v => v.lang.startsWith('pt'));
+    }
+    if (found) utterance.voice = found;
 
-    speechSynthesis.cancel(); // Evita sobreposição
+    speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
   }
 }
 
-// Retorna a voz selecionada pelo usuário
-function getSelectedVoice() {
-  const selected = [...voiceRadios].find(r => r.checked)?.value;
-  if (!selected) return null;
-
-  const voices = speechSynthesis.getVoices();
-  if (selected === 'male') {
-    return (
-      voices.find(v =>
-        v.lang.startsWith('pt') &&
-        (/ricardo|male/i).test(v.name)
-      ) || voices.find(v => v.lang.startsWith('pt'))
-    );
-  } else {
-    return (
-      voices.find(v =>
-        v.lang.startsWith('pt') &&
-        (/ana|female|google/i).test(v.name)
-      ) || voices.find(v => v.lang.startsWith('pt'))
-    );
-  }
-}
-
-// Verifica se a voz está habilitada
 function isVoiceEnabled() {
   return localStorage.getItem('voiceEnabled') === 'true';
 }
 
-// Mantém loadSettings e saveSettings **do script atual** para não quebrar toggles
-if (voiceToggle) voiceToggle.addEventListener('change', saveSettings);
-voiceRadios.forEach(r => r.addEventListener('change', saveSettings));
-
-// == Elementos principais ==
-const chatBox = document.getElementById('chat-box');
-const chatForm = document.getElementById('chat-form');
-const messageInput = document.getElementById('message-input');
-const voiceBtn = document.getElementById('voice-btn');
-const loadingIndicator = document.getElementById('loading');
-const sideMenu = document.getElementById('sideMenu');
-const voiceToggle = document.getElementById('voiceToggle');
-const voiceRadios = document.querySelectorAll('input[name="voiceType"]');
-const closeMenuBtn = document.getElementById('closeMenuBtn');
-const shareBtn = document.getElementById('shareBtn');
-
-// Chat 2 elementos
-const bibliaInput = document.getElementById("biblia-input");
-const bibliaForm = document.getElementById("biblia-form");
-const bibliaChatBox = document.getElementById("biblia-chat-box");
-
-// Toggle buttons / containers
-const toggleJesusBtn = document.getElementById("toggle-jesus");
-const chatJesusContainer = document.getElementById("chat-jesus-container");
-const toggleBibliaBtn = document.getElementById("toggle-biblia");
-const bibliaChatContainer = document.getElementById("biblia-chat-container");
-
-let voicesList = [];
-
-/* ============================
-   Funções de chat / voz
-   ============================ */
-
-function appendMessage(sender, text) {
-  const messageDiv = document.createElement('div');
-  messageDiv.classList.add('message', sender === 'user' ? 'user' : 'jesus');
-  const senderName =
-    sender === 'user'
-      ? '<strong>Você:</strong>'
-      : '<strong style="color:#8B0000">Jesus:</strong>';
-  messageDiv.innerHTML = `${senderName} ${text}`;
-  chatBox.appendChild(messageDiv);
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-/* ============================
-   Voz / síntese de fala ajustada
-   ============================ */
-
-// Função que fala com voz de Jesus
-function speakJesus(text) {
-  if ('speechSynthesis' in window && isVoiceEnabled()) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'pt-BR';
-    utterance.pitch = 1;
-    utterance.rate = 1;
-
-    const voices = speechSynthesis.getVoices();
-    const selectedVoice = getSelectedVoice();
-    if (selectedVoice) utterance.voice = selectedVoice;
-
-    speechSynthesis.cancel(); // Evita sobreposição
-    speechSynthesis.speak(utterance);
-  }
-}
-
-// Retorna a voz selecionada pelo usuário
-function getSelectedVoice() {
-  const selected = [...voiceRadios].find(r => r.checked)?.value;
-  if (!selected) return null;
-
-  const voices = speechSynthesis.getVoices();
-  if (selected === 'male') {
-    return (
-      voices.find(v =>
-        v.lang.startsWith('pt') &&
-        (/ricardo|male/i).test(v.name)
-      ) || voices.find(v => v.lang.startsWith('pt'))
-    );
-  } else {
-    return (
-      voices.find(v =>
-        v.lang.startsWith('pt') &&
-        (/ana|female|google/i).test(v.name)
-      ) || voices.find(v => v.lang.startsWith('pt'))
-    );
-  }
-}
-
-// Verifica se a voz está habilitada
-function isVoiceEnabled() {
-  return localStorage.getItem('voiceEnabled') === 'true';
-}
-
-// Salva configurações de voz
 function saveSettings() {
   if (voiceToggle) localStorage.setItem('voiceEnabled', voiceToggle.checked);
-  const selectedVoice = [...voiceRadios].find(r => r.checked)?.value;
+  const selectedVoice = [...voiceRadios].find(radio => radio.checked)?.value;
   if (selectedVoice) localStorage.setItem('voiceType', selectedVoice);
 }
 
-// Carrega configurações de voz
 function loadSettings() {
-  if (voiceToggle) {
-    const voiceEnabledStorage = localStorage.getItem('voiceEnabled');
-    voiceToggle.checked = voiceEnabledStorage !== null ? voiceEnabledStorage === 'true' : true;
-  }
+  const voiceEnabledStorage = localStorage.getItem('voiceEnabled');
+  if (voiceToggle) voiceToggle.checked = voiceEnabledStorage !== null ? voiceEnabledStorage === 'true' : true;
 
   const voiceTypeStorage = localStorage.getItem('voiceType');
   if (voiceTypeStorage) {
-    [...voiceRadios].forEach(r => r.checked = r.value === voiceTypeStorage);
+    [...voiceRadios].forEach(radio => radio.checked = radio.value === voiceTypeStorage);
   } else {
-    [...voiceRadios].forEach(r => r.checked = r.value === 'female');
-    localStorage.setItem('voiceType', 'female');
-  }
-
-  // Garantir que as vozes do navegador estejam carregadas
-  if ('speechSynthesis' in window) {
-    speechSynthesis.onvoiceschanged = () => {};
+    [...voiceRadios].forEach(radio => radio.checked = radio.value === 'male');
+    localStorage.setItem('voiceType', 'male');
   }
 }
-
-// Event listeners para salvar mudanças
-if (voiceToggle) voiceToggle.addEventListener('change', saveSettings);
-voiceRadios.forEach(r => r.addEventListener('change', saveSettings));
 
 /* ============================
    Chat 1 (Jesus) envio
@@ -263,6 +133,7 @@ if (chatForm) {
     } catch (err) {
       console.error('❌ Erro na conexão com /api/chat:', err);
       loadingIndicator.style.display = 'none';
+      // só mostra mensagem se ainda não houve resposta
       const lastMessage = chatBox.lastElementChild?.textContent || '';
       if (!lastMessage.includes('Jesus:')) {
         appendMessage('jesus', 'Erro ao se conectar com Jesus.');
