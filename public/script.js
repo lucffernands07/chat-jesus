@@ -21,92 +21,12 @@ const chatJesusContainer = document.getElementById("chat-jesus-container");
 const toggleBibliaBtn = document.getElementById("toggle-biblia");
 const bibliaChatContainer = document.getElementById("biblia-chat-container");
 
-/* ============================
-   Voz / fala de Jesus
-============================ */
-
-// Lista de vozes carregadas
 let voicesList = [];
 
-// Função confiável para carregar vozes
-async function loadVoices() {
-  voicesList = await new Promise(resolve => {
-    const voices = speechSynthesis.getVoices();
-    if (voices.length) resolve(voices);
-    else speechSynthesis.onvoiceschanged = () => resolve(speechSynthesis.getVoices());
-  });
-}
-
-// Falar a mensagem de Jesus
-async function speakJesus(text) {
-  if (!('speechSynthesis' in window) || !isVoiceEnabled()) return;
-
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'pt-BR';
-  utterance.pitch = 1;
-  utterance.rate = 1;
-
-  // Escolhe voz do usuário
-  const selected = [...voiceRadios].find(r => r.checked)?.value || 'female';
-
-  if (!voicesList.length) await loadVoices();
-
-  let voice;
-  if (selected === 'male') {
-    voice = voicesList.find(v => v.lang.startsWith('pt') && /male|homem/i.test(v.name)) 
-          || voicesList.find(v => v.lang.startsWith('pt'));
-  } else {
-    voice = voicesList.find(v => v.lang.startsWith('pt') && /female|mulher/i.test(v.name)) 
-          || voicesList.find(v => v.lang.startsWith('pt'));
-  }
-
-  if (voice) utterance.voice = voice;
-
-  speechSynthesis.cancel();
-  speechSynthesis.speak(utterance);
-}
-
-// Verifica se voz está ativa
-function isVoiceEnabled() {
-  return localStorage.getItem('voiceEnabled') === 'true';
-}
-
-// Salva configurações
-function saveSettings() {
-  if (voiceToggle) localStorage.setItem('voiceEnabled', voiceToggle.checked);
-  const selectedVoice = [...voiceRadios].find(radio => radio.checked)?.value;
-  if (selectedVoice) localStorage.setItem('voiceType', selectedVoice);
-}
-
-// Carrega configurações
-function loadSettings() {
-  const voiceEnabledStorage = localStorage.getItem('voiceEnabled');
-  if (voiceToggle)
-    voiceToggle.checked = voiceEnabledStorage !== null ? voiceEnabledStorage === 'true' : true;
-
-  const voiceTypeStorage = localStorage.getItem('voiceType');
-  if (voiceTypeStorage) {
-    [...voiceRadios].forEach(radio => (radio.checked = radio.value === voiceTypeStorage));
-  } else {
-    [...voiceRadios].forEach(radio => (radio.checked = radio.value === 'male'));
-    localStorage.setItem('voiceType', 'male');
-  }
-}
-
-// Inicializa vozes quando o DOM é carregado
-document.addEventListener('DOMContentLoaded', () => {
-  if ('speechSynthesis' in window) {
-    loadVoices();
-    speechSynthesis.onvoiceschanged = loadVoices;
-    console.log('✅ speechSynthesis disponível e vozes carregadas');
-  } else {
-    console.error('❌ speechSynthesis NÃO disponível');
-  }
-});
-
 /* ============================
-   Exibir mensagens no chat
-============================ */
+   Funções de chat / voz
+   ============================ */
+
 function appendMessage(sender, text) {
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message', sender === 'user' ? 'user' : 'jesus');
@@ -119,9 +39,54 @@ function appendMessage(sender, text) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+function speakJesus(text) {
+  if ('speechSynthesis' in window && isVoiceEnabled()) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'pt-BR';
+    utterance.pitch = 1;
+    utterance.rate = 1;
+
+    const selected = [...voiceRadios].find(r => r.checked)?.value;
+    const voices = speechSynthesis.getVoices();
+    let found = null;
+    if (selected === 'male') {
+      found = voices.find(v => v.lang.startsWith('pt') && /ricardo|male/i.test(v.name)) || voices.find(v => v.lang.startsWith('pt'));
+    } else {
+      found = voices.find(v => v.lang.startsWith('pt') && /ana|female|google/i.test(v.name)) || voices.find(v => v.lang.startsWith('pt'));
+    }
+    if (found) utterance.voice = found;
+
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utterance);
+  }
+}
+
+function isVoiceEnabled() {
+  return localStorage.getItem('voiceEnabled') === 'true';
+}
+
+function saveSettings() {
+  if (voiceToggle) localStorage.setItem('voiceEnabled', voiceToggle.checked);
+  const selectedVoice = [...voiceRadios].find(radio => radio.checked)?.value;
+  if (selectedVoice) localStorage.setItem('voiceType', selectedVoice);
+}
+
+function loadSettings() {
+  const voiceEnabledStorage = localStorage.getItem('voiceEnabled');
+  if (voiceToggle) voiceToggle.checked = voiceEnabledStorage !== null ? voiceEnabledStorage === 'true' : true;
+
+  const voiceTypeStorage = localStorage.getItem('voiceType');
+  if (voiceTypeStorage) {
+    [...voiceRadios].forEach(radio => radio.checked = radio.value === voiceTypeStorage);
+  } else {
+    [...voiceRadios].forEach(radio => radio.checked = radio.value === 'male');
+    localStorage.setItem('voiceType', 'male');
+  }
+}
+
 /* ============================
    Chat 1 (Jesus) envio
-============================ */
+   ============================ */
 if (chatForm) {
   chatForm.addEventListener('submit', async e => {
     e.preventDefault();
@@ -158,7 +123,7 @@ if (chatForm) {
         appendMessage('jesus', data.reply);
         speakJesus(data.reply);
 
-        // Atualiza o salmo com base na mensagem do chat 1
+        // ✅ Atualiza o salmo com base na mensagem do chat 1
         const salmo = getSalmoParaUsuario(userMessage);
         mostrarSalmoNoContainer(salmo);
       } else {
@@ -168,6 +133,7 @@ if (chatForm) {
     } catch (err) {
       console.error('❌ Erro na conexão com /api/chat:', err);
       loadingIndicator.style.display = 'none';
+      // só mostra mensagem se ainda não houve resposta
       const lastMessage = chatBox.lastElementChild?.textContent || '';
       if (!lastMessage.includes('Jesus:')) {
         appendMessage('jesus', 'Erro ao se conectar com Jesus.');
@@ -178,16 +144,18 @@ if (chatForm) {
 
 /* ============================
    Chat 2 — Palavra de Sabedoria
-============================ */
+   ============================ */
+
 function addBibliaMessage(text, isUser = false) {
   const msg = document.createElement("div");
   msg.className = isUser ? "user-message" : "bot-message";
 
+  // converte quebras de linha em <br> e aplica formatação Markdown simples
   const html = text
     .replace(/\n/g, '<br>')
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/### (.*?)(<br>|$)/g, '<h4>$1</h4>');
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // **negrito**
+    .replace(/\*(.*?)\*/g, '<em>$1</em>') // *itálico*
+    .replace(/### (.*?)(<br>|$)/g, '<h4>$1</h4>'); // títulos estilo ###
 
   msg.innerHTML = html;
   bibliaChatBox.appendChild(msg);
@@ -203,13 +171,17 @@ async function enviarBibliaMensagem(mensagemUsuario) {
       body: JSON.stringify({ message: mensagemFinal, tipo: "biblia" }),
     });
     const data = await resposta.json();
-    if (data.reply) addBibliaMessage(data.reply);
-    else addBibliaMessage("Não consegui encontrar uma palavra agora, mas confie no Senhor.");
+    if (data.reply) {
+      addBibliaMessage(data.reply);
+    } else {
+      addBibliaMessage("Não consegui encontrar uma palavra agora, mas confie no Senhor.");
+    }
   } catch (err) {
     addBibliaMessage("Erro ao buscar a resposta. Tente novamente mais tarde.");
   }
 }
 
+// trata submit do formulário do chat bíblia
 if (bibliaForm) {
   bibliaForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -227,6 +199,7 @@ if (bibliaForm) {
     await enviarBibliaMensagem(texto);
     loading.remove();
 
+    // ✅ Atualiza o salmo com base na mensagem do chat 2
     const salmo = getSalmoParaUsuario(texto);
     mostrarSalmoNoContainer(salmo);
   });
@@ -234,7 +207,7 @@ if (bibliaForm) {
 
 /* ============================
    Voz / reconhecimento
-============================ */
+   ============================ */
 if (voiceBtn) {
   voiceBtn.addEventListener('click', () => {
     if (!('webkitSpeechRecognition' in window)) {
@@ -267,16 +240,12 @@ if (voiceBtn) {
       voiceBtn.innerText = 'Fale';
     };
   });
-
-  voiceBtn.addEventListener('dblclick', async () => {
-    const lastMessage = Array.from(chatBox.querySelectorAll('.jesus')).pop();
-    if (lastMessage) await speakJesus(lastMessage.textContent);
-  });
 }
 
 /* ============================
    Toggle dos chats (expansão)
-============================ */
+   ============================ */
+
 if (chatJesusContainer) chatJesusContainer.classList.remove('expanded');
 if (bibliaChatContainer) bibliaChatContainer.classList.remove('expanded');
 
@@ -299,58 +268,140 @@ function toggleChat(container, button) {
   }
 }
 
+if (toggleJesusBtn) {
+  toggleJesusBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleChat(chatJesusContainer, toggleJesusBtn);
+  });
+}
+if (toggleBibliaBtn) {
+  toggleBibliaBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleChat(bibliaChatContainer, toggleBibliaBtn);
+  });
+}
+
 /* ============================
-   Inicialização após DOM carregado
-============================ */
-document.addEventListener('DOMContentLoaded', () => {
-  loadSettings();
+   Menu lateral
+   ============================ */
 
-  // Inicializa toggles dos chats
-  if (toggleJesusBtn) toggleJesusBtn.addEventListener('click', e => { 
-    e.stopPropagation(); 
-    toggleChat(chatJesusContainer, toggleJesusBtn); 
-  });
-  if (toggleBibliaBtn) toggleBibliaBtn.addEventListener('click', e => { 
-    e.stopPropagation(); 
-    toggleChat(bibliaChatContainer, toggleBibliaBtn); 
-  });
+function toggleMenu() {
+  sideMenu.classList.toggle('open');
+}
 
-  // Inicializa menu lateral
-  if (shareBtn && sideMenu) {
-    shareBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      sideMenu.classList.toggle('open');
-    });
-  }
-  if (closeMenuBtn && sideMenu) {
-    closeMenuBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      sideMenu.classList.remove('open');
-    });
-  }
-  // Fechar menu ao clicar fora
-  document.addEventListener('click', e => {
-    if (sideMenu && sideMenu.classList.contains('open') &&
-        !sideMenu.contains(e.target) &&
-        !e.target.closest('.menu-btn')) {
+if (closeMenuBtn) closeMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); sideMenu.classList.remove('open'); });
+
+document.addEventListener('click', (e) => {
+  if (sideMenu.classList.contains('open')) {
+    if (!sideMenu.contains(e.target) && !e.target.closest('.menu-btn')) {
       sideMenu.classList.remove('open');
     }
-  });
-  if (sideMenu) sideMenu.addEventListener('click', e => e.stopPropagation());
-
-  // Inicializa speechSynthesis
-  if ('speechSynthesis' in window) {
-    getVoices().then(voices => { voicesList = voices; });
-    speechSynthesis.onvoiceschanged = async () => { voicesList = await getVoices(); };
   }
-
-  // Service Worker
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('✅ Service Worker registrado:', reg))
-      .catch(err => console.error('❌ Erro ao registrar SW:', err));
-  }
-
-  // Salmos
-  if (typeof carregarSalmos === 'function') carregarSalmos();
 });
+
+if (sideMenu) sideMenu.addEventListener('click', (e) => e.stopPropagation());
+
+/* ============================
+   Salmo popup / YouTube
+   ============================ */
+
+const salmoLink   = document.getElementById('salmoLink');
+const salmoPopup  = document.getElementById('salmoPopup');
+const salmoOverlay= document.getElementById('salmoOverlay');
+const salmoInput  = document.getElementById('salmoInput');
+const salmoBuscar = document.getElementById('salmoBuscar');
+const salmoFechar = document.getElementById('salmoFechar');
+
+if (salmoLink) {
+  salmoLink.addEventListener('click', e => {
+    e.preventDefault();
+    salmoPopup.style.display = 'block';
+    salmoOverlay.style.display = 'block';
+    salmoInput && salmoInput.focus();
+  });
+}
+function closeSalmoPopup(){
+  if (salmoPopup) salmoPopup.style.display = 'none';
+  if (salmoOverlay) salmoOverlay.style.display = 'none';
+  if (salmoInput) salmoInput.value = '';
+}
+if (salmoFechar) salmoFechar.addEventListener('click', closeSalmoPopup);
+if (salmoOverlay) salmoOverlay.addEventListener('click', closeSalmoPopup);
+
+if (salmoBuscar) {
+  salmoBuscar.addEventListener('click', () => {
+    const query = salmoInput.value.trim();
+    if (!query) return;
+    const appUrl = `youtube://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+    const webUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+    window.location.href = appUrl;
+    setTimeout(() => window.open(webUrl, '_blank'), 800);
+    closeSalmoPopup();
+  });
+}
+
+/* ============================
+   Share / install
+   ============================ */
+
+if (shareBtn) {
+  const shareUrl = 'https://chat-jesus.vercel.app/';
+  shareBtn.href = `https://wa.me/?text=Vem%20conversar%20com%20Jesus%20neste%20link%20🙏❤️%20%0A${encodeURIComponent(shareUrl)}`;
+  shareBtn.addEventListener('click', (e) => {
+    if (navigator.share) {
+      e.preventDefault();
+      navigator.share({ title: 'Chat com Jesus', text: 'Converse com Jesus usando este chat:', url: shareUrl })
+        .catch(err => console.error(err));
+    }
+  });
+}
+
+window.onload = () => {
+  loadSettings();
+  if ('speechSynthesis' in window) {
+    speechSynthesis.onvoiceschanged = () => { voicesList = speechSynthesis.getVoices(); };
+    voicesList = speechSynthesis.getVoices();
+  }
+
+  // ✅ Garante que os salmos sejam carregados antes de usar
+  if (typeof carregarSalmos === 'function') {
+    carregarSalmos();
+  }
+   
+   // Registro do Service Worker
+   if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+         navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('✅ Service Worker registrado:', reg))
+            .catch(err => console.error('❌ Erro ao registrar SW:', err));
+      });
+   }
+};
+
+// beforeinstallprompt (popup)
+let deferredPrompt;
+const installPopup = document.getElementById('installPopup');
+const installOverlay = document.getElementById('installOverlay');
+const btnInstall = document.getElementById('btnInstall');
+const btnDismiss = document.getElementById('btnDismiss');
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (installPopup && installOverlay) {
+    installPopup.style.display = 'block';
+    installOverlay.style.display = 'block';
+  }
+});
+if (btnInstall) btnInstall.addEventListener('click', () => {
+  if (installPopup && installOverlay) { installPopup.style.display = 'none'; installOverlay.style.display = 'none'; }
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => deferredPrompt = null);
+  }
+});
+if (btnDismiss) btnDismiss.addEventListener('click', () => {
+  if (installPopup && installOverlay) { installPopup.style.display = 'none'; installOverlay.style.display = 'none'; }
+});
+
+                              
