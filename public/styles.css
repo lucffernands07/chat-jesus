@@ -628,10 +628,12 @@ input[type='text'] {
 
 #toggle-biblia {
   background-color: #add8e6;
+  border: 1px solid #ccc;
 }
 
 #toggle-jesus {
   background-color: #9ec9db;
+  border: 1px solid #ccc;
 }
 
 /* === 🔹 Área recolhível dos chats === */
@@ -739,7 +741,7 @@ input[type='text'] {
 
 #salmo-toggle {
   background-color: #D0E9F9; /* Fundo da caixa*/
-  border: none;
+  border: 1px solid #ccc;
   border-radius: 0;
 }
 
