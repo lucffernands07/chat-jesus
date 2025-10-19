@@ -39,6 +39,11 @@ function appendMessage(sender, text) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+/* ============================
+   Voz / síntese de fala
+   ============================ */
+
+// Função que fala com voz de Jesus
 function speakJesus(text) {
   if ('speechSynthesis' in window && isVoiceEnabled()) {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -46,42 +51,47 @@ function speakJesus(text) {
     utterance.pitch = 1;
     utterance.rate = 1;
 
-    const selected = [...voiceRadios].find(r => r.checked)?.value;
     const voices = speechSynthesis.getVoices();
-    let found = null;
-    if (selected === 'male') {
-      found = voices.find(v => v.lang.startsWith('pt') && /ricardo|male/i.test(v.name)) || voices.find(v => v.lang.startsWith('pt'));
-    } else {
-      found = voices.find(v => v.lang.startsWith('pt') && /ana|female|google/i.test(v.name)) || voices.find(v => v.lang.startsWith('pt'));
-    }
-    if (found) utterance.voice = found;
+    const selectedVoice = getSelectedVoice();
+    if (selectedVoice) utterance.voice = selectedVoice;
 
-    speechSynthesis.cancel();
+    speechSynthesis.cancel(); // Evita sobreposição
     speechSynthesis.speak(utterance);
   }
 }
 
+// Retorna a voz selecionada pelo usuário
+function getSelectedVoice() {
+  const selected = [...voiceRadios].find(r => r.checked)?.value;
+  if (!selected) return null;
+
+  const voices = speechSynthesis.getVoices();
+  if (selected === 'male') {
+    return (
+      voices.find(v =>
+        v.lang.startsWith('pt') &&
+        (/ricardo|male/i).test(v.name)
+      ) || voices.find(v => v.lang.startsWith('pt'))
+    );
+  } else {
+    return (
+      voices.find(v =>
+        v.lang.startsWith('pt') &&
+        (/ana|female|google/i).test(v.name)
+      ) || voices.find(v => v.lang.startsWith('pt'))
+    );
+  }
+}
+
+// Verifica se a voz está habilitada
 function isVoiceEnabled() {
   return localStorage.getItem('voiceEnabled') === 'true';
 }
 
-function saveSettings() {
-  if (voiceToggle) localStorage.setItem('voiceEnabled', voiceToggle.checked);
-  const selectedVoice = [...voiceRadios].find(radio => radio.checked)?.value;
-  if (selectedVoice) localStorage.setItem('voiceType', selectedVoice);
-}
+// Mantém loadSettings e saveSettings **do script atual** para não quebrar toggles
+if (voiceToggle) voiceToggle.addEventListener('change', saveSettings);
+voiceRadios.forEach(r => r.addEventListener('change', saveSettings));
 
-function loadSettings() {
-  const voiceEnabledStorage = localStorage.getItem('voiceEnabled');
-  if (voiceToggle) voiceToggle.checked = voiceEnabledStorage !== null ? voiceEnabledStorage === 'true' : true;
-
-  const voiceTypeStorage = localStorage.getItem('voiceType');
-  if (voiceTypeStorage) {
-    [...voiceRadios].forEach(radio => radio.checked = radio.value === voiceTypeStorage);
-  } else {
-    [...voiceRadios].forEach(radio => radio.checked = radio.value === 'male');
-    localStorage.setItem('voiceType', 'male');
-  }
 // == Elementos principais ==
 const chatBox = document.getElementById('chat-box');
 const chatForm = document.getElementById('chat-form');
