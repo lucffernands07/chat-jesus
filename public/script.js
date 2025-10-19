@@ -166,9 +166,24 @@ voiceBtn.addEventListener('click', () => {
 voiceToggle.addEventListener('change', () => saveSettings());
 voiceRadios.forEach(radio => radio.addEventListener('change', () => saveSettings()));
 
-function toggleMenu() {
-  sideMenu.classList.toggle('open');
-}
+function toggleMenu() {    
+  sideMenu.classList.toggle('open');    
+}    
+
+if (closeMenuBtn) closeMenuBtn.addEventListener('click', (e) => { 
+  e.stopPropagation(); 
+  sideMenu.classList.remove('open'); 
+});    
+
+document.addEventListener('click', (e) => {    
+  if (sideMenu.classList.contains('open')) {    
+    if (!sideMenu.contains(e.target) && !e.target.closest('.menu-btn')) {    
+      sideMenu.classList.remove('open');    
+    }    
+  }    
+});    
+
+if (sideMenu) sideMenu.addEventListener('click', (e) => e.stopPropagation());
 
 // === CARREGAMENTO DE CONFIGURAÇÕES ===
 window.onload = () => {
@@ -214,26 +229,3 @@ btnDismiss.addEventListener('click', () => {
   installPopup.style.display = 'none';
   installOverlay.style.display = 'none';
 });
-
-/* ============================
-   Menu lateral
-   ============================ */
-
-function toggleMenu() {    
-  sideMenu.classList.toggle('open');    
-}    
-
-if (closeMenuBtn) closeMenuBtn.addEventListener('click', (e) => { 
-  e.stopPropagation(); 
-  sideMenu.classList.remove('open'); 
-});    
-
-document.addEventListener('click', (e) => {    
-  if (sideMenu.classList.contains('open')) {    
-    if (!sideMenu.contains(e.target) && !e.target.closest('.menu-btn')) {    
-      sideMenu.classList.remove('open');    
-    }    
-  }    
-});    
-
-if (sideMenu) sideMenu.addEventListener('click', (e) => e.stopPropagation());
