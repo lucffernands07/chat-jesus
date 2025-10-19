@@ -637,7 +637,7 @@ input[type='text'] {
 /* === 🔹 Área recolhível dos chats === */
 .chat-container {
   display: none;
-  border: 1px solid #f0e68c; /* leve borda dourada para realçar */
+  border: 1px solid #ccc;
   border-top: none;
   padding: 10px;
   animation: expand 0.3s ease-out;
@@ -739,8 +739,8 @@ input[type='text'] {
 
 #salmo-toggle {
   background-color: #D0E9F9; /* Fundo da caixa*/
-  border-radius: 0 0 8px 8px;
-  border: 1px solid #ccc;
+  border: none;
+  border-radius: 0;
 }
 
 #salmo-container {
