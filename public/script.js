@@ -8,7 +8,7 @@ const sideMenu = document.getElementById('sideMenu');
 const voiceToggle = document.getElementById('voiceToggle');
 const voiceRadios = document.querySelectorAll('input[name="voiceType"]');
 
-// === FUNÇÕES DE CHAT ===
+// === FUNÇÃO DE MENSAGENS ===
 function appendMessage(sender, text) {
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message', sender === 'user' ? 'user' : 'jesus');
@@ -23,7 +23,7 @@ function appendMessage(sender, text) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// === VOZ DE JESUS RESTAURADA ===
+// === VOZ DE JESUS ===
 function speakJesus(text) {
   if ('speechSynthesis' in window && isVoiceEnabled()) {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -31,11 +31,10 @@ function speakJesus(text) {
     utterance.pitch = 1;
     utterance.rate = 1;
 
-    const voices = speechSynthesis.getVoices();
     const selectedVoice = getSelectedVoice();
     if (selectedVoice) utterance.voice = selectedVoice;
 
-    speechSynthesis.cancel(); // evita sobreposição
+    speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
   }
 }
@@ -46,25 +45,23 @@ function getSelectedVoice() {
 
   const voices = speechSynthesis.getVoices();
   if (selected === 'male') {
-    // voz masculina pt-BR
     return (
       voices.find(
         v =>
           v.lang === 'pt-BR' &&
           (v.name.toLowerCase().includes('male') ||
-           v.name.toLowerCase().includes('ricardo') ||
-           v.name.toLowerCase().includes('brasil'))
+            v.name.toLowerCase().includes('ricardo') ||
+            v.name.toLowerCase().includes('brasil'))
       ) || null
     );
   } else {
-    // voz feminina padrão pt-BR
     return (
       voices.find(
         v =>
           v.lang === 'pt-BR' &&
           (v.name.toLowerCase().includes('female') ||
-           v.name.toLowerCase().includes('ana') ||
-           v.name.toLowerCase().includes('google'))
+            v.name.toLowerCase().includes('ana') ||
+            v.name.toLowerCase().includes('google'))
       ) || null
     );
   }
@@ -100,7 +97,7 @@ function loadSettings() {
   }
 }
 
-// === ENVIO DE MENSAGEM ===
+// === CHAT ===
 chatForm.addEventListener('submit', async e => {
   e.preventDefault();
   const userMessage = messageInput.value.trim();
@@ -123,7 +120,7 @@ chatForm.addEventListener('submit', async e => {
 
     if (data && data.reply) {
       appendMessage('jesus', data.reply);
-      speakJesus(data.reply); // 🔊 voz restaurada aqui
+      speakJesus(data.reply);
     } else {
       appendMessage('jesus', 'Desculpe, não recebi uma resposta.');
     }
@@ -162,56 +159,52 @@ voiceBtn.addEventListener('click', () => {
   };
 });
 
-// === EXPANDIR / RECOLHER RESPOSTAS E SALMOS (versão original do primeiro script) ===
-document.addEventListener("click", (e) => {
-  const toggle = e.target.closest(".chat-toggle");
-  if (!toggle) return;
+// === MENU ===
+function toggleMenu() {
+  sideMenu.classList.toggle('open');
+}
 
-  const content = toggle.nextElementSibling;
-  if (content) {
-    content.classList.toggle("expanded");
+document.addEventListener('click', (e) => {
+  if (sideMenu.classList.contains('open')) {
+    if (!sideMenu.contains(e.target) && !e.target.closest('.menu-btn')) {
+      sideMenu.classList.remove('open');
+    }
   }
 });
 
-// === CONFIGURAÇÕES DE MENU ===
-voiceToggle.addEventListener('change', () => saveSettings());
-voiceRadios.forEach(radio => radio.addEventListener('change', () => saveSettings()));
-
-function toggleMenu() {    
-  sideMenu.classList.toggle('open');    
-}    
-
-if (closeMenuBtn) closeMenuBtn.addEventListener('click', (e) => { 
-  e.stopPropagation(); 
-  sideMenu.classList.remove('open'); 
-});    
-
-document.addEventListener('click', (e) => {    
-  if (sideMenu.classList.contains('open')) {    
-    if (!sideMenu.contains(e.target) && !e.target.closest('.menu-btn')) {    
-      sideMenu.classList.remove('open');    
-    }    
-  }    
-});    
-
 if (sideMenu) sideMenu.addEventListener('click', (e) => e.stopPropagation());
+voiceToggle.addEventListener('change', saveSettings);
+voiceRadios.forEach(r => r.addEventListener('change', saveSettings));
 
-// === CARREGAMENTO DE CONFIGURAÇÕES ===
+// === EXPANSÃO DOS CHATS E SALMOS ===
+document.addEventListener('click', (e) => {
+  const toggle = e.target.closest('.toggle-header');
+  if (toggle) {
+    const content = toggle.nextElementSibling;
+    if (content) {
+      content.classList.toggle('open');
+      toggle.classList.toggle('active');
+    }
+  }
+});
+
+// === INICIALIZAÇÃO ===
 window.onload = () => {
   loadSettings();
   if ('speechSynthesis' in window) {
-    speechSynthesis.onvoiceschanged = () => {}; // força o carregamento das vozes
+    speechSynthesis.onvoiceschanged = () => {};
   }
 };
 
 // === SERVICE WORKER ===
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/service-worker.js")
-    .then(() => console.log("Service Worker registrado com sucesso."))
-    .catch(err => console.error("Erro ao registrar Service Worker:", err));
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker
+    .register('/service-worker.js')
+    .then(() => console.log('Service Worker registrado.'))
+    .catch(err => console.error('Erro ao registrar Service Worker:', err));
 }
 
-// === POP-UP DE INSTALAÇÃO DO APP ===
+// === POP-UP DE INSTALAÇÃO ===
 let deferredPrompt;
 const installPopup = document.getElementById('installPopup');
 const installOverlay = document.getElementById('installOverlay');
@@ -230,9 +223,7 @@ btnInstall.addEventListener('click', () => {
   installOverlay.style.display = 'none';
   if (deferredPrompt) {
     deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => {
-      deferredPrompt = null;
-    });
+    deferredPrompt.userChoice.then(() => (deferredPrompt = null));
   }
 });
 
