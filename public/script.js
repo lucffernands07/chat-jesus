@@ -162,6 +162,17 @@ voiceBtn.addEventListener('click', () => {
   };
 });
 
+// === EXPANDIR / RECOLHER RESPOSTAS E SALMOS (versão original do primeiro script) ===
+document.addEventListener("click", (e) => {
+  const toggle = e.target.closest(".chat-toggle");
+  if (!toggle) return;
+
+  const content = toggle.nextElementSibling;
+  if (content) {
+    content.classList.toggle("expanded");
+  }
+});
+
 // === CONFIGURAÇÕES DE MENU ===
 voiceToggle.addEventListener('change', () => saveSettings());
 voiceRadios.forEach(radio => radio.addEventListener('change', () => saveSettings()));
