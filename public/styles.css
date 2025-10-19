@@ -637,7 +637,7 @@ input[type='text'] {
 /* === 🔹 Área recolhível dos chats === */
 .chat-container {
   display: none;
-  border: 1px solid #fff;
+  border: 1px solid #f0e68c; /* leve borda dourada para realçar */
   border-top: none;
   padding: 10px;
   animation: expand 0.3s ease-out;
@@ -747,6 +747,7 @@ input[type='text'] {
   background-color: #fff8dc; /* amarelo claro estilo papel (cornsilk) */
   padding: 15px;
   border-radius: 12px;
+  border-top: none;
   border: 1px solid #f0e68c; /* leve borda dourada para realçar */
   color: #333; /* texto escuro para contraste */
   line-height: 1.6;
