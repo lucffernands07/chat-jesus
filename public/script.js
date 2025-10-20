@@ -74,6 +74,10 @@ window.addEventListener('load', () => {
 
 // 🧩 ====== FIM DO VALIDADOR ======
 
+function isVoiceEnabled() {
+  return localStorage.getItem('voiceEnabled') === 'true';
+}
+
 function speakJesus(text) {
   // só fala se estiver ativado
   if (!isVoiceEnabled()) return;
