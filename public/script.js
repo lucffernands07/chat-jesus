@@ -5,9 +5,10 @@ const messageInput = document.getElementById('message-input');
 const voiceBtn = document.getElementById('voice-btn');
 const loadingIndicator = document.getElementById('loading');
 const sideMenu = document.getElementById('sideMenu');
+const menuBtn = document.querySelector('.menu-btn'); 
+const closeMenuBtn = document.getElementById('closeMenuBtn');
 //const voiceToggle = document.getElementById('voiceToggle');
 //const voiceRadios = document.querySelectorAll('input[name="voiceType"]');
-const closeMenuBtn = document.getElementById('closeMenuBtn');
 const shareBtn = document.getElementById('shareBtn');
 const synth = window.speechSynthesis;
 
@@ -335,10 +336,6 @@ if (toggleBibliaBtn) {
 
 // Espera o DOM estar carregado
 window.addEventListener('DOMContentLoaded', () => {
-  const sideMenu = document.getElementById('sideMenu');
-  const closeMenuBtn = document.getElementById('closeMenuBtn');
-  const menuBtn = document.querySelector('.menu-btn'); // botão que abre o menu
-
   if (!sideMenu) return; // sai se não existir
 
   // Toggle menu ao clicar no botão
