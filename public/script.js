@@ -5,8 +5,6 @@ const messageInput = document.getElementById('message-input');
 const voiceBtn = document.getElementById('voice-btn');
 const loadingIndicator = document.getElementById('loading');
 const sideMenu = document.getElementById('sideMenu');
-const voiceToggle = document.getElementById('voiceToggle');
-const voiceRadios = document.querySelectorAll('input[name="voiceType"]');
 const closeMenuBtn = document.getElementById('closeMenuBtn');
 const shareBtn = document.getElementById('shareBtn');
 
@@ -24,7 +22,7 @@ const bibliaChatContainer = document.getElementById("biblia-chat-container");
 let voicesList = [];
 
 /* ============================
-   Funções de chat / voz
+   Funções de chat 
    ============================ */
 
 function appendMessage(sender, text) {
@@ -314,10 +312,6 @@ if (shareBtn) {
 
 window.onload = () => {
   loadSettings();
-  if ('speechSynthesis' in window) {
-    speechSynthesis.onvoiceschanged = () => { voicesList = speechSynthesis.getVoices(); };
-    voicesList = speechSynthesis.getVoices();
-  }
 
   // ✅ Garante que os salmos sejam carregados antes de usar
   if (typeof carregarSalmos === 'function') {
