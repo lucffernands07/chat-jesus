@@ -135,6 +135,7 @@ function loadSettings() {
 if (chatForm) {
   chatForm.addEventListener('submit', async e => {
     e.preventDefault();
+
     const userMessage = messageInput.value.trim();
     if (!userMessage) {
       appendMessage('jesus', '⚠️ Por favor, digite uma mensagem primeiro.');
@@ -164,22 +165,22 @@ if (chatForm) {
 
       loadingIndicator.style.display = 'none';
 
-       if (data && data.reply) {
+      // ✅ Verifica se houve resposta
+      if (data && data.reply) {
         appendMessage('jesus', data.reply);
         speakJesus(data.reply); // Jesus fala a resposta em voz alta 🎙️
-      
-        // ✅ Atualiza o salmo com base na mensagem do chat 1
+
+        // Atualiza o salmo
         const salmo = getSalmoParaUsuario(userMessage);
         mostrarSalmoNoContainer(salmo);
-       }
-    } else {
+      } else {
         appendMessage('jesus', 'Desculpe, não recebi uma resposta.');
       }
 
     } catch (err) {
       console.error('❌ Erro na conexão com /api/chat:', err);
       loadingIndicator.style.display = 'none';
-      // só mostra mensagem se ainda não houve resposta
+
       const lastMessage = chatBox.lastElementChild?.textContent || '';
       if (!lastMessage.includes('Jesus:')) {
         appendMessage('jesus', 'Erro ao se conectar com Jesus.');
@@ -187,6 +188,7 @@ if (chatForm) {
     }
   });
 }
+
 
 /* ============================
    Chat 2 — Palavra de Sabedoria
