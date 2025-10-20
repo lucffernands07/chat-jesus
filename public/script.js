@@ -7,8 +7,8 @@ const loadingIndicator = document.getElementById('loading');
 const sideMenu = document.getElementById('sideMenu');
 const menuBtn = document.querySelector('.menu-btn'); 
 const closeMenuBtn = document.getElementById('closeMenuBtn');
-const voiceToggle = document.getElementById('voiceToggle');
-const voiceRadios = document.querySelectorAll('input[name="voiceType"]');
+//const voiceToggle = document.getElementById('voiceToggle');
+//const voiceRadios = document.querySelectorAll('input[name="voiceType"]');
 const shareBtn = document.getElementById('shareBtn');
 const synth = window.speechSynthesis;
 
