@@ -88,6 +88,10 @@ header h1 {
   right: 0;
 }
 
+#sideMenu p {
+  font-size: 18px;
+}
+
 /* Cabeçalho do menu */
 .menu-header {
   display: flex;
