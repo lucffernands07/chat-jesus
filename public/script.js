@@ -7,6 +7,8 @@ const loadingIndicator = document.getElementById('loading');
 const sideMenu = document.getElementById('sideMenu');
 const closeMenuBtn = document.getElementById('closeMenuBtn');
 const shareBtn = document.getElementById('shareBtn');
+const voiceToggle = document.getElementById('voiceToggle');
+const voiceRadios = document.querySelectorAll('input[name="voiceType"]');
 
 // Chat 2 elementos
 const bibliaInput = document.getElementById("biblia-input");
