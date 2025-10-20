@@ -333,21 +333,42 @@ if (toggleBibliaBtn) {
    Menu lateral
    ============================ */
 
-function toggleMenu() {
-  sideMenu.classList.toggle('open');
-}
+// Espera o DOM estar carregado
+window.addEventListener('DOMContentLoaded', () => {
+  const sideMenu = document.getElementById('sideMenu');
+  const closeMenuBtn = document.getElementById('closeMenuBtn');
+  const menuBtn = document.querySelector('.menu-btn'); // botão que abre o menu
 
-if (closeMenuBtn) closeMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); sideMenu.classList.remove('open'); });
+  if (!sideMenu) return; // sai se não existir
 
-document.addEventListener('click', (e) => {
-  if (sideMenu.classList.contains('open')) {
-    if (!sideMenu.contains(e.target) && !e.target.closest('.menu-btn')) {
+  // Toggle menu ao clicar no botão
+  if (menuBtn) {
+    menuBtn.addEventListener('click', () => {
+      sideMenu.classList.toggle('open');
+    });
+  }
+
+  // Fecha menu ao clicar no X
+  if (closeMenuBtn) {
+    closeMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sideMenu.classList.remove('open');
+    });
+  }
+
+  // Fecha menu ao clicar fora dele
+  document.addEventListener('click', (e) => {
+    if (sideMenu.classList.contains('open') &&
+        !sideMenu.contains(e.target) &&
+        !e.target.closest('.menu-btn')) {
       sideMenu.classList.remove('open');
     }
-  }
+  });
+
+  // Evita que clique dentro do menu feche ele
+  sideMenu.addEventListener('click', (e) => e.stopPropagation());
 });
 
-if (sideMenu) sideMenu.addEventListener('click', (e) => e.stopPropagation());
 
 /* ============================
    Salmo popup / YouTube
