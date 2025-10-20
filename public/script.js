@@ -5,10 +5,11 @@ const messageInput = document.getElementById('message-input');
 const voiceBtn = document.getElementById('voice-btn');
 const loadingIndicator = document.getElementById('loading');
 const sideMenu = document.getElementById('sideMenu');
-const voiceToggle = document.getElementById('voiceToggle');
-const voiceRadios = document.querySelectorAll('input[name="voiceType"]');
+//const voiceToggle = document.getElementById('voiceToggle');
+//const voiceRadios = document.querySelectorAll('input[name="voiceType"]');
 const closeMenuBtn = document.getElementById('closeMenuBtn');
 const shareBtn = document.getElementById('shareBtn');
+const synth = window.speechSynthesis;
 
 // Chat 2 elementos
 const bibliaInput = document.getElementById("biblia-input");
@@ -30,15 +31,59 @@ let voicesList = [];
 function appendMessage(sender, text) {
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message', sender === 'user' ? 'user' : 'jesus');
+
   const senderName =
     sender === 'user'
       ? '<strong>Você:</strong>'
       : '<strong style="color:#8B0000">Jesus:</strong>';
-  messageDiv.innerHTML = `${senderName} ${text}`;
+
+  if (sender === 'jesus') {
+    messageDiv.innerHTML = `
+      ${senderName} ${text}
+      <br>
+      <button class="voice-btn">🔊 Ouvir resposta</button>
+    `;
+  } else {
+    messageDiv.innerHTML = `${senderName} ${text}`;
+  }
+
   chatBox.appendChild(messageDiv);
   chatBox.scrollTop = chatBox.scrollHeight;
+
+  if (sender === 'jesus') {
+    const voiceBtn = messageDiv.querySelector('.voice-btn');
+    if (voiceBtn) {
+      voiceBtn.addEventListener('click', () => speakJesus(text));
+    }
+  }
 }
 
+
+//=== Função resposta de Jesus com voz ===//
+function speakJesus(texto) {
+  if (!texto) return;
+
+  // Se Jesus já estiver falando, interrompe antes de iniciar de novo
+  if (synth.speaking) synth.cancel();
+
+  let voices = synth.getVoices();
+
+  // Se o navegador ainda não carregou as vozes, espera e tenta novamente
+  if (voices.length === 0) {
+    synth.onvoiceschanged = () => speakJesus(texto);
+    return;
+  }
+ 
+  const msg = new SpeechSynthesisUtterance(texto);
+  msg.voice = voices.find(v => v.lang === "pt-BR") || voices[0];
+  msg.lang = "pt-BR";
+  msg.rate = 1;
+  msg.pitch = 1;
+
+  synth.speak(msg);
+}
+
+/*
 function speakJesus(text) {
   if ('speechSynthesis' in window && isVoiceEnabled()) {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -83,6 +128,7 @@ function loadSettings() {
     localStorage.setItem('voiceType', 'male');
   }
 }
+*/
 
 /* ============================
    Chat 1 (Jesus) envio
@@ -119,14 +165,15 @@ if (chatForm) {
 
       loadingIndicator.style.display = 'none';
 
-      if (data && data.reply) {
+       if (data && data.reply) {
         appendMessage('jesus', data.reply);
-        speakJesus(data.reply);
-
+        speakJesus(data.reply); // Jesus fala a resposta em voz alta 🎙️
+      
         // ✅ Atualiza o salmo com base na mensagem do chat 1
         const salmo = getSalmoParaUsuario(userMessage);
         mostrarSalmoNoContainer(salmo);
-      } else {
+       }
+    } else {
         appendMessage('jesus', 'Desculpe, não recebi uma resposta.');
       }
 
@@ -357,7 +404,7 @@ if (shareBtn) {
 }
 
 window.onload = () => {
-  loadSettings();
+  // loadSettings(); --->> validar se está sendo usado.
   if ('speechSynthesis' in window) {
     speechSynthesis.onvoiceschanged = () => { voicesList = speechSynthesis.getVoices(); };
     voicesList = speechSynthesis.getVoices();
