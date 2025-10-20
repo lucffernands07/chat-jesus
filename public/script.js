@@ -79,17 +79,22 @@ function isVoiceEnabled() {
 }
 
 function speakJesus(text) {
-  // 1️⃣ Verifica se a voz está habilitada
   if (!isVoiceEnabled()) return;
 
-  // 2️⃣ Tenta usar speechSynthesis nativo
-  if ('speechSynthesis' in window) {
+  // Se speechSynthesis não existe → fallback
+  if (!('speechSynthesis' in window)) {
+    console.warn('⚠️ speechSynthesis não disponível neste PWA. Usando fallback.');
+    appendMessage('jesus', '🗣️ [voz indisponível neste PWA]');
+    return;
+  }
+
+  // Função interna para falar
+  function doSpeak() {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'pt-BR';
     utterance.pitch = 1;
     utterance.rate = 1;
 
-    // Seleção simples de voz masculina/feminina
     const selected = [...voiceRadios].find(r => r.checked)?.value;
     const voices = speechSynthesis.getVoices();
     let found = null;
@@ -102,20 +107,16 @@ function speakJesus(text) {
 
     speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
-  } 
-  // 3️⃣ Fallback: se não houver speechSynthesis
-  else {
-    console.warn('⚠️ speechSynthesis não disponível neste PWA. Usando fallback.');
-    appendMessage('jesus', '🗣️ [voz indisponível neste PWA]');
-    
-    // ✅ Se quiser, aqui você poderia chamar API TTS externa e reproduzir áudio
-    // exemplo:
-    // fetch(`https://api-tts.com/speak?text=${encodeURIComponent(text)}`)
-    //   .then(res => res.blob())
-    //   .then(blob => {
-    //     const audio = new Audio(URL.createObjectURL(blob));
-    //     audio.play();
-    //   });
+  }
+
+  // ⚡ Se vozes ainda não carregaram, aguarda o evento voiceschanged
+  if (speechSynthesis.getVoices().length === 0) {
+    speechSynthesis.onvoiceschanged = () => {
+      doSpeak();
+      speechSynthesis.onvoiceschanged = null; // evita múltiplas chamadas
+    };
+  } else {
+    doSpeak();
   }
 }
 
