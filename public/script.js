@@ -18,6 +18,8 @@ const toggleJesusBtn = document.getElementById("toggle-jesus");
 const chatJesusContainer = document.getElementById("chat-jesus-container");
 const toggleBibliaBtn = document.getElementById("toggle-biblia");
 const bibliaChatContainer = document.getElementById("biblia-chat-container");
+const toggleSalmoBtn = document.getElementById("salmo-toggle");
+const salmoContainer = document.getElementById("salmo-container");
 
 // Salmo elementos
 const salmoTexto = document.getElementById('salmo-texto');
@@ -258,10 +260,10 @@ function toggleChat(container, button) {
   if (!container || !button) return;
   const willOpen = !container.classList.contains('expanded');
 
-  [chatJesusContainer, bibliaChatContainer].forEach(c => {
+  [chatJesusContainer, bibliaChatContainer, toggleSalmoBtn].forEach(c => {
     if (c && c !== container) c.classList.remove('expanded');
   });
-  [toggleJesusBtn, toggleBibliaBtn].forEach(b => b && b.classList.remove('active'));
+  [toggleJesusBtn, toggleBibliaBtn, toggleSalmoBtn].forEach(b => b && b.classList.remove('active'));
 
   if (willOpen) {
     container.classList.add('expanded');
