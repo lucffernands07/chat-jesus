@@ -39,57 +39,8 @@ function appendMessage(sender, text) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// 🧠 ====== VALIDADOR DE VOZ (speechSynthesis) ======
-window.addEventListener('load', () => {
-
-  // 🔹 Função auxiliar para mostrar mensagem no console
-  function showMessage(msg, type = 'log') {
-    if (type === 'error') console.error(msg);
-    else if (type === 'warn') console.warn(msg);
-    else console.log(msg);
-  }
-
-  try {
-    // 🔸 Verifica se a API speechSynthesis existe no navegador
-    if (!('speechSynthesis' in window)) {
-      showMessage('❌ speechSynthesis não detectado', 'error');
-    } else {
-      // 🔸 Se existir, obtém a lista de vozes disponíveis
-      const voices = speechSynthesis.getVoices();
-      showMessage('✅ speechSynthesis detectado.');
-      showMessage(`Vozes carregadas: ${voices.length}`);
-
-      if (voices.length === 0) {
-        showMessage('⚠️ speechSynthesis detectado, mas sem vozes ainda', 'warn');
-      } else {
-        // 🔹 Lista nomes das vozes disponíveis
-        voices.forEach(v => showMessage(`- ${v.name} (${v.lang})`));
-      }
-    }
-  } catch (e) {
-    // 🔸 Captura possíveis falhas inesperadas
-    showMessage(`⚠️ Falha ao validar speechSynthesis: ${e}`, 'warn');
-  }
-});
-
-// 🧩 ====== FIM DO VALIDADOR ======
-
-function isVoiceEnabled() {
-  return localStorage.getItem('voiceEnabled') === 'true';
-}
-
 function speakJesus(text) {
-  if (!isVoiceEnabled()) return;
-
-  // Se speechSynthesis não existe → fallback
-  if (!('speechSynthesis' in window)) {
-    console.warn('⚠️ speechSynthesis não disponível neste PWA. Usando fallback.');
-    appendMessage('jesus', '🗣️ [voz indisponível neste PWA]');
-    return;
-  }
-
-  // Função interna para falar
-  function doSpeak() {
+  if ('speechSynthesis' in window && isVoiceEnabled()) {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'pt-BR';
     utterance.pitch = 1;
@@ -108,16 +59,87 @@ function speakJesus(text) {
     speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
   }
+}
 
-  // ⚡ Se vozes ainda não carregaram, aguarda o evento voiceschanged
-  if (speechSynthesis.getVoices().length === 0) {
-    speechSynthesis.onvoiceschanged = () => {
-      doSpeak();
-      speechSynthesis.onvoiceschanged = null; // evita múltiplas chamadas
-    };
+function isVoiceEnabled() {
+  return localStorage.getItem('voiceEnabled') === 'true';
+}
+
+function saveSettings() {
+  if (voiceToggle) localStorage.setItem('voiceEnabled', voiceToggle.checked);
+  const selectedVoice = [...voiceRadios].find(radio => radio.checked)?.value;
+  if (selectedVoice) localStorage.setItem('voiceType', selectedVoice);
+}
+
+function loadSettings() {
+  const voiceEnabledStorage = localStorage.getItem('voiceEnabled');
+  if (voiceToggle) voiceToggle.checked = voiceEnabledStorage !== null ? voiceEnabledStorage === 'true' : true;
+
+  const voiceTypeStorage = localStorage.getItem('voiceType');
+  if (voiceTypeStorage) {
+    [...voiceRadios].forEach(radio => radio.checked = radio.value === voiceTypeStorage);
   } else {
-    doSpeak();
+    [...voiceRadios].forEach(radio => radio.checked = radio.value === 'male');
+    localStorage.setItem('voiceType', 'male');
   }
+}
+
+/* ============================
+   Chat 1 (Jesus) envio
+   ============================ */
+if (chatForm) {
+  chatForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const userMessage = messageInput.value.trim();
+    if (!userMessage) {
+      appendMessage('jesus', '⚠️ Por favor, digite uma mensagem primeiro.');
+      return;
+    }
+
+    appendMessage('user', userMessage);
+    messageInput.value = '';
+    loadingIndicator.style.display = 'flex';
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userMessage }),
+      });
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        console.warn('⚠️ Erro ao interpretar resposta do servidor:', parseError);
+        appendMessage('jesus', 'Desculpe, não entendi a resposta.');
+        loadingIndicator.style.display = 'none';
+        return;
+      }
+
+      loadingIndicator.style.display = 'none';
+
+      if (data && data.reply) {
+        appendMessage('jesus', data.reply);
+        speakJesus(data.reply);
+
+        // ✅ Atualiza o salmo com base na mensagem do chat 1
+        const salmo = getSalmoParaUsuario(userMessage);
+        mostrarSalmoNoContainer(salmo);
+      } else {
+        appendMessage('jesus', 'Desculpe, não recebi uma resposta.');
+      }
+
+    } catch (err) {
+      console.error('❌ Erro na conexão com /api/chat:', err);
+      loadingIndicator.style.display = 'none';
+      // só mostra mensagem se ainda não houve resposta
+      const lastMessage = chatBox.lastElementChild?.textContent || '';
+      if (!lastMessage.includes('Jesus:')) {
+        appendMessage('jesus', 'Erro ao se conectar com Jesus.');
+      }
+    }
+  });
 }
 
 /* ============================
@@ -334,19 +356,6 @@ if (shareBtn) {
   });
 }
 
-function loadSettings() {
-  const voiceEnabledStorage = localStorage.getItem('voiceEnabled');
-  if (voiceToggle) voiceToggle.checked = voiceEnabledStorage !== null ? voiceEnabledStorage === 'true' : true;
-
-  const voiceTypeStorage = localStorage.getItem('voiceType');
-  if (voiceTypeStorage) {
-    [...voiceRadios].forEach(radio => radio.checked = radio.value === voiceTypeStorage);
-  } else {
-    [...voiceRadios].forEach(radio => radio.checked = radio.value === 'male');
-    localStorage.setItem('voiceType', 'male');
-  }
-}
-
 window.onload = () => {
   loadSettings();
   if ('speechSynthesis' in window) {
@@ -394,4 +403,5 @@ if (btnInstall) btnInstall.addEventListener('click', () => {
 if (btnDismiss) btnDismiss.addEventListener('click', () => {
   if (installPopup && installOverlay) { installPopup.style.display = 'none'; installOverlay.style.display = 'none'; }
 });
-     
+
+   
