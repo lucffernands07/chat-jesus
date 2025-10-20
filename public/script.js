@@ -277,6 +277,7 @@ function toggleChat(container, button) {
 
 if (toggleJesusBtn) toggleJesusBtn.addEventListener('click', e => { e.stopPropagation(); toggleChat(chatJesusContainer, toggleJesusBtn); });
 if (toggleBibliaBtn) toggleBibliaBtn.addEventListener('click', e => { e.stopPropagation(); toggleChat(bibliaChatContainer, toggleBibliaBtn); });
+if (toggleSalmoBtn) toggleSalmoBtn.addEventListener('click', e => { e.stopPropagation(); toggleChat(salmoContainer, toggleSalmoBtn); });
 
 /* ============================
    Menu lateral
