@@ -39,6 +39,41 @@ function appendMessage(sender, text) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+// 🧠 ====== VALIDADOR DE VOZ (speechSynthesis) ======
+window.addEventListener('load', () => {
+
+  // 🔹 Função auxiliar para mostrar mensagem no console
+  function showMessage(msg, type = 'log') {
+    if (type === 'error') console.error(msg);
+    else if (type === 'warn') console.warn(msg);
+    else console.log(msg);
+  }
+
+  try {
+    // 🔸 Verifica se a API speechSynthesis existe no navegador
+    if (!('speechSynthesis' in window)) {
+      showMessage('❌ speechSynthesis não detectado', 'error');
+    } else {
+      // 🔸 Se existir, obtém a lista de vozes disponíveis
+      const voices = speechSynthesis.getVoices();
+      showMessage('✅ speechSynthesis detectado.');
+      showMessage(`Vozes carregadas: ${voices.length}`);
+
+      if (voices.length === 0) {
+        showMessage('⚠️ speechSynthesis detectado, mas sem vozes ainda', 'warn');
+      } else {
+        // 🔹 Lista nomes das vozes disponíveis
+        voices.forEach(v => showMessage(`- ${v.name} (${v.lang})`));
+      }
+    }
+  } catch (e) {
+    // 🔸 Captura possíveis falhas inesperadas
+    showMessage(`⚠️ Falha ao validar speechSynthesis: ${e}`, 'warn');
+  }
+});
+
+// 🧩 ====== FIM DO VALIDADOR ======
+
 function speakJesus(text) {
   // só fala se estiver ativado
   if (!isVoiceEnabled()) return;
