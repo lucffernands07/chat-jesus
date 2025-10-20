@@ -58,7 +58,6 @@ function appendMessage(sender, text) {
   }
 }
 
-
 //=== Função resposta de Jesus com voz ===//
 function speakJesus(texto) {
   if (!texto) return;
@@ -253,7 +252,7 @@ if (bibliaForm) {
 }
 
 /* ============================
-   Voz / reconhecimento
+   Reconhecimento de Voz (Botão Fale)
    ============================ */
 if (voiceBtn) {
   voiceBtn.addEventListener('click', () => {
