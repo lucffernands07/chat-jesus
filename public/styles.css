@@ -143,6 +143,7 @@ header h1 {
 .side-menu input[type="radio"] {
   margin-right: 8px;
   cursor: pointer;
+  color: gray;
 }
 
 /* Overlay para clique fora */
