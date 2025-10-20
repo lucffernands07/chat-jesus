@@ -429,6 +429,11 @@ if (shareBtn) {
 window.onload = () => {
   loadSettings();
 
+   // Para garantir que as vozes estejam carregadas, força atualização
+  if ('speechSynthesis' in window) {
+    speechSynthesis.onvoiceschanged = () => {};
+  };
+
   // ✅ Garante que os salmos sejam carregados antes de usar
   if (typeof carregarSalmos === 'function') {
     carregarSalmos();
