@@ -329,3 +329,77 @@ if (salmoBuscar) {
   });
 }
 
+/* ============================
+   Share / Install
+   ============================ */
+if (shareBtn) {
+  const shareUrl = 'https://chat-jesus.vercel.app/';
+  shareBtn.href = `https://wa.me/?text=Vem%20conversar%20com%20Jesus%20neste%20link%20🙏❤️%20%0A${encodeURIComponent(shareUrl)}`;
+  shareBtn.addEventListener('click', e => {
+    if (navigator.share) {
+      e.preventDefault();
+      navigator.share({
+        title: 'Chat com Jesus',
+        text: 'Converse com Jesus usando este chat:',
+        url: shareUrl
+      }).catch(err => console.error(err));
+    }
+  });
+}
+
+/* ============================
+   Inicialização
+   ============================ */
+window.onload = () => {
+  loadSettings();
+
+  // Mantém todos os toggles do chat, salmo e menu funcionando
+  if (typeof carregarSalmos === 'function') carregarSalmos();
+
+  // Registro do Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('✅ Service Worker registrado:', reg))
+      .catch(err => console.error('❌ Erro ao registrar SW:', err));
+  }
+};
+
+/* ============================
+   BeforeInstallPrompt (popup de instalação)
+   ============================ */
+let deferredPrompt;
+const installPopup = document.getElementById('installPopup');
+const installOverlay = document.getElementById('installOverlay');
+const btnInstall = document.getElementById('btnInstall');
+const btnDismiss = document.getElementById('btnDismiss');
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (installPopup && installOverlay) {
+    installPopup.style.display = 'block';
+    installOverlay.style.display = 'block';
+  }
+});
+
+if (btnInstall) {
+  btnInstall.addEventListener('click', () => {
+    if (installPopup && installOverlay) {
+      installPopup.style.display = 'none';
+      installOverlay.style.display = 'none';
+    }
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(() => deferredPrompt = null);
+    }
+  });
+}
+
+if (btnDismiss) {
+  btnDismiss.addEventListener('click', () => {
+    if (installPopup && installOverlay) {
+      installPopup.style.display = 'none';
+      installOverlay.style.display = 'none';
+    }
+  });
+}
