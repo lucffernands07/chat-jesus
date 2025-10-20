@@ -62,12 +62,9 @@ function appendMessage(sender, text) {
 //=== Função resposta de Jesus com voz ===//
 function speakJesus(texto) {
   if (!texto) return;
-
   // Se Jesus já estiver falando, interrompe antes de iniciar de novo
   if (synth.speaking) synth.cancel();
-
   let voices = synth.getVoices();
-
   // Se o navegador ainda não carregou as vozes, espera e tenta novamente
   if (voices.length === 0) {
     synth.onvoiceschanged = () => speakJesus(texto);
@@ -169,7 +166,6 @@ if (chatForm) {
       // ✅ Verifica se houve resposta
       if (data && data.reply) {
         appendMessage('jesus', data.reply);
-        speakJesus(data.reply); // Jesus fala a resposta em voz alta 🎙️
 
         // Atualiza o salmo
         const salmo = getSalmoParaUsuario(userMessage);
