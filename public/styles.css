@@ -154,7 +154,7 @@ header h1 {
 .side-menu input[type="radio"] {
   margin-right: 8px;
   cursor: pointer;
-  accent-color: gray; /* ⚡ define a cor do radio/checkbox */
+  accent-color: #888888; /* ⚡ define a cor do radio/checkbox */
 }
 
 /* Overlay para clique fora */
