@@ -356,9 +356,6 @@ if (shareBtn) {
 window.onload = () => {
   loadSettings();
 
-  // Mantém todos os toggles do chat, salmo e menu funcionando
-  if (typeof carregarSalmos === 'function') carregarSalmos();
-
   // Registro do Service Worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
