@@ -88,10 +88,6 @@ header h1 {
   right: 0;
 }
 
-#sideMenu p {
-  font-size: 18px;
-}
-
 /* Cabeçalho do menu */
 .menu-header {
   display: flex;
@@ -159,6 +155,10 @@ header h1 {
   margin-right: 8px;
   cursor: pointer;
   accent-color: #888888; /* ⚡ define a cor do radio/checkbox */
+}
+
+.coming-soon {
+  color: #888888;
 }
 
 /* Overlay para clique fora */
