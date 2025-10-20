@@ -386,6 +386,19 @@ if (shareBtn) {
   });
 }
 
+function loadSettings() {
+  const voiceEnabledStorage = localStorage.getItem('voiceEnabled');
+  if (voiceToggle) voiceToggle.checked = voiceEnabledStorage !== null ? voiceEnabledStorage === 'true' : true;
+
+  const voiceTypeStorage = localStorage.getItem('voiceType');
+  if (voiceTypeStorage) {
+    [...voiceRadios].forEach(radio => radio.checked = radio.value === voiceTypeStorage);
+  } else {
+    [...voiceRadios].forEach(radio => radio.checked = radio.value === 'male');
+    localStorage.setItem('voiceType', 'male');
+  }
+}
+
 window.onload = () => {
   loadSettings();
   if ('speechSynthesis' in window) {
