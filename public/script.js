@@ -79,101 +79,44 @@ function isVoiceEnabled() {
 }
 
 function speakJesus(text) {
-  // só fala se estiver ativado
+  // 1️⃣ Verifica se a voz está habilitada
   if (!isVoiceEnabled()) return;
 
-  // aguarda o objeto speechSynthesis estar disponível
-  function waitForSpeechAPI(callback, retries = 20) {
-    if ('speechSynthesis' in window) {
-      callback();
-    } else if (retries > 0) {
-      setTimeout(() => waitForSpeechAPI(callback, retries - 1), 300);
-    } else {
-      console.warn("⚠️ speechSynthesis não disponível neste dispositivo.");
-    }
-  }
-
-  waitForSpeechAPI(() => {
+  // 2️⃣ Tenta usar speechSynthesis nativo
+  if ('speechSynthesis' in window) {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'pt-BR';
     utterance.pitch = 1;
     utterance.rate = 1;
 
+    // Seleção simples de voz masculina/feminina
     const selected = [...voiceRadios].find(r => r.checked)?.value;
     const voices = speechSynthesis.getVoices();
-
     let found = null;
     if (selected === 'male') {
-      found = voices.find(v => v.lang.startsWith('pt') && /ricardo|male/i.test(v.name)) 
-            || voices.find(v => v.lang.startsWith('pt'));
+      found = voices.find(v => v.lang.startsWith('pt') && /ricardo|male/i.test(v.name)) || voices.find(v => v.lang.startsWith('pt'));
     } else {
-      found = voices.find(v => v.lang.startsWith('pt') && /ana|female|google/i.test(v.name)) 
-            || voices.find(v => v.lang.startsWith('pt'));
+      found = voices.find(v => v.lang.startsWith('pt') && /ana|female|google/i.test(v.name)) || voices.find(v => v.lang.startsWith('pt'));
     }
-
     if (found) utterance.voice = found;
 
     speechSynthesis.cancel();
-    setTimeout(() => speechSynthesis.speak(utterance), 100);
-  });
-}
-
-/* ============================
-   Chat 1 (Jesus) envio
-   ============================ */
-if (chatForm) {
-  chatForm.addEventListener('submit', async e => {
-    e.preventDefault();
-    const userMessage = messageInput.value.trim();
-    if (!userMessage) {
-      appendMessage('jesus', '⚠️ Por favor, digite uma mensagem primeiro.');
-      return;
-    }
-
-    appendMessage('user', userMessage);
-    messageInput.value = '';
-    loadingIndicator.style.display = 'flex';
-
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMessage }),
-      });
-
-      let data;
-      try {
-        data = await response.json();
-      } catch (parseError) {
-        console.warn('⚠️ Erro ao interpretar resposta do servidor:', parseError);
-        appendMessage('jesus', 'Desculpe, não entendi a resposta.');
-        loadingIndicator.style.display = 'none';
-        return;
-      }
-
-      loadingIndicator.style.display = 'none';
-
-      if (data && data.reply) {
-        appendMessage('jesus', data.reply);
-        speakJesus(data.reply);
-
-        // ✅ Atualiza o salmo com base na mensagem do chat 1
-        const salmo = getSalmoParaUsuario(userMessage);
-        mostrarSalmoNoContainer(salmo);
-      } else {
-        appendMessage('jesus', 'Desculpe, não recebi uma resposta.');
-      }
-
-    } catch (err) {
-      console.error('❌ Erro na conexão com /api/chat:', err);
-      loadingIndicator.style.display = 'none';
-      // só mostra mensagem se ainda não houve resposta
-      const lastMessage = chatBox.lastElementChild?.textContent || '';
-      if (!lastMessage.includes('Jesus:')) {
-        appendMessage('jesus', 'Erro ao se conectar com Jesus.');
-      }
-    }
-  });
+    speechSynthesis.speak(utterance);
+  } 
+  // 3️⃣ Fallback: se não houver speechSynthesis
+  else {
+    console.warn('⚠️ speechSynthesis não disponível neste PWA. Usando fallback.');
+    appendMessage('jesus', '🗣️ [voz indisponível neste PWA]');
+    
+    // ✅ Se quiser, aqui você poderia chamar API TTS externa e reproduzir áudio
+    // exemplo:
+    // fetch(`https://api-tts.com/speak?text=${encodeURIComponent(text)}`)
+    //   .then(res => res.blob())
+    //   .then(blob => {
+    //     const audio = new Audio(URL.createObjectURL(blob));
+    //     audio.play();
+    //   });
+  }
 }
 
 /* ============================
