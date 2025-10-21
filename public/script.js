@@ -80,53 +80,6 @@ function speakJesus(texto) {
   synth.speak(msg);
 }
 
-/*
-function speakJesus(text) {
-  if ('speechSynthesis' in window && isVoiceEnabled()) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'pt-BR';
-    utterance.pitch = 1;
-    utterance.rate = 1;
-
-    const selected = [...voiceRadios].find(r => r.checked)?.value;
-    const voices = speechSynthesis.getVoices();
-    let found = null;
-    if (selected === 'male') {
-      found = voices.find(v => v.lang.startsWith('pt') && /ricardo|male/i.test(v.name)) || voices.find(v => v.lang.startsWith('pt'));
-    } else {
-      found = voices.find(v => v.lang.startsWith('pt') && /ana|female|google/i.test(v.name)) || voices.find(v => v.lang.startsWith('pt'));
-    }
-    if (found) utterance.voice = found;
-
-    speechSynthesis.cancel();
-    speechSynthesis.speak(utterance);
-  }
-}
-
-function isVoiceEnabled() {
-  return localStorage.getItem('voiceEnabled') === 'true';
-}
-
-function saveSettings() {
-  if (voiceToggle) localStorage.setItem('voiceEnabled', voiceToggle.checked);
-  const selectedVoice = [...voiceRadios].find(radio => radio.checked)?.value;
-  if (selectedVoice) localStorage.setItem('voiceType', selectedVoice);
-}
-
-function loadSettings() {
-  const voiceEnabledStorage = localStorage.getItem('voiceEnabled');
-  if (voiceToggle) voiceToggle.checked = voiceEnabledStorage !== null ? voiceEnabledStorage === 'true' : true;
-
-  const voiceTypeStorage = localStorage.getItem('voiceType');
-  if (voiceTypeStorage) {
-    [...voiceRadios].forEach(radio => radio.checked = radio.value === voiceTypeStorage);
-  } else {
-    [...voiceRadios].forEach(radio => radio.checked = radio.value === 'male');
-    localStorage.setItem('voiceType', 'male');
-  }
-}
-*/
-
 /* ============================
    Chat 1 (Jesus) envio
    ============================ */
