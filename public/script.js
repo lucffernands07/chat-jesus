@@ -61,32 +61,47 @@ function appendMessage(sender, text) {
 
 //=== Função resposta de Jesus com voz ===//
 function speakJesus(text) {
-  if (!('speechSynthesis' in window)) return;
+  if (!('speechSynthesis' in window)) {
+    alert("Seu navegador não suporta leitura por voz.");
+    return;
+  }
 
-  // Cancela fala anterior
-  speechSynthesis.cancel();
+  // Cancela qualquer fala anterior
+  window.speechSynthesis.cancel();
 
-  // 🔹 Limpeza do texto antes de falar
-  let cleanText = text
-    .replace(/\*\*/g, '')                // remove **negrito**
-    .replace(/\*/g, '')                  // remove *itálico*
-    .replace(/#{1,6}\s?/g, '')           // remove ### títulos markdown
-    .replace(/https?:\/\/\S+/g, '')      // remove links
-    .replace(/[•\-–—]/g, ', ')           // troca bullets por pausas suaves
-    .replace(/\d+:\d+/g, match => match.replace(':', ' ')) // evita "11:28 da manhã"
-    .replace(/[^\w\sáéíóúãõâêôç,.;!?]/gi, '') // remove símbolos estranhos
+  // 🔤 Limpa o texto de caracteres indesejados
+  const cleanText = text
+    .replace(/[*#_]/g, "") // remove asteriscos e símbolos de markdown
+    .replace(/\s+/g, " ")  // remove espaços extras
     .trim();
 
   const utterance = new SpeechSynthesisUtterance(cleanText);
-  utterance.lang = 'pt-BR';
-  utterance.rate = 1;
-  utterance.pitch = 1;
 
+  // ✅ Ajustes finos para voz natural
+  utterance.lang = "pt-BR";
+  utterance.rate = 1.15;     // velocidade ligeiramente acima do normal
+  utterance.pitch = 1;       // tom natural
+  utterance.volume = 1;      // volume máximo
+  utterance.pause = 0.1;     // (não é padrão, mas mantemos para compatibilidade)
+
+  // 🧠 Alguns navegadores demoram a carregar vozes
   const voices = speechSynthesis.getVoices();
-  const voz = voices.find(v => v.lang.startsWith('pt')) || voices[0];
-  if (voz) utterance.voice = voz;
+  const vozPt = voices.find(v => v.lang.startsWith("pt-BR"));
+  if (vozPt) utterance.voice = vozPt;
 
-  speechSynthesis.speak(utterance);
+  // ⚙️ Hack para Safari e Chrome: reinicializa vozes se estiverem vazias
+  if (!vozPt && voices.length === 0) {
+    speechSynthesis.onvoiceschanged = () => {
+      const vozAtualizada = speechSynthesis.getVoices().find(v => v.lang.startsWith("pt-BR"));
+      if (vozAtualizada) {
+        utterance.voice = vozAtualizada;
+        window.speechSynthesis.speak(utterance);
+      }
+    };
+  }
+
+  // 🚀 Fala o texto
+  window.speechSynthesis.speak(utterance);
 }
 
 /* ============================
