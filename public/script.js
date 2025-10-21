@@ -457,17 +457,53 @@ if (btnDismiss) btnDismiss.addEventListener('click', () => {
   if (installPopup && installOverlay) { installPopup.style.display = 'none'; installOverlay.style.display = 'none'; }
 });
 
-//=== Tutorial configuração de vozes ===//
-const tutorialBtn = document.getElementById('tutorialBtn');
+//== Tutorial de voz ==//
+const tutorialBtn = document.getElementById('tutorialBtn'); // botão do menu lateral
 const tutorialOverlay = document.getElementById('tutorialOverlay');
 const tutorialPopup = document.getElementById('tutorialPopup');
+const tutorialStepEl = document.getElementById('tutorialStep');
+const prevStepBtn = document.getElementById('prevStepBtn');
+const nextStepBtn = document.getElementById('nextStepBtn');
+const closeTutorialBtn = document.getElementById('closeTutorialBtn');
 
-tutorialBtn.addEventListener('click', () => {
-  tutorialOverlay.style.display = 'block';
-  tutorialPopup.style.display = 'block';
+// Conteúdo das etapas
+const tutorialSteps = [
+  "Passo 1: Abra as configurações de voz do seu celular.",
+  "Passo 2: Procure pela lista de vozes disponíveis.",
+  "Passo 3: Selecione a voz masculina em Português (pt-BR).",
+  "Passo 4: Ajuste a velocidade da fala se desejar.",
+  "Passo 5: Volte para o app e teste a voz no chat."
+];
+
+let currentStep = 0;
+
+function showStep(stepIndex) {
+  tutorialStepEl.textContent = tutorialSteps[stepIndex];
+  prevStepBtn.style.display = stepIndex === 0 ? "none" : "inline-block";
+  nextStepBtn.style.display = stepIndex === tutorialSteps.length - 1 ? "none" : "inline-block";
+}
+
+function openTutorial() {
+  tutorialOverlay.style.display = "block";
+  tutorialPopup.style.display = "block";
+  currentStep = 0;
+  showStep(currentStep);
+}
+
+function closeTutorial() {
+  tutorialOverlay.style.display = "none";
+  tutorialPopup.style.display = "none";
+}
+
+// Eventos
+tutorialBtn.addEventListener('click', openTutorial);
+tutorialOverlay.addEventListener('click', closeTutorial);
+closeTutorialBtn.addEventListener('click', closeTutorial);
+prevStepBtn.addEventListener('click', () => {
+  if (currentStep > 0) currentStep--;
+  showStep(currentStep);
 });
-
-tutorialOverlay.addEventListener('click', () => {
-  tutorialOverlay.style.display = 'none';
-  tutorialPopup.style.display = 'none';
+nextStepBtn.addEventListener('click', () => {
+  if (currentStep < tutorialSteps.length - 1) currentStep++;
+  showStep(currentStep);
 });
