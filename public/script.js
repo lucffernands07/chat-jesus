@@ -148,18 +148,32 @@ function addBibliaMessage(text, isUser = false) {
   const msg = document.createElement("div");
   msg.className = isUser ? "user-message" : "bot-message";
 
-  // converte quebras de linha em <br> e aplica formatação Markdown simples
-  const html = text
-    .replace(/\n/g, '<br>')
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // **negrito**
-    .replace(/\*(.*?)\*/g, '<em>$1</em>') // *itálico*
-    .replace(/### (.*?)(<br>|$)/g, '<h4>$1</h4>'); // títulos estilo ###
+  // Só adiciona o botão se for mensagem da IA
+  if (!isUser) {
+    const ouvirBtn = document.createElement("button");
+    ouvirBtn.className = "ouvir-btn"; 
+    ouvirBtn.textContent = "🔊 Ouvir resposta";
+    ouvirBtn.style.marginBottom = "6px";
+    ouvirBtn.onclick = () => speakText(text);
+    msg.appendChild(ouvirBtn);
+  }
 
-  msg.innerHTML = html;
+  // Converte formatação básica
+  const html = text
+    .replace(/\n/g, "<br>")
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.*?)\*/g, "<em>$1</em>")
+    .replace(/### (.*?)(<br>|$)/g, "<h4>$1</h4>");
+
+  // Adiciona o texto normalmente
+  const divTexto = document.createElement("div");
+  divTexto.innerHTML = html;
+  msg.appendChild(divTexto);
+
+  // Exibe na tela
   bibliaChatBox.appendChild(msg);
   bibliaChatBox.scrollTop = bibliaChatBox.scrollHeight;
 }
-
 async function enviarBibliaMensagem(mensagemUsuario) {
   const mensagemFinal = `A dificuldade relatada pelo usuário é: ${mensagemUsuario}. Traga um versículo que ensine como lidar com isso.`;
   try {
@@ -171,23 +185,6 @@ async function enviarBibliaMensagem(mensagemUsuario) {
     const data = await resposta.json();
     if (data.reply) {
       addBibliaMessage(data.reply);
-
-       // === Adiciona botão "Ouvir" na resposta da Palavra de Sabedoria ===
-       const chatBoxSabedoria = document.getElementById('biblia-chat-box');
-       // Cria o botão
-       const ouvirBtnSabedoria = document.createElement('button');
-       ouvirBtnSabedoria.textContent = '🔊 Ouvir resposta';
-       ouvirBtnSabedoria.className = 'ouvir-btn';
-       // Adiciona evento de clique
-       ouvirBtnSabedoria.addEventListener('click', () => {
-          speakJesus(data.reply); // Usa a mesma função de fala do chat de Jesus
-       });
-       // Insere o botão antes da última resposta
-       const ultimaMensagem = chatBoxSabedoria.lastElementChild;
-       if (ultimaMensagem) {
-          chatBoxSabedoria.insertBefore(ouvirBtnSabedoria, ultimaMensagem);
-       }
-   
     } else {
       addBibliaMessage("Não consegui encontrar uma palavra agora, mas confie no Senhor.");
     }
