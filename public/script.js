@@ -458,29 +458,43 @@ if (btnDismiss) btnDismiss.addEventListener('click', () => {
 });
 
 //=== Teste de vozes ===//
-const testeVozBtn = document.getElementById('testeVoz');
+document.addEventListener("DOMContentLoaded", () => {
+  const testeVozBtn = document.getElementById("testeVoz");
+  const listaContainer = document.createElement("div");
+  listaContainer.id = "lista-vozes";
+  listaContainer.style.color = "#888888";
+  listaContainer.style.fontSize = "14px";
+  listaContainer.style.marginTop = "6px";
 
-if (testeVozBtn) {
-  testeVozBtn.addEventListener('click', () => {
-    if (!window.speechSynthesis) {
-      alert('Seu dispositivo não suporta síntese de voz.');
-      return;
-    }
+  if (testeVozBtn) {
+    testeVozBtn.insertAdjacentElement("afterend", listaContainer);
 
-    // pega vozes disponíveis
-    const voices = speechSynthesis.getVoices();
-    if (!voices || voices.length === 0) {
-      alert('Nenhuma voz disponível ainda. Aguarde alguns segundos e tente novamente.');
-      return;
-    }
+    testeVozBtn.addEventListener("click", () => {
+      if (!window.speechSynthesis) {
+        listaContainer.innerHTML = "❌ Seu navegador não suporta síntese de voz.";
+        return;
+      }
 
-    // cria a fala de teste
-    const msg = new SpeechSynthesisUtterance("Olá! Este é um teste de voz.");
-    msg.voice = voices[0]; // seleciona a primeira voz
-    msg.lang = "pt-BR";
-    msg.rate = 1; // velocidade normal
-    msg.pitch = 1; // tom normal
+      // função para listar as vozes
+      const listarVozes = () => {
+        const voices = speechSynthesis.getVoices();
 
-    speechSynthesis.speak(msg);
-  });
-}
+        if (!voices.length) {
+          listaContainer.innerHTML = "Carregando vozes... tente novamente em 2 segundos.";
+          // às vezes demora pra carregar no mobile
+          setTimeout(listarVozes, 2000);
+          return;
+        }
+
+        let html = `<strong style="color:#888888;">Vozes disponíveis (${voices.length}):</strong><br><br>`;
+        voices.forEach((v, i) => {
+          html += `${i + 1}. <strong>${v.name}</strong> — ${v.lang}<br>`;
+        });
+
+        listaContainer.innerHTML = html;
+      };
+
+      listarVozes();
+    });
+  }
+});
