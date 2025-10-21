@@ -674,7 +674,7 @@ input[type='text'] {
 }
 
 /* botão ouvir estilo (usa a classe listenting aplicada pelo JS) */
-#voice-btn.listening {
+#voice-btn.listening, .salmo-ouvir-btn{
   background-color: #4caf50;
   color: #fff;
   box-shadow: 0 0 12px #4caf50, 0 0 24px #4caf50;
