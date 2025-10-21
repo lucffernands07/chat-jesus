@@ -573,7 +573,7 @@ input[type='text'] {
 
 .feedback textarea {
   width: 100%;              /* ocupa toda a largura do formulário */
-  padding: 12px 20px;       /* mesmo espaçamento interno do botão */
+  margin: 10px 0;
   font-size: 16px;
   border: 1px solid #ccc;   /* mesma borda do botão */
   border-radius: 6px;       /* cantos arredondados como o botão */
