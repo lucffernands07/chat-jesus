@@ -176,7 +176,7 @@ async function enviarBibliaMensagem(mensagemUsuario) {
        const chatBoxSabedoria = document.getElementById('biblia-chat-box');
        // Cria o botão
        const ouvirBtnSabedoria = document.createElement('button');
-       ouvirBtnSabedoria.textContent = '🔊 Ouvir';
+       ouvirBtnSabedoria.textContent = '🔊 Ouvir resposta';
        ouvirBtnSabedoria.className = 'ouvir-btn';
        // Adiciona evento de clique
        ouvirBtnSabedoria.addEventListener('click', () => {
