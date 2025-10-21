@@ -746,6 +746,7 @@ input[type='text'] {
   text-decoration: underline;
 }
 
+/* Salmo do dia */
 #salmo-toggle {
   background-color: #D0E9F9; /* Fundo da caixa*/
   border: 1px solid #ccc;
