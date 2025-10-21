@@ -60,24 +60,33 @@ function appendMessage(sender, text) {
 }
 
 //=== Função resposta de Jesus com voz ===//
-function speakJesus(texto) {
-  if (!texto) return;
-  // Se Jesus já estiver falando, interrompe antes de iniciar de novo
-  if (synth.speaking) synth.cancel();
-  let voices = synth.getVoices();
-  // Se o navegador ainda não carregou as vozes, espera e tenta novamente
-  if (voices.length === 0) {
-    synth.onvoiceschanged = () => speakJesus(texto);
-    return;
-  }
- 
-  const msg = new SpeechSynthesisUtterance(texto);
-  msg.voice = voices.find(v => v.lang === "pt-BR") || voices[0];
-  msg.lang = "pt-BR";
-  msg.rate = 1;
-  msg.pitch = 1;
+function speakJesus(text) {
+  if (!('speechSynthesis' in window)) return;
 
-  synth.speak(msg);
+  // Cancela fala anterior
+  speechSynthesis.cancel();
+
+  // 🔹 Limpeza do texto antes de falar
+  let cleanText = text
+    .replace(/\*\*/g, '')                // remove **negrito**
+    .replace(/\*/g, '')                  // remove *itálico*
+    .replace(/#{1,6}\s?/g, '')           // remove ### títulos markdown
+    .replace(/https?:\/\/\S+/g, '')      // remove links
+    .replace(/[•\-–—]/g, ', ')           // troca bullets por pausas suaves
+    .replace(/\d+:\d+/g, match => match.replace(':', ' ')) // evita "11:28 da manhã"
+    .replace(/[^\w\sáéíóúãõâêôç,.;!?]/gi, '') // remove símbolos estranhos
+    .trim();
+
+  const utterance = new SpeechSynthesisUtterance(cleanText);
+  utterance.lang = 'pt-BR';
+  utterance.rate = 1;
+  utterance.pitch = 1;
+
+  const voices = speechSynthesis.getVoices();
+  const voz = voices.find(v => v.lang.startsWith('pt')) || voices[0];
+  if (voz) utterance.voice = voz;
+
+  speechSynthesis.speak(utterance);
 }
 
 /* ============================
