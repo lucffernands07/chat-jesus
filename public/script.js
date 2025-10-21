@@ -171,6 +171,23 @@ async function enviarBibliaMensagem(mensagemUsuario) {
     const data = await resposta.json();
     if (data.reply) {
       addBibliaMessage(data.reply);
+
+       // === Adiciona botão "Ouvir" na resposta da Palavra de Sabedoria ===
+       const chatBoxSabedoria = document.getElementById('biblia-chat-box');
+       // Cria o botão
+       const ouvirBtnSabedoria = document.createElement('button');
+       ouvirBtnSabedoria.textContent = '🔊 Ouvir';
+       ouvirBtnSabedoria.className = 'ouvir-btn';
+       // Adiciona evento de clique
+       ouvirBtnSabedoria.addEventListener('click', () => {
+          speakJesus(data.reply); // Usa a mesma função de fala do chat de Jesus
+       });
+       // Insere o botão antes da última resposta
+       const ultimaMensagem = chatBoxSabedoria.lastElementChild;
+       if (ultimaMensagem) {
+          chatBoxSabedoria.insertBefore(ouvirBtnSabedoria, ultimaMensagem);
+       }
+   
     } else {
       addBibliaMessage("Não consegui encontrar uma palavra agora, mas confie no Senhor.");
     }
