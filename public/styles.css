@@ -789,10 +789,15 @@ input[type='text'] {
   transform: scale(1.05);
 }
 
-/* Tutorial Vozes */
-..menu-voz-btn {
-  display: block;
-  margin: 20px auto;      /* centraliza e adiciona espaçamento */
+/* ============================
+   Botão do tutorial de vozes
+   ============================ */
+.botao-tutorial-wrapper {
+  text-align: center;  /* centraliza o botão horizontalmente */
+  margin: 20px 0;      /* espaçamento vertical */
+}
+
+.menu-voz-btn {
   padding: 10px 20px;
   font-size: 16px;
   background-color: #f1f1f1;
@@ -800,7 +805,6 @@ input[type='text'] {
   border-radius: 8px;
   color: #333;
   cursor: pointer;
-  text-align: center;
   transition: background 0.3s ease, transform 0.2s ease;
 }
 
