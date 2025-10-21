@@ -1,6 +1,6 @@
-/* ============================
-   Script Salmos — versão final
-   ============================ */
+/* =====================
+   Script Salmos do dia
+   ===================== */
 
 const salmoToggle = document.getElementById('salmo-toggle');
 const salmoContainer = document.getElementById('salmo-container');
@@ -21,7 +21,7 @@ async function carregarSalmos() {
     salmoAtual = getSalmoDoDia();
     // Não abre automaticamente; só preenche o container
     if (salmoTexto) {
-      let html = `<strong>Salmo ${salmoAtual.numero}</strong><br><br>`;
+      let html = `<strong>Salmo ${salmoAtual.numero}.</strong><br><br>`;
       html += salmoAtual.versiculos.join('<br><br>');
       salmoTexto.innerHTML = html;
     }
