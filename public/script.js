@@ -468,11 +468,11 @@ const closeTutorialBtn = document.getElementById('closeTutorialBtn');
 
 // Conteúdo das etapas
 const tutorialSteps = [
-  "Passo 1: Abra as configurações de texto por voz do seu celular, se não encontrar busque por texto ou voz.",
-  "Passo 2: Procure pela lista de vozes disponíveis, normalmente em mecanismo preferencial.",
-  "Passo 3: Selecione a voz masculina em Português (pt-BR), na opção de instalação de voz ou algo semelhante.",
-  "Passo 4: Ajuste a velocidade da fala se desejar.",
-  "Passo 5: Volte para o app e teste a voz no chat."
+  "✅ Passo 1: Abra as configurações de texto por voz do seu celular, se não encontrar busque 🔍 por texto ou voz.",
+  "✅ Passo 2: Procure pela lista de vozes disponíveis, normalmente em mecanismo preferencial ⚙️.",
+  "✅ Passo 3: Selecione a voz masculina (Voz II), em Português (pt-BR), na opção de instalação de voz ou algo semelhante.",
+  "✅ Passo 4: Ajuste a velocidade e tom da fala se desejar.",
+  "✅ Passo 5: Volte para o app, atualize 🔃 e teste a voz no chat."
 ];
 
 let currentStep = 0;
