@@ -154,7 +154,7 @@ function addBibliaMessage(text, isUser = false) {
     ouvirBtn.className = "ouvir-btn"; 
     ouvirBtn.textContent = "🔊 Ouvir resposta";
     ouvirBtn.style.marginBottom = "6px";
-    ouvirBtn.onclick = () => speakText(text);
+    ouvirBtn.onclick = () => speakJesus(text);
     msg.appendChild(ouvirBtn);
   }
 
