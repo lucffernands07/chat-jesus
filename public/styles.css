@@ -1,3 +1,4 @@
+
 /* Reset básico */
 * {
   box-sizing: border-box;
@@ -572,11 +573,31 @@ input[type='text'] {
 }
 
 .feedback textarea {
+  width: 100%;              /* ocupa toda a largura do formulário */
+  padding: 12px 20px;       /* mesmo espaçamento interno do botão */
+  font-size: 16px;
+  border: 1px solid #ccc;   /* mesma borda do botão */
+  border-radius: 6px;       /* cantos arredondados como o botão */
+  background-color: #f9f9f9; /* mesma cor do botão do tutorial */
+  color: #333;
+  resize: vertical;         /* permite redimensionar apenas verticalmente */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* sombra como o botão */
+  transition: background 0.3s ease, box-shadow 0.2s ease;
+}
+
+.feedback textarea:focus {
+  background-color: #e6e6e6;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  outline: none;
+}
+
+/*
+.feedback textarea {
   width: 100%;
   margin: 10px 0;
   border-radius: 4px;
 }
-
+*/
 #feedback-btn {
   width: 50%;
   margin: 0;
