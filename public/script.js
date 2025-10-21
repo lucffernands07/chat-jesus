@@ -458,7 +458,16 @@ if (btnDismiss) btnDismiss.addEventListener('click', () => {
 });
 
 //=== Tutorial configuração de vozes ===//
-const abrirTutorialVozBtn = document.getElementById('abrirTutorialVozBtn');
-if (abrirTutorialVozBtn) {
-  abrirTutorialVozBtn.addEventListener('click', abrirTutorialVoz);
-}
+const tutorialBtn = document.getElementById('tutorialBtn');
+const tutorialOverlay = document.getElementById('tutorialOverlay');
+const tutorialPopup = document.getElementById('tutorialPopup');
+
+tutorialBtn.addEventListener('click', () => {
+  tutorialOverlay.style.display = 'block';
+  tutorialPopup.style.display = 'block';
+});
+
+tutorialOverlay.addEventListener('click', () => {
+  tutorialOverlay.style.display = 'none';
+  tutorialPopup.style.display = 'none';
+});
