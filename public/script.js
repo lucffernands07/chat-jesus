@@ -457,44 +457,8 @@ if (btnDismiss) btnDismiss.addEventListener('click', () => {
   if (installPopup && installOverlay) { installPopup.style.display = 'none'; installOverlay.style.display = 'none'; }
 });
 
-//=== Teste de vozes ===//
-document.addEventListener("DOMContentLoaded", () => {
-  const testeVozBtn = document.getElementById("testeVoz");
-  const listaContainer = document.createElement("div");
-  listaContainer.id = "lista-vozes";
-  listaContainer.style.color = "#888888";
-  listaContainer.style.fontSize = "14px";
-  listaContainer.style.marginTop = "6px";
-
-  if (testeVozBtn) {
-    testeVozBtn.insertAdjacentElement("afterend", listaContainer);
-
-    testeVozBtn.addEventListener("click", () => {
-      if (!window.speechSynthesis) {
-        listaContainer.innerHTML = "❌ Seu navegador não suporta síntese de voz.";
-        return;
-      }
-
-      // função para listar as vozes
-      const listarVozes = () => {
-        const voices = speechSynthesis.getVoices();
-
-        if (!voices.length) {
-          listaContainer.innerHTML = "Carregando vozes... tente novamente em 2 segundos.";
-          // às vezes demora pra carregar no mobile
-          setTimeout(listarVozes, 2000);
-          return;
-        }
-
-        let html = `<strong style="color:#888888;">Vozes disponíveis (${voices.length}):</strong><br><br>`;
-        voices.forEach((v, i) => {
-          html += `${i + 1}. <strong>${v.name}</strong> — ${v.lang}<br>`;
-        });
-
-        listaContainer.innerHTML = html;
-      };
-
-      listarVozes();
-    });
-  }
-});
+//=== Tutorial configuração de vozes ===//
+const abrirTutorialVozBtn = document.getElementById('abrirTutorialVozBtn');
+if (abrirTutorialVozBtn) {
+  abrirTutorialVozBtn.addEventListener('click', abrirTutorialVoz);
+}
