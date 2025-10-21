@@ -90,3 +90,17 @@ if (salmoToggle && salmoContainer) {
    ============================ */
 document.addEventListener('DOMContentLoaded', carregarSalmos);
 
+// ============================
+// 🔊 Botão "Ouvir Salmo do Dia"
+// ============================
+const btnOuvirSalmo = document.getElementById('salmo-ouvir-btn');
+
+if (btnOuvirSalmo && salmoTexto) {
+  btnOuvirSalmo.addEventListener('click', () => {
+    const textoSalmo = salmoTexto.innerText || salmoTexto.textContent;
+    if (textoSalmo.trim()) {
+      speakJesus(textoSalmo); // reutiliza a mesma voz do Chat de Jesus
+    }
+  });
+}
+
