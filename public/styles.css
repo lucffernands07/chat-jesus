@@ -579,7 +579,6 @@ input[type='text'] {
   border-radius: 6px;       /* cantos arredondados como o botão */
   background-color: #f9f9f9; /* mesma cor do botão do tutorial */
   color: #333;
-  resize: vertical;         /* permite redimensionar apenas verticalmente */
   box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* sombra como o botão */
   transition: background 0.3s ease, box-shadow 0.2s ease;
 }
