@@ -443,6 +443,13 @@ input[type='text'] {
   box-shadow: 0 0 12px #4caf50, 0 0 24px #4caf50;
 }
 
+/* botão ouvir estilo (usa a classe listenting aplicada pelo JS) */
+#voice-btn.listening {
+  background-color: #4caf50;
+  color: #fff;
+  box-shadow: 0 0 12px #4caf50, 0 0 24px #4caf50;
+}
+
 /* Animação de pulso */
 @keyframes pulse {
   0% {
@@ -673,13 +680,6 @@ input[type='text'] {
   color: #000;
 }
 
-/* botão ouvir estilo (usa a classe listenting aplicada pelo JS) */
-#voice-btn.listening, #salmo-ouvir-btn {
-  background-color: #4caf50;
-  color: #fff;
-  box-shadow: 0 0 12px #4caf50, 0 0 24px #4caf50;
-}
-
 /* Espaçamento entre mensagens no chat 2 (Palavra de Sabedoria) */
 /* Chat 2 — Balões iguais Chat 1 */
 #biblia-chat-box .user-message {
@@ -787,4 +787,6 @@ input[type='text'] {
   background: #ffea7a;
   transform: scale(1.05);
 }
+
+#salmo-ouvir-btn {
 
