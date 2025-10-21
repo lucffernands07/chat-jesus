@@ -773,7 +773,7 @@ input[type='text'] {
 }
 
 /*  Botões ouvir voz */
-.voice-btn, #salmo-ouvir-btn {
+.voice-btn, .ouvir-btn, #salmo-ouvir-btn {
   background: #ffd700;
   border: none;
   color: #333;
@@ -784,7 +784,7 @@ input[type='text'] {
   margin-top: 6px;
   transition: background 0.3s, transform 0.2s;
 }
-.voice-btn:hover, #salmo-ouvir-btn:hover {
+.voice-btn:hover, .ouvir-btn, #salmo-ouvir-btn:hover {
   background: #ffea7a;
   transform: scale(1.05);
 }
