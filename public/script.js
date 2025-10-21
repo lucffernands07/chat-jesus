@@ -456,4 +456,31 @@ if (btnInstall) btnInstall.addEventListener('click', () => {
 if (btnDismiss) btnDismiss.addEventListener('click', () => {
   if (installPopup && installOverlay) { installPopup.style.display = 'none'; installOverlay.style.display = 'none'; }
 });
-     
+
+//=== Teste de vozes ===//
+const testeVozBtn = document.getElementById('testeVoz');
+
+if (testeVozBtn) {
+  testeVozBtn.addEventListener('click', () => {
+    if (!window.speechSynthesis) {
+      alert('Seu dispositivo não suporta síntese de voz.');
+      return;
+    }
+
+    // pega vozes disponíveis
+    const voices = speechSynthesis.getVoices();
+    if (!voices || voices.length === 0) {
+      alert('Nenhuma voz disponível ainda. Aguarde alguns segundos e tente novamente.');
+      return;
+    }
+
+    // cria a fala de teste
+    const msg = new SpeechSynthesisUtterance("Olá! Este é um teste de voz.");
+    msg.voice = voices[0]; // seleciona a primeira voz
+    msg.lang = "pt-BR";
+    msg.rate = 1; // velocidade normal
+    msg.pitch = 1; // tom normal
+
+    speechSynthesis.speak(msg);
+  });
+}
