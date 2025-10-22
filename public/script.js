@@ -31,23 +31,28 @@ function appendMessage(sender, text) {
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message', sender === 'user' ? 'user' : 'jesus');
 
+  const pronome = getPronomeUsuario();
   const senderName =
     sender === 'user'
       ? '<strong>Você:</strong>'
-      : '<strong style="color:#8B0000">👼🏻:</strong>';
+      : `<strong style="color:#8B0000">👼🏻:</strong>`;
 
   if (sender === 'jesus') {
+    // Insere pronome no texto
+    const textoComPronome = text.replace(/\{pronome\}/g, pronome);
+
     messageDiv.innerHTML = `
-    <button class="voice-btn">🔊 Ouvir resposta</button>
-    <br><br>
-      ${senderName} ${text}`;
-      
+      <button class="voice-btn">🔊 Ouvir resposta</button><br>
+      ${senderName} ${textoComPronome}
+    `;
   } else {
     messageDiv.innerHTML = `${senderName} ${text}`;
   }
 
   chatBox.appendChild(messageDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
 
+  // Botão de voz
   if (sender === 'jesus') {
     const voiceBtn = messageDiv.querySelector('.voice-btn');
     if (voiceBtn) {
