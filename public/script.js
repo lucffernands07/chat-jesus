@@ -154,8 +154,8 @@ if (chatForm) {
       loadingIndicator.style.display = 'none';
 
       const lastMessage = chatBox.lastElementChild?.textContent || '';
-      if (!lastMessage.includes('Jesus:')) {
-        appendMessage('jesus', 'Erro ao se conectar com Jesus.');
+      if (!lastMessage.includes('👼🏻:')) {
+        appendMessage('👼🏻', 'Erro ao se conectar com Jesus.');
       }
     }
   });
