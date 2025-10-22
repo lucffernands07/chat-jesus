@@ -878,3 +878,45 @@ input[type='text'] {
 .tutorial-buttons button:hover {
   background-color: #e0e0e0;
 }
+
+/*== Pronome ==*/
+/* Overlay escurecido */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+/* Caixa do pop-up */
+.pronome-popup {
+  background-color: #f1f1f1;
+  padding: 25px 30px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  color: #000;
+}
+
+.pronome-buttons button {
+  padding: 10px 20px;
+  margin: 15px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: #8B0000;
+  color: #fff;
+  transition: 0.2s;
+}
+
+.pronome-buttons button:hover {
+  background-color: #a00000;
+}
