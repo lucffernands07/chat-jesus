@@ -38,10 +38,10 @@ function appendMessage(sender, text) {
 
   if (sender === 'jesus') {
     messageDiv.innerHTML = `
-      ${senderName} ${text}
-      <br>
-      <button class="voice-btn">🔊 Ouvir resposta</button>
-    `;
+    <button class="voice-btn">🔊 Ouvir resposta</button>
+    <br>
+      ${senderName} ${text}`;
+      
   } else {
     messageDiv.innerHTML = `${senderName} ${text}`;
   }
