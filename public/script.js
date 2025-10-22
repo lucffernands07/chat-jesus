@@ -66,13 +66,18 @@ function speakJesus(text) {
   // Cancela qualquer fala anterior
   window.speechSynthesis.cancel();
 
-  // 🔤 Limpa o texto de caracteres indesejados
+  // 🔹 Limpa o texto
   const cleanText = text
-    .replace(/[*#_]/g, "") // remove asteriscos e símbolos de markdown
-    .replace(/\s+/g, " ")  // remove espaços extras
+    .replace(/[*#_]/g, "")           // remove asteriscos e símbolos de markdown
+    .replace(/\s+/g, " ")            // remove espaços extras
+    .replace(/[\u{1F600}-\u{1F64F}]/gu, '')  // remove emojis comuns
+    .replace(/[\u{1F300}-\u{1F5FF}]/gu, '')  // remove emojis de símbolos e pictogramas
+    .replace(/[\u{1F680}-\u{1F6FF}]/gu, '')  // remove emojis de transporte
+    .replace(/[\u{2600}-\u{26FF}]/gu, '')    // remove símbolos misc
+    .replace(/[\u{2700}-\u{27BF}]/gu, '')    // remove símbolos adicionais
     .trim();
 
-  // 🔹 Reduz as pausas após pontos finais
+  // 🔹 Reduz pausas após pontos finais
   const adjustedText = cleanText.replace(/\.\s+/g, '.\u200B');
    
   const utterance = new SpeechSynthesisUtterance(cleanText);
