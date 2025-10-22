@@ -436,22 +436,42 @@ window.onload = () => {
     carregarSalmos();
   }
    
-   // Registro do Service Worker
-   if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-         navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('✅ Service Worker registrado:', reg))
-            .catch(err => console.error('❌ Erro ao registrar SW:', err));
-      });
-   }
+   // === Registro do Service Worker ===
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => {
+        console.log('✅ Service Worker registrado:', reg);
 
-   if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(registrations => {
-    registrations.forEach(reg => {
-      reg.update(); // força checar versão nova
-    });
+        // Força o navegador a checar se há nova versão
+        reg.update();
+
+        // Se já existe uma versão esperando
+        if (reg.waiting) {
+          showUpdatePrompt(reg.waiting);
+        }
+
+        // Detecta quando um novo Service Worker é encontrado
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              showUpdatePrompt(newWorker);
+            }
+          });
+        });
+      })
+      .catch(err => console.error('❌ Erro ao registrar o Service Worker:', err));
   });
-   }
+}
+
+// === Função que pergunta se quer atualizar ===
+function showUpdatePrompt(worker) {
+  if (confirm('✨ Nova versão disponível! Deseja atualizar agora?')) {
+    worker.postMessage('SKIP_WAITING');
+    window.location.reload();
+  }
+                             }
    
 };
 
