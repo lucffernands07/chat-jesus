@@ -442,6 +442,15 @@ window.onload = () => {
             .catch(err => console.error('❌ Erro ao registrar SW:', err));
       });
    }
+
+   if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    registrations.forEach(reg => {
+      reg.update(); // força checar versão nova
+    });
+  });
+   }
+   
 };
 
 // beforeinstallprompt (popup)
