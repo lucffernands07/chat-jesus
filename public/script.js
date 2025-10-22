@@ -438,7 +438,7 @@ window.onload = () => {
 
   // Registro do Service Worker
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/server-worker.js')
+    navigator.serviceWorker.register('/service-worker.js')
       .then(reg => {
         console.log('✅ Service Worker registrado:', reg);
 
