@@ -1,22 +1,19 @@
-const CACHE_NAME = "jesus-chat-v6"; // nova versão do cache
+const CACHE_NAME = "jesus-chat-v7"; // nova versão
 const ASSETS_TO_CACHE = [
-  "/",
-  "/index.html",
-  "/script.js",
-  "/script-salmos.js",
-  "/api/chat.js",
   "/styles.css",
+  "/script.js?v=2.3",
+  "/script-salmos.js?v=1.1",
   "/manifest.json",
   "/icons/pray-128x.png",
   "/icons/pray-512x.png"
 ];
 
-// Instala o SW e adiciona os arquivos ao cache
+// Instala e adiciona assets estáticos ao cache
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS_TO_CACHE))
   );
-  self.skipWaiting(); // ativa imediatamente
+  self.skipWaiting();
 });
 
 // Ativa e remove caches antigos
@@ -35,22 +32,29 @@ self.addEventListener("fetch", event => {
 
   // Network-first para HTML, JS e API
   if (
-    request.url.endsWith(".js") ||
     request.url.endsWith(".html") ||
+    request.url.endsWith(".js") ||
     request.url.includes("/api/chat")
   ) {
     event.respondWith(
-      fetch(request).catch(() => caches.match(request))
+      fetch(request)
+        .then(resp => {
+          // Atualiza cache para offline
+          const copy = resp.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+          return resp;
+        })
+        .catch(() => caches.match(request))
     );
   } else {
-    // Cache-first para CSS, imagens e outros
+    // Cache-first para CSS, imagens e ícones
     event.respondWith(
       caches.match(request).then(response => response || fetch(request))
     );
   }
 });
 
-// Detecta novas versões e ativa imediatamente se receber mensagem
+// Recebe mensagem para ativar imediatamente
 self.addEventListener("message", event => {
   if (event.data === "SKIP_WAITING") {
     self.skipWaiting();
