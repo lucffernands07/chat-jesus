@@ -559,7 +559,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnFilho = document.getElementById("btnFilho");
   const btnFilha = document.getElementById("btnFilha");
 
-  // --- Abre ou cria o banco de dados ---
   const dbRequest = indexedDB.open("chatJesusDB", 1);
 
   dbRequest.onupgradeneeded = (event) => {
@@ -569,27 +568,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  dbRequest.onerror = (event) => {
-    console.error("Erro ao abrir IndexedDB:", event);
-  };
-
   dbRequest.onsuccess = (event) => {
     const db = event.target.result;
 
-    // Função para pegar o pronome
-    const getPronome = () => {
-      return new Promise((resolve) => {
-        const tx = db.transaction("settings", "readonly");
-        const store = tx.objectStore("settings");
-        const request = store.get("pronome");
-        request.onsuccess = () => {
-          resolve(request.result ? request.result.value : null);
-        };
-        request.onerror = () => resolve(null);
-      });
-    };
+    const getPronome = () => new Promise(resolve => {
+      const tx = db.transaction("settings", "readonly");
+      const store = tx.objectStore("settings");
+      const req = store.get("pronome");
+      req.onsuccess = () => resolve(req.result ? req.result.value : null);
+      req.onerror = () => resolve(null);
+    });
 
-    // Função para salvar o pronome
     const setPronome = (value) => {
       const tx = db.transaction("settings", "readwrite");
       const store = tx.objectStore("settings");
@@ -598,16 +587,11 @@ document.addEventListener("DOMContentLoaded", () => {
       overlay.style.display = "none";
     };
 
-    // Checa se já existe pronome
-    getPronome().then((pronome) => {
-      if (!pronome) {
-        overlay.style.display = "flex"; // mostra pop-up
-      } else {
-        localStorage.setItem("pronome", pronome);
-      }
+    getPronome().then(pronome => {
+      if (!pronome) overlay.style.display = "flex";
+      else localStorage.setItem("pronome", pronome);
     });
 
-    // Eventos de clique nos botões
     btnFilho.addEventListener("click", () => setPronome("filho"));
     btnFilha.addEventListener("click", () => setPronome("filha"));
   };
