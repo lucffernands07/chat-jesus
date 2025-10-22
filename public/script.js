@@ -431,49 +431,76 @@ window.onload = () => {
     voicesList = speechSynthesis.getVoices();
   }
 
-  // ✅ Garante que os salmos sejam carregados antes de usar
+  // Garante que os salmos sejam carregados antes de usar
   if (typeof carregarSalmos === 'function') {
     carregarSalmos();
   }
-   
-   // === Registro do Service Worker ===
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
+
+  // Registro do Service Worker
+  if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
       .then(reg => {
         console.log('✅ Service Worker registrado:', reg);
 
-        // Força o navegador a checar se há nova versão
-        reg.update();
-
-        // Se já existe uma versão esperando
+        // Detecta se há SW esperando
         if (reg.waiting) {
-          showUpdatePrompt(reg.waiting);
+          showUpdateNotification(reg.waiting);
         }
 
-        // Detecta quando um novo Service Worker é encontrado
+        // Detecta quando um novo SW é encontrado
         reg.addEventListener('updatefound', () => {
           const newWorker = reg.installing;
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              showUpdatePrompt(newWorker);
+              showUpdateNotification(newWorker);
             }
           });
         });
       })
-      .catch(err => console.error('❌ Erro ao registrar o Service Worker:', err));
+      .catch(err => console.error('❌ Erro ao registrar SW:', err));
+  }
+};
+
+// Mostra aviso de atualização no app
+function showUpdateNotification(worker) {
+  if (document.getElementById('update-aviso')) return;
+
+  const aviso = document.createElement('div');
+  aviso.id = 'update-aviso';
+  aviso.innerHTML = `
+    ✨ Nova versão disponível! 
+    <button id="update-btn">Atualizar</button>
+  `;
+  aviso.style = `
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffeb3b;
+    color: #000;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 9999;
+  `;
+  document.body.appendChild(aviso);
+
+  document.getElementById('update-btn').addEventListener('click', () => {
+    worker.postMessage('SKIP_WAITING');
+  });
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    window.location.reload();
   });
 }
 
-// === Função que pergunta se quer atualizar ===
+// Função independente para prompt de atualização (opcional)
 function showUpdatePrompt(worker) {
   if (confirm('✨ Nova versão disponível! Deseja atualizar agora?')) {
     worker.postMessage('SKIP_WAITING');
     window.location.reload();
   }
-                             }
-   
-};
+     }
 
 // beforeinstallprompt (popup)
 let deferredPrompt;
