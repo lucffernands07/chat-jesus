@@ -39,7 +39,7 @@ function appendMessage(sender, text) {
   if (sender === 'jesus') {
     messageDiv.innerHTML = `
     <button class="voice-btn">🔊 Ouvir resposta</button>
-    <br>
+    <br><br>
       ${senderName} ${text}`;
       
   } else {
@@ -47,7 +47,6 @@ function appendMessage(sender, text) {
   }
 
   chatBox.appendChild(messageDiv);
-  chatBox.scrollTop = chatBox.scrollHeight;
 
   if (sender === 'jesus') {
     const voiceBtn = messageDiv.querySelector('.voice-btn');
