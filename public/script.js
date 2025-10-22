@@ -511,3 +511,25 @@ nextStepBtn.addEventListener('click', () => {
   if (currentStep < tutorialSteps.length - 1) currentStep++;
   showStep(currentStep);
 });
+
+//== Configuração para pronome ==//
+document.addEventListener('DOMContentLoaded', () => {
+  const overlay = document.getElementById('pronomeOverlay');
+  const btnFilho = document.getElementById('btnFilho');
+  const btnFilha = document.getElementById('btnFilha');
+
+  // Checa se já existe pronome salvo
+  let pronome = localStorage.getItem('pronome');
+  if (!pronome) {
+    overlay.style.display = 'flex'; // mostra o pop-up
+  }
+
+  // Função para salvar pronome
+  function escolherPronome(p) {
+    localStorage.setItem('pronome', p);
+    overlay.style.display = 'none';
+  }
+
+  btnFilho.addEventListener('click', () => escolherPronome('filho'));
+  btnFilha.addEventListener('click', () => escolherPronome('filha'));
+});
