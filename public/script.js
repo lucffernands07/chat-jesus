@@ -532,37 +532,41 @@ nextStepBtn.addEventListener('click', () => {
   showStep(currentStep);
 });
 
+
+//== Configuração para pronome com cookies persistentes ==//
 document.addEventListener("DOMContentLoaded", () => {
   const overlay = document.getElementById("pronomeOverlay");
   const btnFilho = document.getElementById("btnFilho");
   const btnFilha = document.getElementById("btnFilha");
 
-  // Funções auxiliares
+  // --- Funções auxiliares ---
   function setCookie(name, value, days) {
     const date = new Date();
-    date.setTime(date.getTime() + (days*24*60*60*1000));
-    document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/`;
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/; SameSite=Lax`;
   }
 
   function getCookie(name) {
     const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-    return match ? match[2] : null;
+    return match ? decodeURIComponent(match[2]) : null;
   }
 
-  // Verifica se já existe pronome salvo no cookie
+  // --- Checa se já existe pronome salvo no cookie ---
   let pronome = getCookie("pronome");
+
   if (!pronome) {
-    overlay.style.display = "flex";
+    overlay.style.display = "flex"; // mostra o pop-up apenas se não existir cookie
+  } else {
+    localStorage.setItem("pronome", pronome); // mantém compatibilidade com funções antigas
   }
 
-  // Quando escolher "filho" ou "filha"
-  btnFilho.addEventListener("click", () => {
-    setCookie("pronome", "filho", 365);
+  // --- Função para salvar pronome e fechar ---
+  function escolherPronome(p) {
+    setCookie("pronome", p, 365); // cookie dura 1 ano
+    localStorage.setItem("pronome", p);
     overlay.style.display = "none";
-  });
+  }
 
-  btnFilha.addEventListener("click", () => {
-    setCookie("pronome", "filha", 365);
-    overlay.style.display = "none";
-  });
+  btnFilho.addEventListener("click", () => escolherPronome("filho"));
+  btnFilha.addEventListener("click", () => escolherPronome("filha"));
 });
