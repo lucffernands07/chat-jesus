@@ -7,8 +7,6 @@ const loadingIndicator = document.getElementById('loading');
 const sideMenu = document.getElementById('sideMenu');
 const menuBtn = document.querySelector('.menu-btn'); 
 const closeMenuBtn = document.getElementById('closeMenuBtn');
-//const voiceToggle = document.getElementById('voiceToggle');
-//const voiceRadios = document.querySelectorAll('input[name="voiceType"]');
 const shareBtn = document.getElementById('shareBtn');
 const synth = window.speechSynthesis;
 
@@ -36,7 +34,7 @@ function appendMessage(sender, text) {
   const senderName =
     sender === 'user'
       ? '<strong>Você:</strong>'
-      : '<strong style="color:#8B0000">Jesus:</strong>';
+      : '<strong style="color:#8B0000">👼🏻:</strong>';
 
   if (sender === 'jesus') {
     messageDiv.innerHTML = `
