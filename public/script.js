@@ -463,6 +463,7 @@ window.onload = () => {
 
 // Mostra aviso de atualização no app
 function showUpdateNotification(worker) {
+  // Evita duplicar o aviso
   if (document.getElementById('update-aviso')) return;
 
   const aviso = document.createElement('div');
@@ -482,14 +483,18 @@ function showUpdateNotification(worker) {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     z-index: 9999;
+    font-weight: bold;
   `;
   document.body.appendChild(aviso);
 
+  // Só atualiza quando o usuário clicar
   document.getElementById('update-btn').addEventListener('click', () => {
     worker.postMessage('SKIP_WAITING');
   });
 
+  // Recarrega a página e remove o aviso só após o novo SW assumir
   navigator.serviceWorker.addEventListener('controllerchange', () => {
+    document.body.removeChild(aviso);
     window.location.reload();
   });
 }
