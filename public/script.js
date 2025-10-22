@@ -46,8 +46,10 @@ function appendMessage(sender, text) {
     const textoComPronome = text.replace(/\{pronome\}/g, pronome);
 
     messageDiv.innerHTML = `
-      <button class="voice-btn">🔊 Ouvir resposta</button><br>
       ${senderName} ${textoComPronome}
+      <br>
+      <button class="voice-btn">🔊 Ouvir resposta</button>
+      <br>
     `;
   } else {
     messageDiv.innerHTML = `${senderName} ${text}`;
