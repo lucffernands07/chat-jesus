@@ -1,13 +1,13 @@
-const CACHE_NAME = "jesus-chat-v2"; // nova versão do cache
+const CACHE_NAME = "jesus-chat-v2"; // nova versão para forçar atualização
 const ASSETS_TO_CACHE = [
   "/",
   "/styles.css",
+  "/manifest.json",
   "/icons/pray-128x.png",
-  "/icons/pray-512x.png",
-  "/manifest.json"
+  "/icons/pray-512x.png"
 ];
 
-// Instala o SW e adiciona recursos essenciais ao cache
+// Instala o Service Worker e armazena os arquivos no cache
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS_TO_CACHE))
@@ -19,9 +19,7 @@ self.addEventListener("install", event => {
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-      )
+      Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)))
     )
   );
   self.clients.claim();
@@ -29,23 +27,17 @@ self.addEventListener("activate", event => {
 
 // Intercepta requisições
 self.addEventListener("fetch", event => {
-  const url = event.request.url;
+  const request = event.request;
 
-  // JS e HTML: fetch first
-  if (url.endsWith(".js") || url.endsWith(".html")) {
+  // Sempre busca JS e HTML diretamente do servidor
+  if (request.url.endsWith(".js") || request.url.endsWith(".html")) {
     event.respondWith(
-      fetch(event.request)
-        .then(response => {
-          const resClone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, resClone));
-          return response;
-        })
-        .catch(() => caches.match(event.request))
+      fetch(request).catch(() => caches.match(request)) // fallback para cache se offline
     );
   } else {
-    // Outros arquivos: cache first
+    // Para CSS, imagens e outros, usa cache primeiro
     event.respondWith(
-      caches.match(event.request).then(response => response || fetch(event.request))
+      caches.match(request).then(response => response || fetch(request))
     );
   }
 });
