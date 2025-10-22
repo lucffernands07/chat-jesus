@@ -19,8 +19,7 @@ module.exports = async (req, res) => {
       Sempre cite um versículo relevante (pode ser Salmos, Provérbios, Isaías, ou outro).
       Explique brevemente como o versículo pode ser aplicado à situação do usuário.
       Fale de forma neutra (sem dizer "Eu sou Jesus"), mas com empatia e fé.
-      Seja direto e inspirador.
-      `;
+      Seja direto e inspirador.`;
       
     } else {
       // 🕊️ Recupera o pronome enviado pelo front-end ou define "filho" como padrão
