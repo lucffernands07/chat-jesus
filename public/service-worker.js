@@ -1,4 +1,4 @@
-const CACHE_NAME = "jesus-chat-v3"; // nova versão do cache
+const CACHE_NAME = "jesus-chat-v4"; // nova versão do cache
 const ASSETS_TO_CACHE = [
   "/",
   "/styles.css",
