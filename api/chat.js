@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
       Fale de forma neutra (sem dizer "Eu sou Jesus"), mas com empatia e fé.
       Seja direto e inspirador.
       `;
-    } else {
+      
     } else {
       // 🕊️ Recupera o pronome enviado pelo front-end ou define "filho" como padrão
       const pronome = req.body.pronome || "filho";
