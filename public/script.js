@@ -513,10 +513,10 @@ const closeTutorialBtn = document.getElementById('closeTutorialBtn');
 // Conteúdo das etapas
 const tutorialSteps = [
   "✅ Passo 1: Abra as configurações do seu celular e busque 🔍 por <strong>conversão de texto em voz.</strong>",
-  "✅ Passo 2: Procure pela lista de vozes disponíveis, normalmente em mecanismo preferencial ⚙️.",
-  "✅ Passo 3: Selecione a voz masculina (Voz II), em Português (pt-BR), na opção de instalação de voz ou algo semelhante.",
-  "✅ Passo 4: Ajuste a velocidade e tom da fala se desejar.",
-  "✅ Passo 5: Volte para o app, atualize 🔃 e teste a voz no chat."
+  "✅ Passo 2: Clique na engrenagem ⚙️ em <strong>mecanismo preferencial</strong>.",
+  "✅ Passo 3: Clique em <strong>instalar dados de voz</strong> e selecione o idioma português (Brasil).",
+  "✅ Passo 4: Selecione a <strong>voz II</strong> para voz masculina.",
+  "✅ Passo 5: Volte para o app, <strong>atualize</strong> 🔃 e teste a voz no chat."
 ];
 
 let currentStep = 0;
