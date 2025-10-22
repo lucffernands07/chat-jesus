@@ -18,17 +18,23 @@
 </head>
 <body>
 
+  <!-- Script para validar pronome -->
+  <script>
+    const pronome = localStorage.getItem("pronome");
+    window.pronomeJaDefinido = !!pronome; // converte para true/false
+  </script>
+
   <!-- Pop-up para escolher pronome -->
-<div id="pronomeOverlay" class="overlay">
-  <div class="pronome-popup">
-    <h3>Como devemos chamá-lo(a)?</h3>
-    <p>Escolha para que Jesus possa se dirigir a você corretamente:</p>
-    <div class="pronome-buttons">
-      <button id="btnFilho">Filho</button>
-      <button id="btnFilha">Filha</button>
+  <div id="pronomeOverlay" class="overlay" style="display: none;">
+    <div class="pronome-popup">
+      <h3>Como devemos chamá-lo(a)?</h3>
+      <p>Escolha para que Jesus possa se dirigir a você corretamente:</p>
+      <div class="pronome-buttons">
+        <button id="btnFilho">Filho</button>
+        <button id="btnFilha">Filha</button>
+      </div>
     </div>
   </div>
-</div>
   
   <header>
     <button class="menu-btn" aria-label="Abrir menu" aria-expanded="false" aria-controls="sideMenu">☰</button>
