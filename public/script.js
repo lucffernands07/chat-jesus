@@ -438,32 +438,27 @@ window.onload = () => {
 
   // Registro do Service Worker
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(reg => {
-        console.log('✅ Service Worker registrado:', reg);
+  navigator.serviceWorker.register('/sw.js').then(reg => {
+    console.log('✅ Service Worker registrado:', reg);
 
-        // Detecta se há SW esperando
-        if (reg.waiting) {
-          showUpdateNotification(reg.waiting);
+    // Se já houver um SW esperando
+    if (reg.waiting) {
+      showUpdateNotification(reg.waiting);
+    }
+
+    // Se um novo SW estiver sendo instalado
+    reg.addEventListener('updatefound', () => {
+      const newWorker = reg.installing;
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          showUpdateNotification(newWorker);
         }
+      });
+    });
+  }).catch(err => console.error('❌ Erro ao registrar SW:', err));
+}
 
-        // Detecta quando um novo SW é encontrado
-        reg.addEventListener('updatefound', () => {
-          const newWorker = reg.installing;
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              showUpdateNotification(newWorker);
-            }
-          });
-        });
-      })
-      .catch(err => console.error('❌ Erro ao registrar SW:', err));
-  }
-};
-
-// Mostra aviso de atualização no app
 function showUpdateNotification(worker) {
-  // Evita duplicar o aviso
   if (document.getElementById('update-aviso')) return;
 
   const aviso = document.createElement('div');
@@ -487,14 +482,11 @@ function showUpdateNotification(worker) {
   `;
   document.body.appendChild(aviso);
 
-  // Só atualiza quando o usuário clicar
   document.getElementById('update-btn').addEventListener('click', () => {
     worker.postMessage('SKIP_WAITING');
   });
 
-  // Recarrega a página e remove o aviso só após o novo SW assumir
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    document.body.removeChild(aviso);
     window.location.reload();
   });
 }
