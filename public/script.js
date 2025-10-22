@@ -72,6 +72,9 @@ function speakJesus(text) {
     .replace(/\s+/g, " ")  // remove espaços extras
     .trim();
 
+  // 🔹 Reduz as pausas após pontos finais
+  const adjustedText = cleanText.replace(/\.\s+/g, '.\u200B');
+   
   const utterance = new SpeechSynthesisUtterance(cleanText);
 
   // ✅ Ajustes finos para voz natural
@@ -79,7 +82,6 @@ function speakJesus(text) {
   utterance.rate = 1.15;     // velocidade ligeiramente acima do normal
   utterance.pitch = 1;       // tom natural
   utterance.volume = 1;      // volume máximo
-  utterance.pause = 0.1;     // (não é padrão, mas mantemos para compatibilidade)
 
   // 🧠 Alguns navegadores demoram a carregar vozes
   const voices = speechSynthesis.getVoices();
