@@ -553,40 +553,62 @@ nextStepBtn.addEventListener('click', () => {
 });
 
 
-//== Configuração para pronome com cookies persistentes ==//
+//== Configuração para pronome persistente com IndexedDB ==//
 document.addEventListener("DOMContentLoaded", () => {
   const overlay = document.getElementById("pronomeOverlay");
   const btnFilho = document.getElementById("btnFilho");
   const btnFilha = document.getElementById("btnFilha");
 
-  // --- Funções auxiliares ---
-  function setCookie(name, value, days) {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/; SameSite=Lax`;
-  }
+  // --- Abre ou cria o banco de dados ---
+  const dbRequest = indexedDB.open("chatJesusDB", 1);
 
-  function getCookie(name) {
-    const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-    return match ? decodeURIComponent(match[2]) : null;
-  }
+  dbRequest.onupgradeneeded = (event) => {
+    const db = event.target.result;
+    if (!db.objectStoreNames.contains("settings")) {
+      db.createObjectStore("settings", { keyPath: "name" });
+    }
+  };
 
-  // --- Checa se já existe pronome salvo no cookie ---
-  let pronome = getCookie("pronome");
+  dbRequest.onerror = (event) => {
+    console.error("Erro ao abrir IndexedDB:", event);
+  };
 
-  if (!pronome) {
-    overlay.style.display = "flex"; // mostra o pop-up apenas se não existir cookie
-  } else {
-    localStorage.setItem("pronome", pronome); // mantém compatibilidade com funções antigas
-  }
+  dbRequest.onsuccess = (event) => {
+    const db = event.target.result;
 
-  // --- Função para salvar pronome e fechar ---
-  function escolherPronome(p) {
-    setCookie("pronome", p, 365); // cookie dura 1 ano
-    localStorage.setItem("pronome", p);
-    overlay.style.display = "none";
-  }
+    // Função para pegar o pronome
+    const getPronome = () => {
+      return new Promise((resolve) => {
+        const tx = db.transaction("settings", "readonly");
+        const store = tx.objectStore("settings");
+        const request = store.get("pronome");
+        request.onsuccess = () => {
+          resolve(request.result ? request.result.value : null);
+        };
+        request.onerror = () => resolve(null);
+      });
+    };
 
-  btnFilho.addEventListener("click", () => escolherPronome("filho"));
-  btnFilha.addEventListener("click", () => escolherPronome("filha"));
+    // Função para salvar o pronome
+    const setPronome = (value) => {
+      const tx = db.transaction("settings", "readwrite");
+      const store = tx.objectStore("settings");
+      store.put({ name: "pronome", value });
+      localStorage.setItem("pronome", value); // compatibilidade antiga
+      overlay.style.display = "none";
+    };
+
+    // Checa se já existe pronome
+    getPronome().then((pronome) => {
+      if (!pronome) {
+        overlay.style.display = "flex"; // mostra pop-up
+      } else {
+        localStorage.setItem("pronome", pronome);
+      }
+    });
+
+    // Eventos de clique nos botões
+    btnFilho.addEventListener("click", () => setPronome("filho"));
+    btnFilha.addEventListener("click", () => setPronome("filha"));
+  };
 });
