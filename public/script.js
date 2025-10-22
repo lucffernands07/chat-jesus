@@ -1,4 +1,3 @@
-
 // == Elementos principais ==
 const chatBox = document.getElementById('chat-box');
 const chatForm = document.getElementById('chat-form');
@@ -513,7 +512,7 @@ const closeTutorialBtn = document.getElementById('closeTutorialBtn');
 
 // Conteúdo das etapas
 const tutorialSteps = [
-  "✅ Passo 1: Abra as configurações do seu celular e busque 🔍 por conversão de texto em voz.",
+  "✅ Passo 1: Abra as configurações do seu celular e busque 🔍 por <strong>conversão de texto em voz.</strong>",
   "✅ Passo 2: Procure pela lista de vozes disponíveis, normalmente em mecanismo preferencial ⚙️.",
   "✅ Passo 3: Selecione a voz masculina (Voz II), em Português (pt-BR), na opção de instalação de voz ou algo semelhante.",
   "✅ Passo 4: Ajuste a velocidade e tom da fala se desejar.",
