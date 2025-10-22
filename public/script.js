@@ -522,7 +522,7 @@ const tutorialSteps = [
 let currentStep = 0;
 
 function showStep(stepIndex) {
-  tutorialStepEl.textContent = tutorialSteps[stepIndex];
+  tutorialStepEl.innerHTML = tutorialSteps[stepIndex]; // aqui
   prevStepBtn.style.display = stepIndex === 0 ? "none" : "inline-block";
   nextStepBtn.style.display = stepIndex === tutorialSteps.length - 1 ? "none" : "inline-block";
 }
