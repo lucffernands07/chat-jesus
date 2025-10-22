@@ -27,6 +27,10 @@ let voicesList = [];
    Funções de chat / voz
    ============================ */
 
+function getPronomeUsuario() {
+  return localStorage.getItem('pronome') || 'filho';
+}
+
 function appendMessage(sender, text) {
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message', sender === 'user' ? 'user' : 'jesus');
