@@ -532,24 +532,37 @@ nextStepBtn.addEventListener('click', () => {
   showStep(currentStep);
 });
 
-//== Configuração para pronome ==//
-document.addEventListener('DOMContentLoaded', () => {
-  const overlay = document.getElementById('pronomeOverlay');
-  const btnFilho = document.getElementById('btnFilho');
-  const btnFilha = document.getElementById('btnFilha');
+document.addEventListener("DOMContentLoaded", () => {
+  const overlay = document.getElementById("pronomeOverlay");
+  const btnFilho = document.getElementById("btnFilho");
+  const btnFilha = document.getElementById("btnFilha");
 
-  // Checa se já existe pronome salvo
-  let pronome = localStorage.getItem('pronome');
+  // Funções auxiliares
+  function setCookie(name, value, days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days*24*60*60*1000));
+    document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/`;
+  }
+
+  function getCookie(name) {
+    const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+    return match ? match[2] : null;
+  }
+
+  // Verifica se já existe pronome salvo no cookie
+  let pronome = getCookie("pronome");
   if (!pronome) {
-    overlay.style.display = 'flex'; // mostra o pop-up
+    overlay.style.display = "flex";
   }
 
-  // Função para salvar pronome
-  function escolherPronome(p) {
-    localStorage.setItem('pronome', p);
-    overlay.style.display = 'none';
-  }
+  // Quando escolher "filho" ou "filha"
+  btnFilho.addEventListener("click", () => {
+    setCookie("pronome", "filho", 365);
+    overlay.style.display = "none";
+  });
 
-  btnFilho.addEventListener('click', () => escolherPronome('filho'));
-  btnFilha.addEventListener('click', () => escolherPronome('filha'));
+  btnFilha.addEventListener("click", () => {
+    setCookie("pronome", "filha", 365);
+    overlay.style.display = "none";
+  });
 });
