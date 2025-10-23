@@ -534,17 +534,17 @@ function showUpdateNotification(worker) {
 
   // Clique no botão: ativa SW e recarrega a página
   btn.addEventListener('click', () => {
-    worker.postMessage('SKIP_WAITING');
-    window.location.reload();
+  // Ativa o novo SW
+  worker.postMessage('SKIP_WAITING');
+
+  // Aguarda o SW assumir antes de remover e recarregar
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    window.location.reload(); // só recarrega uma vez
   });
 
-  // Garante que o aviso não reapareça ao recarregar a página
-  let reloading = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (reloading) return;
-    reloading = true;
-    // window.location.reload(); // já recarregado pelo botão
-  });
+  // Esconde imediatamente o aviso visualmente
+  aviso.style.display = 'none';
+});
 }
 
 // ======================================================
