@@ -437,14 +437,32 @@ window.onload = () => {
   }
 
   // Registro do Service Worker
-  if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js').then(reg => {
-    console.log('✅ Service Worker registrado:', reg);
+  // Define a versão do SW
+const SW_VERSION = 'v11';
 
-    // Se já houver um SW esperando
-    if (reg.waiting) {
-      showUpdateNotification(reg.waiting);
-    }
+// Registro do Service Worker com query string
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register(`/service-worker.js?${SW_VERSION}`)
+    .then(reg => {
+      console.log('✅ Service Worker registrado:', reg);
+
+      // Se já houver um SW esperando
+      if (reg.waiting) {
+        showUpdateNotification(reg.waiting);
+      }
+
+      // Se um novo SW estiver sendo instalado
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showUpdateNotification(newWorker);
+          }
+        });
+      });
+    })
+    .catch(err => console.error('❌ Erro ao registrar SW:', err));
+}
 
     // Se um novo SW estiver sendo instalado
     reg.addEventListener('updatefound', () => {
