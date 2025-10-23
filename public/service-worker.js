@@ -1,8 +1,10 @@
-const CACHE_NAME = "jesus-chat-v18"; // nova versão
+const version = new URL(self.location).searchParams.get('v') || 'v1';
+const CACHE_NAME = `jesus-chat-${version}`;
+
 const ASSETS_TO_CACHE = [
   "/styles.css",
-  "/script.js?v=2.3",
-  "/script-salmos.js?v=1.1",
+  "/script.js",
+  "/script-salmos.js",
   "/manifest.json",
   "/icons/pray-128x.png",
   "/icons/pray-512x.png"
@@ -13,10 +15,8 @@ self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS_TO_CACHE))
   );
-  
 });
 
-// Ativa e remove caches antigos
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys().then(keys =>
