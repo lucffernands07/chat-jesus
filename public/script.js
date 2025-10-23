@@ -471,9 +471,12 @@ window.onload = () => {
 // Função: mostra aviso de atualização disponível
 // ======================================================
 function showUpdateNotification(worker) {
-  // Evita mostrar o aviso repetido na mesma versão
-  if (localStorage.getItem('updateShown')) return;
-  localStorage.setItem('updateShown', 'true');
+  // Pega a versão atual do SW (query string)
+  const currentVersion = worker.scriptURL.split('?v=')[1] || '';
+
+  // Se já mostramos para esta versão, não mostra novamente
+  if (localStorage.getItem('updateShown') === currentVersion) return;
+  localStorage.setItem('updateShown', currentVersion);
 
   // Cria o container do aviso
   const aviso = document.createElement('div');
@@ -483,10 +486,9 @@ function showUpdateNotification(worker) {
     <button id="update-btn">Atualizar</button>
   `;
 
-  // Estilos do container
   aviso.style = `
     position: fixed;
-    bottom: -100px; /* começa fora da tela */
+    bottom: -100px;
     left: 50%;
     transform: translateX(-50%);
     background: #fff3cd;
@@ -508,7 +510,6 @@ function showUpdateNotification(worker) {
   `;
   document.body.appendChild(aviso);
 
-  // Estilo do botão
   const btn = aviso.querySelector('#update-btn');
   btn.style = `
     display: inline-block;
@@ -531,19 +532,19 @@ function showUpdateNotification(worker) {
     aviso.style.opacity = "1";
   }, 100);
 
-  // Clique no botão: ativa SW e remove aviso imediatamente
-btn.addEventListener('click', () => {
-  worker.postMessage('SKIP_WAITING');
-  aviso.remove(); // remove o aviso para não reaparecer
-});
+  // Clique no botão: ativa SW e recarrega a página
+  btn.addEventListener('click', () => {
+    worker.postMessage('SKIP_WAITING');
+    window.location.reload();
+  });
 
-// controllerchange: recarrega a página apenas uma vez
-let reloading = false;
-navigator.serviceWorker.addEventListener('controllerchange', () => {
-  if (reloading) return;
-  reloading = true;
-  window.location.reload();
-});
+  // Garante que o aviso não reapareça ao recarregar a página
+  let reloading = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (reloading) return;
+    reloading = true;
+    // window.location.reload(); // já recarregado pelo botão
+  });
 }
 
 // ======================================================
