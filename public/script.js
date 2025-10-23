@@ -427,51 +427,49 @@ if (shareBtn) {
 window.onload = () => {
   // loadSettings(); --->> validar se está sendo usado.
   if ('speechSynthesis' in window) {
-    speechSynthesis.onvoiceschanged = () => { voicesList = speechSynthesis.getVoices(); };
+    speechSynthesis.onvoiceschanged = () => {
+      voicesList = speechSynthesis.getVoices();
+    };
     voicesList = speechSynthesis.getVoices();
   }
 
-  // Garante que os salmos sejam carregados antes de usar
+  // ✅ Garante que os salmos sejam carregados antes de usar
   if (typeof carregarSalmos === 'function') {
     carregarSalmos();
+  }
 
+  // ✅ Registro do Service Worker com query string
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+      .register(`/service-worker.js?v=${Date.now()}`)
+      .then(reg => {
+        console.log('✅ Service Worker registrado:', reg);
 
-// Registro do Service Worker com query string
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register(`/service-worker.js?v=${Date.now()}`)
-    .then(reg => {
-      console.log('✅ Service Worker registrado:', reg);
-
-      // Se já houver um SW esperando
-      if (reg.waiting) {
-        showUpdateNotification(reg.waiting);
-      }
-
-      // Se um novo SW estiver sendo instalado
-      reg.addEventListener('updatefound', () => {
-        const newWorker = reg.installing;
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            showUpdateNotification(newWorker);
-          }
-        });
-      });
-    })
-    .catch(err => console.error('❌ Erro ao registrar SW:', err));
-}
-
-    // Se um novo SW estiver sendo instalado
-    reg.addEventListener('updatefound', () => {
-      const newWorker = reg.installing;
-      newWorker.addEventListener('statechange', () => {
-        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-          showUpdateNotification(newWorker);
+        // Se já houver um SW esperando
+        if (reg.waiting) {
+          showUpdateNotification(reg.waiting);
         }
-      });
-    });
-  }).catch(err => console.error('❌ Erro ao registrar SW:', err));
-}
 
+        // Se um novo SW estiver sendo instalado
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (
+              newWorker.state === 'installed' &&
+              navigator.serviceWorker.controller
+            ) {
+              showUpdateNotification(newWorker);
+            }
+          });
+        });
+      })
+      .catch(err => console.error('❌ Erro ao registrar SW:', err));
+  }
+}; // ✅ fecha o window.onload corretamente
+
+// ======================================================
+// Função: mostra aviso de atualização disponível
+// ======================================================
 function showUpdateNotification(worker) {
   if (document.getElementById('update-aviso')) return;
 
@@ -504,15 +502,16 @@ function showUpdateNotification(worker) {
     window.location.reload();
   });
 }
-   
-   // Função independente para prompt de atualização (opcional)
-   function showUpdatePrompt(worker) {
-      if (confirm('✨ Nova versão disponível! Deseja atualizar agora?')) {
-         worker.postMessage('SKIP_WAITING');
-         window.location.reload();
-      }
-   }
-};
+
+// ======================================================
+// Função opcional: prompt de atualização
+// ======================================================
+function showUpdatePrompt(worker) {
+  if (confirm('✨ Nova versão disponível! Deseja atualizar agora?')) {
+    worker.postMessage('SKIP_WAITING');
+    window.location.reload();
+  }
+}
 
 // beforeinstallprompt (popup)
 let deferredPrompt;
