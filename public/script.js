@@ -471,34 +471,65 @@ window.onload = () => {
 // Função: mostra aviso de atualização disponível
 // ======================================================
 function showUpdateNotification(worker) {
+  // Evita duplicar o aviso
   if (document.getElementById('update-aviso')) return;
 
+  // Cria o aviso
   const aviso = document.createElement('div');
   aviso.id = 'update-aviso';
   aviso.innerHTML = `
     ✨ Nova versão disponível! 
     <button id="update-btn">Atualizar</button>
   `;
+
+  // 💅 Estilo moderno e centralizado
   aviso.style = `
     position: fixed;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: #ffeb3b;
-    color: #000;
-    padding: 12px 20px;
-    border-radius: 8px;
+    background: #fff3cd;
+    color: #856404;
+    padding: 16px 24px;
+    border: 1px solid #ffeeba;
+    border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    font-family: system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
     z-index: 9999;
-    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   `;
+
+  // Adiciona ao corpo
   document.body.appendChild(aviso);
 
-  document.getElementById('update-btn').addEventListener('click', () => {
+  // Estilo do botão
+  const btn = aviso.querySelector('#update-btn');
+  btn.style = `
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+  `;
+  btn.onmouseover = () => (btn.style.background = '#0056b3');
+  btn.onmouseout = () => (btn.style.background = '#007bff');
+
+  // 🔁 Ao clicar, ativa o novo SW e remove o aviso
+  btn.addEventListener('click', () => {
     worker.postMessage('SKIP_WAITING');
+    aviso.remove(); // Remove o aviso imediatamente
   });
 
+  // 🔄 Quando o novo SW assumir o controle, recarrega a página
   navigator.serviceWorker.addEventListener('controllerchange', () => {
+    aviso.remove(); // Remove o aviso ao atualizar
     window.location.reload();
   });
 }
