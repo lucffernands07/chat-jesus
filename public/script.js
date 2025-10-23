@@ -439,38 +439,44 @@ window.onload = () => {
   }
 
   // ✅ Registro do Service Worker com query string
-  const SW_VERSION = 'v2';
-   if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-         navigator.serviceWorker.register(`/service-worker.js?${SW_VERSION}`).then(reg => {
-            console.log('Service Worker registrado:', reg);
+const SW_VERSION = 'v3'; // *** Sempre trocar a versão ao alterar o script 
 
-      // Se já houver SW esperando
-      if (reg.waiting) {
-        showUpdateNotification(reg.waiting);
-        return;
-      }
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register(`/service-worker.js?${SW_VERSION}`)
+      .then(reg => {
+        console.log('Service Worker registrado:', reg);
 
-      // Detecta atualização em andamento
-      reg.addEventListener('updatefound', () => {
-        const newWorker = reg.installing;
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            showUpdateNotification(newWorker);
-          }
+        // Se já houver SW esperando (nova versão)
+        if (reg.waiting) {
+          showUpdateNotification(reg.waiting);
+          return;
+        }
+
+        // Detecta se uma nova versão está sendo instalada
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          if (!newWorker) return;
+
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              showUpdateNotification(newWorker);
+            }
+          });
         });
-      });
 
-      // Atualiza página quando novo SW assumir
-      let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-               if (refreshing) return;
-               refreshing = true;
-               window.location.reload();
-            });
-         });
-      });
-   }
+        // Atualiza a página quando o novo SW assumir
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (refreshing) return;
+          refreshing = true;
+          console.log('Novo Service Worker ativo — recarregando página...');
+          window.location.reload();
+        });
+      })
+      .catch(err => console.error('Erro ao registrar Service Worker:', err));
+  });
+}
 }; // ✅ fecha o window.onload corretamente
 
 // ======================================================
