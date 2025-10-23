@@ -434,15 +434,11 @@ window.onload = () => {
   // Garante que os salmos sejam carregados antes de usar
   if (typeof carregarSalmos === 'function') {
     carregarSalmos();
-  }
 
-  // Registro do Service Worker
-  // Define a versão do SW
-const SW_VERSION = 'v11';
 
 // Registro do Service Worker com query string
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register(`/service-worker.js?${SW_VERSION}`)
+  navigator.serviceWorker.register(`/service-worker.js?v=${Date.now()}`)
     .then(reg => {
       console.log('✅ Service Worker registrado:', reg);
 
