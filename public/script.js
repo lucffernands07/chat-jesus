@@ -492,18 +492,19 @@ function showUpdateNotification(worker) {
 
   // Clique no botão: ativa SW, remove aviso
   const btn = aviso.querySelector('#update-btn');
-  btn.addEventListener('click', () => {
-    aviso.remove();
-    worker.postMessage('SKIP_WAITING');
+   btn.addEventListener('click', () => {
+      aviso.remove();            // remove o aviso imediatamente
+      worker.postMessage('SKIP_WAITING'); // ativa o novo SW
+      window.location.reload();   // força atualização da página
   });
 
   // Recarrega a página apenas uma vez
   let reloading = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (reloading) return;
-    reloading = true;
-    window.location.reload();
-  });
+   navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (reloading) return;
+      reloading = true;
+      // Só recarrega se ainda não recarregou pelo botão
+   });
 }
 
 // ======================================================
