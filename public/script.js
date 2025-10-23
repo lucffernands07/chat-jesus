@@ -491,7 +491,7 @@ function showUpdateNotification(worker) {
     transform: translateX(-50%);
     background: #fff3cd;
     color: #856404;
-    padding: 16px 28px;
+    padding: 16px;
     border: 1px solid #ffeeba;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.25);
@@ -531,20 +531,19 @@ function showUpdateNotification(worker) {
     aviso.style.opacity = "1";
   }, 100);
 
-  // Clique no botão = ativa o novo SW e remove o aviso
-  btn.addEventListener('click', () => {
-    worker.postMessage('SKIP_WAITING');
-    aviso.style.opacity = '0';
-    aviso.style.bottom = '-100px';
-    setTimeout(() => aviso.remove(), 400);
-  });
+  // Clique no botão: ativa SW e remove aviso imediatamente
+btn.addEventListener('click', () => {
+  worker.postMessage('SKIP_WAITING');
+  aviso.remove(); // remove o aviso para não reaparecer
+});
 
-  // Quando o novo SW assumir o controle
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    aviso.remove();
-    localStorage.removeItem('updateShown'); // limpa flag para próxima atualização
-    window.location.reload();
-  });
+// controllerchange: recarrega a página apenas uma vez
+let reloading = false;
+navigator.serviceWorker.addEventListener('controllerchange', () => {
+  if (reloading) return;
+  reloading = true;
+  window.location.reload();
+});
 }
 
 // ======================================================
