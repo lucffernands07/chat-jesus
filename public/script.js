@@ -468,7 +468,7 @@ window.onload = () => {
 }; // ✅ fecha o window.onload corretamente
 
 // ======================================================
-// Função: mostra aviso de atualização disponível
+// Função: mostra aviso de atualização disponível (corrigida)
 // ======================================================
 function showUpdateNotification(worker) {
   const currentVersion = worker.scriptURL.split('?v=')[1] || Date.now();
@@ -490,31 +490,20 @@ function showUpdateNotification(worker) {
     aviso.style.opacity = "1";
   }, 100);
 
-  // Clique no botão: ativa SW, remove aviso
   const btn = aviso.querySelector('#update-btn');
-   btn.addEventListener('click', () => {
-      aviso.remove();            // remove o aviso imediatamente
-      worker.postMessage('SKIP_WAITING'); // ativa o novo SW
-      window.location.reload();   // força atualização da página
-  });
+  btn.addEventListener('click', () => {
+    aviso.remove(); // some o aviso
+    worker.postMessage('SKIP_WAITING');
 
-  // Recarrega a página apenas uma vez
-  let reloading = false;
-   navigator.serviceWorker.addEventListener('controllerchange', () => {
+    // Aguarda o novo SW assumir o controle
+    let reloading = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (reloading) return;
       reloading = true;
-      // Só recarrega se ainda não recarregou pelo botão
-   });
-}
-
-// ======================================================
-// Função opcional: prompt de atualização
-// ======================================================
-function showUpdatePrompt(worker) {
-  if (confirm('✨ Nova versão disponível! Deseja atualizar agora?')) {
-    worker.postMessage('SKIP_WAITING');
-    window.location.reload();
-  }
+      console.log('Novo service worker ativo! Recarregando página...');
+      window.location.reload();
+    });
+  });
 }
 
 // beforeinstallprompt (popup)
