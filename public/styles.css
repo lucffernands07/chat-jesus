@@ -921,3 +921,45 @@ input[type='text'] {
   background-color: #a00000;
 }
 
+/* Container do aviso de atualização */
+#update-aviso {
+  position: fixed;
+  bottom: -100px; /* inicia fora da tela */
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff3cd;
+  color: #856404;
+  padding: 16px;
+  border: 1px solid #ffeeba;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  font-family: system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  z-index: 9999;
+  width: 85%;
+  max-width: 350px;
+  line-height: 1.5;
+  transition: all 0.4s ease;
+  opacity: 0;
+}
+
+/* Botão do aviso */
+#update-aviso #update-btn {
+  display: inline-block;
+  margin-top: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+/* Hover do botão */
+#update-aviso #update-btn:hover {
+  background: #0056b3;
+}
