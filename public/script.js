@@ -471,65 +471,78 @@ window.onload = () => {
 // Função: mostra aviso de atualização disponível
 // ======================================================
 function showUpdateNotification(worker) {
-  // Evita duplicar o aviso
-  if (document.getElementById('update-aviso')) return;
+  // Evita mostrar o aviso repetido na mesma versão
+  if (localStorage.getItem('updateShown')) return;
+  localStorage.setItem('updateShown', 'true');
 
-  // Cria o aviso
+  // Cria o container do aviso
   const aviso = document.createElement('div');
   aviso.id = 'update-aviso';
   aviso.innerHTML = `
-    ✨ Nova versão disponível! 
+    ✨ Nova versão disponível!<br>
     <button id="update-btn">Atualizar</button>
   `;
 
-  // 💅 Estilo moderno e centralizado
+  // Estilos do container
   aviso.style = `
     position: fixed;
-    bottom: 20px;
+    bottom: -100px; /* começa fora da tela */
     left: 50%;
     transform: translateX(-50%);
     background: #fff3cd;
     color: #856404;
-    padding: 16px 24px;
+    padding: 16px 28px;
     border: 1px solid #ffeeba;
     border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
     font-family: system-ui, sans-serif;
     font-size: 15px;
     font-weight: 600;
+    text-align: center;
     z-index: 9999;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    width: 85%;
+    max-width: 350px;
+    line-height: 1.5;
+    transition: all 0.4s ease;
+    opacity: 0;
   `;
-
-  // Adiciona ao corpo
   document.body.appendChild(aviso);
 
   // Estilo do botão
   const btn = aviso.querySelector('#update-btn');
   btn.style = `
+    display: inline-block;
+    margin-top: 10px;
     background: #007bff;
     color: white;
     border: none;
-    padding: 8px 14px;
+    padding: 8px 16px;
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
-    transition: 0.2s;
+    transition: background 0.2s;
   `;
   btn.onmouseover = () => (btn.style.background = '#0056b3');
   btn.onmouseout = () => (btn.style.background = '#007bff');
 
-  // 🔁 Ao clicar, ativa o novo SW e remove o aviso
+  // Animação de entrada
+  setTimeout(() => {
+    aviso.style.bottom = "30px";
+    aviso.style.opacity = "1";
+  }, 100);
+
+  // Clique no botão = ativa o novo SW e remove o aviso
   btn.addEventListener('click', () => {
     worker.postMessage('SKIP_WAITING');
-    aviso.remove(); // Remove o aviso imediatamente
+    aviso.style.opacity = '0';
+    aviso.style.bottom = '-100px';
+    setTimeout(() => aviso.remove(), 400);
   });
 
-  // 🔄 Quando o novo SW assumir o controle, recarrega a página
+  // Quando o novo SW assumir o controle
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    aviso.remove(); // Remove o aviso ao atualizar
+    aviso.remove();
+    localStorage.removeItem('updateShown'); // limpa flag para próxima atualização
     window.location.reload();
   });
 }
