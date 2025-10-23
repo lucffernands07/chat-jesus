@@ -471,60 +471,18 @@ window.onload = () => {
 // Função: mostra aviso de atualização disponível
 // ======================================================
 function showUpdateNotification(worker) {
-  // Pega a versão atual do SW (query string)
-  const currentVersion = worker.scriptURL.split('?v=')[1] || '';
+  const currentVersion = worker.scriptURL.split('?v=')[1] || Date.now();
 
-  // Se já mostramos para esta versão, não mostra novamente
   if (localStorage.getItem('updateShown') === currentVersion) return;
   localStorage.setItem('updateShown', currentVersion);
 
-  // Cria o container do aviso
   const aviso = document.createElement('div');
   aviso.id = 'update-aviso';
   aviso.innerHTML = `
     ✨ Nova versão disponível!<br>
     <button id="update-btn">Atualizar</button>
   `;
-
-  aviso.style = `
-    position: fixed;
-    bottom: -100px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #fff3cd;
-    color: #856404;
-    padding: 16px;
-    border: 1px solid #ffeeba;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-    font-family: system-ui, sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    text-align: center;
-    z-index: 9999;
-    width: 85%;
-    max-width: 350px;
-    line-height: 1.5;
-    transition: all 0.4s ease;
-    opacity: 0;
-  `;
   document.body.appendChild(aviso);
-
-  const btn = aviso.querySelector('#update-btn');
-  btn.style = `
-    display: inline-block;
-    margin-top: 10px;
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.2s;
-  `;
-  btn.onmouseover = () => (btn.style.background = '#0056b3');
-  btn.onmouseout = () => (btn.style.background = '#007bff');
 
   // Animação de entrada
   setTimeout(() => {
@@ -532,19 +490,20 @@ function showUpdateNotification(worker) {
     aviso.style.opacity = "1";
   }, 100);
 
-  // Clique no botão: ativa SW e recarrega a página
+  // Clique no botão: ativa SW, remove aviso
+  const btn = aviso.querySelector('#update-btn');
   btn.addEventListener('click', () => {
-  // Ativa o novo SW
-  worker.postMessage('SKIP_WAITING');
-
-  // Aguarda o SW assumir antes de remover e recarregar
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    window.location.reload(); // só recarrega uma vez
+    aviso.remove();
+    worker.postMessage('SKIP_WAITING');
   });
 
-  // Esconde imediatamente o aviso visualmente
-  aviso.style.display = 'none';
-});
+  // Recarrega a página apenas uma vez
+  let reloading = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (reloading) return;
+    reloading = true;
+    window.location.reload();
+  });
 }
 
 // ======================================================
