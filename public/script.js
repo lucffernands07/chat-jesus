@@ -439,32 +439,38 @@ window.onload = () => {
   }
 
   // ✅ Registro do Service Worker com query string
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker
-      .register(`/service-worker.js?v=${Date.now()}`)
-      .then(reg => {
-        console.log('✅ Service Worker registrado:', reg);
+  const SW_VERSION = 'v19';
+   if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+         navigator.serviceWorker.register(`/service-worker.js?${SW_VERSION}`).then(reg => {
+            console.log('Service Worker registrado:', reg);
 
-        // Se já houver um SW esperando
-        if (reg.waiting) {
-          showUpdateNotification(reg.waiting);
-        }
+      // Se já houver SW esperando
+      if (reg.waiting) {
+        showUpdateNotification(reg.waiting);
+        return;
+      }
 
-        // Se um novo SW estiver sendo instalado
-        reg.addEventListener('updatefound', () => {
-          const newWorker = reg.installing;
-          newWorker.addEventListener('statechange', () => {
-            if (
-              newWorker.state === 'installed' &&
-              navigator.serviceWorker.controller
-            ) {
-              showUpdateNotification(newWorker);
-            }
-          });
+      // Detecta atualização em andamento
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showUpdateNotification(newWorker);
+          }
         });
-      })
-      .catch(err => console.error('❌ Erro ao registrar SW:', err));
-  }
+      });
+
+      // Atualiza página quando novo SW assumir
+      let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+               if (refreshing) return;
+               refreshing = true;
+               window.location.reload();
+            });
+         });
+      });
+   }
 }; // ✅ fecha o window.onload corretamente
 
 // ======================================================
