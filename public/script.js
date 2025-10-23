@@ -438,8 +438,8 @@ window.onload = () => {
     carregarSalmos();
   }
 
-  // ✅ Registro do Service Worker com query string
-const SW_VERSION = 'v4'; // *** Sempre trocar a versão ao alterar o script 
+  // 🆚🆕 Registro do Service Worker com query string
+const SW_VERSION = 'v5'; // *** Sempre trocar a versão ao alterar o script 
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
