@@ -439,7 +439,7 @@ window.onload = () => {
   }
 
   // ✅ Registro do Service Worker com query string
-  const SW_VERSION = 'v19';
+  const SW_VERSION = 'v2';
    if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
          navigator.serviceWorker.register(`/service-worker.js?${SW_VERSION}`).then(reg => {
@@ -479,6 +479,7 @@ window.onload = () => {
 function showUpdateNotification(worker) {
   const currentVersion = worker.scriptURL.split('?v=')[1] || Date.now();
 
+  // Evita duplicar aviso
   if (localStorage.getItem('updateShown') === currentVersion) return;
   localStorage.setItem('updateShown', currentVersion);
 
@@ -490,7 +491,6 @@ function showUpdateNotification(worker) {
   `;
   document.body.appendChild(aviso);
 
-  // Animação de entrada
   setTimeout(() => {
     aviso.style.bottom = "30px";
     aviso.style.opacity = "1";
@@ -498,17 +498,8 @@ function showUpdateNotification(worker) {
 
   const btn = aviso.querySelector('#update-btn');
   btn.addEventListener('click', () => {
-    aviso.remove(); // some o aviso
-    worker.postMessage('SKIP_WAITING');
-
-    // Aguarda o novo SW assumir o controle
-    let reloading = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (reloading) return;
-      reloading = true;
-      console.log('Novo service worker ativo! Recarregando página...');
-      window.location.reload();
-    });
+    aviso.remove();
+    worker.postMessage('SKIP_WAITING'); // novo SW vai assumir
   });
 }
 
