@@ -490,14 +490,15 @@ function showUpdateNotification(worker) {
     window.location.reload();
   });
 }
-
-// Função independente para prompt de atualização (opcional)
-function showUpdatePrompt(worker) {
-  if (confirm('✨ Nova versão disponível! Deseja atualizar agora?')) {
-    worker.postMessage('SKIP_WAITING');
-    window.location.reload();
-  }
-     }
+   
+   // Função independente para prompt de atualização (opcional)
+   function showUpdatePrompt(worker) {
+      if (confirm('✨ Nova versão disponível! Deseja atualizar agora?')) {
+         worker.postMessage('SKIP_WAITING');
+         window.location.reload();
+      }
+   }
+};
 
 // beforeinstallprompt (popup)
 let deferredPrompt;
