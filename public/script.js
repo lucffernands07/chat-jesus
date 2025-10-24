@@ -462,26 +462,24 @@ window.onload = () => {
  
 //🆕 Registro do Service Worker
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(registration => {
-        console.log('Service Worker registrado:', registration.scope);
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(registration => {
+      console.log('Service Worker registrado:', registration.scope);
 
-        // Detecta atualização
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed') {
-              if (navigator.serviceWorker.controller) {
-                // Nova versão disponível
-                showUpdateNotification();
-              }
+      // Detecta atualização
+      registration.addEventListener('updatefound', () => {
+        const newWorker = registration.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed') {
+            if (navigator.serviceWorker.controller) {
+              // Nova versão disponível
+              showUpdateNotification();
             }
-          });
+          }
         });
-      })
-      .catch(err => console.error('Erro ao registrar SW:', err));
-  });
+      });
+    })
+    .catch(err => console.error('Erro ao registrar SW:', err));
 }
 }; // ✅ fecha o window.onload corretamente
 
