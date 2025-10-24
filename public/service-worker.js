@@ -1,10 +1,10 @@
 // Defina a versão aqui
-const version = 'v1'; // *** Troque para cada atualização
+const version = 'v1'; // Troque para cada atualização
 
 // Recebe mensagem do front-end
 self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting(); // força a ativação imediata
+    self.skipWaiting(); // ativa imediatamente o SW novo
   }
 });
 
@@ -13,7 +13,7 @@ self.addEventListener('activate', event => {
   event.waitUntil(clients.claim());
 });
 
-//Para carregar imagens
+// Passa todas as requisições diretamente para o servidor
 self.addEventListener('fetch', event => {
   event.respondWith(fetch(event.request));
 });
