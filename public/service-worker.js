@@ -1,7 +1,8 @@
-const version = new URL(self.location).searchParams.get('v') || 'v1';
+// Defina a versão aqui
+const version = 'v6'; // *** Troque para cada atualização
 const CACHE_NAME = `jesus-chat-${version}`;
-console.log('Servicos atualizados'); //teste
-            
+console.log('Serviços atualizados — SW versão', version);
+
 const ASSETS_TO_CACHE = [
   "/styles.css",
   "/script.js",
@@ -12,12 +13,14 @@ const ASSETS_TO_CACHE = [
   "/img/image-bkg-ceu.jpeg"
 ];
 
+// Instala e adiciona assets ao cache
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS_TO_CACHE))
   );
 });
 
+// Ativa e remove caches antigos
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -40,7 +43,6 @@ self.addEventListener("fetch", event => {
     event.respondWith(
       fetch(request)
         .then(resp => {
-          // Atualiza cache para offline
           const copy = resp.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
           return resp;
