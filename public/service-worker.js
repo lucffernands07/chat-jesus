@@ -1,6 +1,7 @@
 const version = new URL(self.location).searchParams.get('v') || 'v1';
 const CACHE_NAME = `jesus-chat-${version}`;
-
+console.log('Servicos atualizados'); //teste
+            
 const ASSETS_TO_CACHE = [
   "/styles.css",
   "/script.js",
