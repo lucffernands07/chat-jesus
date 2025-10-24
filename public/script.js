@@ -425,24 +425,24 @@ if (shareBtn) {
 }
 
 // ======================================================
-// Função: mostra aviso de atualização disponível (corrigida)
+// ======================================================
+// Função: mostra aviso de atualização disponível
 // ======================================================
 function showUpdateNotification() {
-  // Verifica se já existe a barra para não duplicar
   if (document.getElementById('update-aviso')) return;
 
   const updateBar = document.createElement('div');
-  updateBar.id = 'update-aviso'; // usa a classe do CSS
+  updateBar.id = 'update-aviso';
   updateBar.innerHTML = 'Nova versão disponível! <button id="update-btn">Atualizar</button>';
   document.body.appendChild(updateBar);
 
-  // 🆕 anima a barra para aparecer
+  // 🆕 animação para aparecer
   setTimeout(() => {
     updateBar.style.bottom = '30px';
     updateBar.style.opacity = '1';
   }, 50);
 
-  // Botão de atualização
+  // Botão de atualizar
   document.getElementById('update-btn').addEventListener('click', () => {
     if (navigator.serviceWorker.controller) {
       navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
@@ -460,47 +460,30 @@ if ('serviceWorker' in navigator) {
 }
 
 // ======================================================
-// Evento principal
+// Registro do SW
 // ======================================================
 window.onload = () => {
-  // Se tiver função de configurações, garante execução
-  // loadSettings();
-
-  // ✅ Inicializa vozes (TTS)
-  if ('speechSynthesis' in window) {
-    speechSynthesis.onvoiceschanged = () => {
-      voicesList = speechSynthesis.getVoices();
-    };
-    voicesList = speechSynthesis.getVoices();
-  }
-
-  // ✅ Garante que os salmos sejam carregados antes de usar
-  if (typeof carregarSalmos === 'function') {
-    carregarSalmos();
-  }
-
-  // 🆕 Registro do Service Worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js')
       .then(registration => {
         console.log('Service Worker registrado:', registration.scope);
 
-        // Detecta atualização do SW
+        // Detecta atualização
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed') {
-              // Se já existe SW controlando → nova versão disponível
+              // Chama aviso somente se já existe um SW controlando
               if (navigator.serviceWorker.controller) {
                 showUpdateNotification();
               } else {
-                console.log('Service Worker instalado pela primeira vez.');
+                console.log('Primeira instalação do SW, aviso não aparece.');
               }
             }
           });
         });
       })
-      .catch(err => console.error('Erro ao registrar Service Worker:', err));
+      .catch(err => console.error('Erro ao registrar SW:', err));
   }
 }; // ✅ fecha o window.onload corretamente
 
