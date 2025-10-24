@@ -1,5 +1,5 @@
 // Defina a versão aqui
-const version = 'v4'; // Troque para cada atualização
+const version = 'v5'; // Troque para cada atualização
 
 // Recebe mensagem do front-end
 self.addEventListener('message', event => {
