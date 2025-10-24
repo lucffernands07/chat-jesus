@@ -430,35 +430,37 @@ if (shareBtn) {
 function showUpdateNotification() {
   if (document.getElementById('update-aviso')) return;
 
+  // ✅ se já clicou antes, não mostra
+  if (localStorage.getItem('updateClicked')) return;
+
   const updateBar = document.createElement('div');
   updateBar.id = 'update-aviso';
   updateBar.innerHTML = 'Nova versão disponível! <button id="update-btn">Atualizar</button>';
   document.body.appendChild(updateBar);
 
-  // animação para aparecer
   setTimeout(() => {
     updateBar.style.bottom = '30px';
     updateBar.style.opacity = '1';
   }, 50);
 
-  // botão de atualizar
   document.getElementById('update-btn').addEventListener('click', () => {
     const controller = navigator.serviceWorker.controller;
     if (controller) {
       console.log('Enviando SKIP_WAITING pro SW');
       controller.postMessage({ type: 'SKIP_WAITING' });
     }
-    // ✅ remove aviso imediatamente
+    // remove aviso
     updateBar.remove();
+    // marca que o usuário clicou
+    localStorage.setItem('updateClicked', 'true');
   });
 }
 
-// ======================================================
-// Escuta SW assumir o controle
-// ======================================================
+// escuta SW assumir o controle
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     console.log('SW novo assumiu, recarregando...');
+    localStorage.removeItem('updateClicked'); // limpa flag após atualizar
     window.location.reload();
   });
 }
