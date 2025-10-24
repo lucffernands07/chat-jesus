@@ -439,7 +439,7 @@ window.onload = () => {
   }
 
   // 🆚🆕 Registro do Service Worker com query string
-const SW_VERSION = 'v5'; // *** Sempre trocar a versão ao alterar o script 
+const SW_VERSION = 'v6'; // *** Sempre trocar a versão ao alterar o script 
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -509,7 +509,7 @@ function showUpdateNotification(worker) {
   });
 }
 
-// beforeinstallprompt (popup)
+//== beforeinstallprompt (popup) ==/
 let deferredPrompt;
 const installPopup = document.getElementById('installPopup');
 const installOverlay = document.getElementById('installOverlay');
@@ -544,7 +544,7 @@ const prevStepBtn = document.getElementById('prevStepBtn');
 const nextStepBtn = document.getElementById('nextStepBtn');
 const closeTutorialBtn = document.getElementById('closeTutorialBtn');
 
-// Conteúdo das etapas
+//== Conteúdo das etapas ==//
 const tutorialSteps = [
   "✅ Passo 1: Abra as configurações do seu celular e busque 🔍 por <strong>conversão de texto em voz.</strong>",
   "✅ Passo 2: Clique na engrenagem ⚙️ em <strong>mecanismo preferencial</strong>.",
