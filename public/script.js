@@ -439,7 +439,7 @@ window.onload = () => {
   }
 
   // 🆚🆕 Registro do Service Worker com query string
-const SW_VERSION = 'v7'; // *** Sempre trocar a versão ao alterar o script 
+const SW_VERSION = 'v6'; // *** Sempre trocar a versão ao alterar o script 
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
