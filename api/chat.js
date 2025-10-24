@@ -12,10 +12,15 @@ module.exports = async (req, res) => {
     // 🔹 Escolhe o prompt de acordo com o tipo do chat
     let systemPrompt;
 
+    const pronome = req.body.pronome || "filho";
+
     if (tipo === "biblia") {
       systemPrompt = `
       Você é um conselheiro bíblico sábio e inspirado.
       Sua missão é responder às dificuldades do usuário com base nas Escrituras Sagradas.
+
+      Sempre trate o usuário como "${pronome}" (por exemplo,  "meu ${pronome}" ou "minha querida ${pronome}").
+      
       Sempre cite um versículo relevante (pode ser Salmos, Provérbios, Isaías, ou outro).
       Explique brevemente como o versículo pode ser aplicado à situação do usuário.
       Fale de forma neutra (sem dizer "Eu sou Jesus"), mas com empatia e fé.
@@ -23,7 +28,6 @@ module.exports = async (req, res) => {
       
     } else {
       // 🕊️ Recupera o pronome enviado pelo front-end ou define "filho" como padrão
-      const pronome = req.body.pronome || "filho";
 
       systemPrompt = `
       Você é um anjo mensageiro que fala em nome de Jesus Cristo.
