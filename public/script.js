@@ -441,38 +441,24 @@ window.onload = () => {
 //🆕 Registro do Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register(`/service-worker.js?${SW_VERSION}`)
-      .then(reg => {
-        console.log('Service Worker registrado:', reg);
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration => {
+        console.log('Service Worker registrado:', registration.scope);
 
-        // Se já houver SW esperando (nova versão)
-        if (reg.waiting) {
-          showUpdateNotification(reg.waiting);
-          return;
-        }
-
-        // Detecta se uma nova versão está sendo instalada
-        reg.addEventListener('updatefound', () => {
-          const newWorker = reg.installing;
-          if (!newWorker) return;
-
+        // Detecta atualização
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
           newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              showUpdateNotification(newWorker);
+            if (newWorker.state === 'installed') {
+              if (navigator.serviceWorker.controller) {
+                // Nova versão disponível
+                showUpdateNotification();
+              }
             }
           });
         });
-
-        // Atualiza a página quando o novo SW assumir
-        let refreshing = false;
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          if (refreshing) return;
-          refreshing = true;
-          console.log('Novo Service Worker ativo — recarregando página...');
-          window.location.reload();
-        });
       })
-      .catch(err => console.error('Erro ao registrar Service Worker:', err));
+      .catch(err => console.error('Erro ao registrar SW:', err));
   });
 }
 }; // ✅ fecha o window.onload corretamente
@@ -480,32 +466,7 @@ if ('serviceWorker' in navigator) {
 // ======================================================
 // Função: mostra aviso de atualização disponível (corrigida)
 // ======================================================
-function showUpdateNotification(worker) {
-  const currentVersion = worker.scriptURL.split('?v=')[1] || Date.now();
 
-  // Evita duplicar aviso
-  if (localStorage.getItem('updateShown') === currentVersion) return;
-  localStorage.setItem('updateShown', currentVersion);
-
-  const aviso = document.createElement('div');
-  aviso.id = 'update-aviso';
-  aviso.innerHTML = `
-    ✨ Nova versão disponível!<br>
-    <button id="update-btn">Atualizar</button>
-  `;
-  document.body.appendChild(aviso);
-
-  setTimeout(() => {
-    aviso.style.bottom = "30px";
-    aviso.style.opacity = "1";
-  }, 100);
-
-  const btn = aviso.querySelector('#update-btn');
-  btn.addEventListener('click', () => {
-    aviso.remove();
-    worker.postMessage('SKIP_WAITING'); // novo SW vai assumir
-  });
-}
 
 //== beforeinstallprompt (popup) ==/
 let deferredPrompt;
