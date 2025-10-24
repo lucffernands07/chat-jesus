@@ -7,7 +7,8 @@ const ASSETS_TO_CACHE = [
   "/script-salmos.js",
   "/manifest.json",
   "/icons/pray-128x.png",
-  "/icons/pray-512x.png"
+  "/icons/pray-512x.png",
+  "/img/image-bkg-ceu.jpeg"
 ];
 
 self.addEventListener("install", event => {
