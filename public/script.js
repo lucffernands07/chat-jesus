@@ -437,10 +437,8 @@ window.onload = () => {
   if (typeof carregarSalmos === 'function') {
     carregarSalmos();
   }
-
-  // 🆚🆕 Registro do Service Worker com query string
-const SW_VERSION = 'v6'; // *** Sempre trocar a versão ao alterar o script 
-
+ 
+//🆕 Registro do Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register(`/service-worker.js?${SW_VERSION}`)
