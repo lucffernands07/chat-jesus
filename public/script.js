@@ -448,6 +448,8 @@ function showUpdateNotification() {
       console.log('Enviando SKIP_WAITING pro SW');
       controller.postMessage({ type: 'SKIP_WAITING' });
     }
+    // ✅ remove aviso imediatamente
+    updateBar.remove();
   });
 }
 
