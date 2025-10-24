@@ -466,7 +466,19 @@ if ('serviceWorker' in navigator) {
 // ======================================================
 // Função: mostra aviso de atualização disponível (corrigida)
 // ======================================================
+function showUpdateNotification() {
+  // Verifica se já existe a barra para não duplicar
+  if (document.getElementById('update-aviso')) return;
 
+  const updateBar = document.createElement('div');
+  updateBar.id = 'update-aviso'; // usa a classe do CSS
+  updateBar.innerHTML = 'Nova versão disponível! <button id="update-btn">Atualizar</button>';
+  document.body.appendChild(updateBar);
+
+  document.getElementById('update-btn').addEventListener('click', () => {
+    navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+  });
+}
 
 //== beforeinstallprompt (popup) ==/
 let deferredPrompt;
