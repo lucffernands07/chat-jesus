@@ -435,25 +435,28 @@ function showUpdateNotification() {
   updateBar.innerHTML = 'Nova versão disponível! <button id="update-btn">Atualizar</button>';
   document.body.appendChild(updateBar);
 
-  // 🆕 animação para aparecer
+  // animação para aparecer
   setTimeout(() => {
     updateBar.style.bottom = '30px';
     updateBar.style.opacity = '1';
   }, 50);
 
-  // Botão de atualizar
+  // botão de atualizar
   document.getElementById('update-btn').addEventListener('click', () => {
-    if (navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+    const controller = navigator.serviceWorker.controller;
+    if (controller) {
+      console.log('Enviando SKIP_WAITING pro SW');
+      controller.postMessage({ type: 'SKIP_WAITING' });
     }
   });
 }
 
 // ======================================================
-// Escuta mudanças do SW para recarregar a página
+// Escuta SW assumir o controle
 // ======================================================
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('controllerchange', () => {
+    console.log('SW novo assumiu, recarregando...');
     window.location.reload();
   });
 }
