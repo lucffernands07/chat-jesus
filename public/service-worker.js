@@ -12,3 +12,8 @@ self.addEventListener('message', event => {
 self.addEventListener('activate', event => {
   event.waitUntil(clients.claim());
 });
+
+//Para carregar imagens
+self.addEventListener('fetch', event => {
+  event.respondWith(fetch(event.request));
+});
