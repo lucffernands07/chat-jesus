@@ -467,7 +467,13 @@ window.onload = () => {
       .then(registration => {
         console.log('Service Worker registrado:', registration.scope);
 
-        // Detecta atualização
+        // 🆕 Verifica se já existe SW esperando (waiting) ao carregar a página
+        if (registration.waiting) {
+          console.log('SW em waiting detectado, mostrando aviso.');
+          showUpdateNotification();
+        }
+
+        // Detecta atualização futura
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
           newWorker.addEventListener('statechange', () => {
@@ -484,9 +490,7 @@ window.onload = () => {
       })
       .catch(err => console.error('Erro ao registrar SW:', err));
   }
-}; // ✅ fecha o window.onload corretamente
-
-
+};// ✅ fecha o window.onload corretamente
 
 //== beforeinstallprompt (popup) ==/
 let deferredPrompt;
