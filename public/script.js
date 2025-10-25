@@ -497,6 +497,37 @@ window.onload = () => {
       })
       .catch(err => console.error('Erro ao registrar SW:', err));
   }
+
+// === Mostra versão do app no footer lateral ===
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.ready.then(registration => {
+    // Pede ao SW a versão atual
+    if (registration.active) {
+      registration.active.postMessage({ type: 'GET_VERSION' });
+
+      // Ouve a resposta com a versão
+      navigator.serviceWorker.addEventListener('message', event => {
+        if (event.data && event.data.type === 'VERSION_INFO') {
+          const versionText = `Versão ${event.data.version}`;
+          const footer = document.querySelector('#menu-footer') || document.querySelector('footer');
+          
+          if (footer) {
+            const versionEl = document.createElement('div');
+            versionEl.id = 'app-version';
+            versionEl.style.fontSize = '12px';
+            versionEl.style.opacity = '0.7';
+            versionEl.style.marginTop = '8px';
+            versionEl.textContent = versionText;
+            footer.appendChild(versionEl);
+          } else {
+            console.log(versionText); // fallback no console
+          }
+        }
+      });
+    }
+  });
+}
+   
 };// ✅ fecha o window.onload corretamente
 
 //== beforeinstallprompt (popup) ==/
