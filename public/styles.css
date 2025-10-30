@@ -139,17 +139,6 @@ header h1 {
   color: gray;
 }
 
-/* Altera a cor dos inputs quando marcados */
-/*
-.side-menu input[type="checkbox"] {
-  accent-color: #8b0000; 
-}
-
-.side-menu input[type="radio"] {
-  accent-color: #b22222;
-}
-*/
-
 .side-menu input[type="checkbox"],
 .side-menu input[type="radio"] {
   margin-right: 8px;
@@ -962,4 +951,30 @@ input[type='text'] {
 /* Hover do botão */
 #update-aviso #update-btn:hover {
   background: #0056b3;
+}
+
+/* ADS */
+.chat-toggle-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.ad-btn {
+  background-color: #fff;
+  border: 2px solid #8B0000;
+  color: #8B0000;
+  border-radius: 50%;
+  font-size: 1.2em;
+  width: 42px;
+  height: 42px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.ad-btn:hover {
+  background-color: #8B0000;
+  color: #fff;
 }
