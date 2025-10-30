@@ -953,3 +953,8 @@ input[type='text'] {
   background: #0056b3;
 }
 
+.chat-toggle-group {
+  display: flex;
+  justfy-content: space beetwen;
+  align-itens: center;
+}
