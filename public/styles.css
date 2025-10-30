@@ -977,3 +977,37 @@ input[type='text'] {
 .chat-toggle .toggle-ads {
   margin-left: auto; /* empurra o ícone 🎥 pro canto direito */
 }
+
+/* ===== Garantir as cores corretas dos toggles ===== */
+button#toggle-jesus.chat-toggle {
+  background-color: #9ec9db !important;
+  border: 1px solid #ccc !important;
+  color: #000 !important;
+}
+
+button#toggle-biblia.chat-toggle {
+  background-color: #add8e6 !important;
+  border: 1px solid #ccc !important;
+  color: #000 !important;
+}
+
+button#salmo-toggle.chat-toggle {
+  background-color: #D0E9F9 !important;
+  border: 1px solid #ccc !important;
+  color: #000 !important;
+  border-radius: 0 !important;
+}
+
+/* Efeito hover opcional */
+button#toggle-jesus.chat-toggle:hover,
+button#toggle-biblia.chat-toggle:hover,
+button#salmo-toggle.chat-toggle:hover {
+  filter: brightness(0.9);
+}
+
+/* Impedir herança de estilos globais do script-ads.js */
+button.chat-toggle {
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
