@@ -23,52 +23,44 @@ googletag.cmd.push(function() {
   googletag.enableServices();
 });
 
-/* ============================
-   Função: abrirToggleComRecompensa
-============================ */
-function abrirToggleComRecompensa(containerId) {
+/* ==============================================
+Função para abrir toggle após vídeo recompensado
+================================================= */
+function abrirToggleComRecompensa(toggleId) {
+  const toggle = document.getElementById(toggleId);
+  if (!toggle) return console.error('Toggle não encontrado:', toggleId);
+
+  const containerId = toggle.dataset.target;
   const container = document.getElementById(containerId);
+  if (!container) return console.error('Container não encontrado:', containerId);
 
-  if (!container) {
-    console.error(`❌ Container "${containerId}" não encontrado.`);
-    return;
-  }
+  console.log('🎥 Carregando anúncio recompensado...');
 
-  googletag.cmd.push(function() {
-    console.log('🎥 Carregando anúncio recompensado...');
+  // Aqui você insere o código do Playwire/AdinPlay/etc.
+  // Exemplo genérico com iframe para teste:
+  const adContainer = document.createElement('div');
+  adContainer.style.width = '100%';
+  adContainer.style.height = '400px';
+  adContainer.innerHTML = `<iframe src="https://seu-fornecedor-de-ads.com/rewarded-video" style="width:100%;height:100%;border:none;" allow="autoplay"></iframe>`;
+  container.prepend(adContainer);
 
-    // Define o slot de vídeo recompensado
-    const slot = googletag.defineOutOfPageSlot(
-      AD_UNIT_PATH,
-      googletag.enums.OutOfPageFormat.REWARDED
-    );
+  // Simula evento de recompensa (10s) - substitua pelo callback real da rede
+  setTimeout(() => {
+    adContainer.remove(); // remove o vídeo
+    container.classList.add('expanded'); // marca container como expandido
+    toggle.classList.add('expanded'); // muda visual do botão
+    console.log('🎉 Recompensa liberada!');
+  }, 10000);
+}
 
-    if (!slot) {
-      alert('Não foi possível carregar o anúncio agora. Tente novamente.');
-      return;
-    }
+// Adiciona listener ao botão do toggle
+document.getElementById('toggle-jesus').addEventListener('click', () => {
+  abrirToggleComRecompensa('toggle-jesus');
+});
 
-    slot.addService(googletag.pubads());
-
-    // Evento: o usuário fechou o vídeo
-    googletag.pubads().addEventListener('rewardedSlotClosed', function() {
-      console.log('🎉 Anúncio assistido! Liberando o conteúdo...');
-      container.classList.add('expanded');
-    });
 
     // Exibe o anúncio
     googletag.display(slot);
   });
 }
 
-/* ============================
-   Exemplo de integração com botão
-============================ */
-// Exemplo: você pode criar botões assim no seu HTML:
-// <button onclick="abrirToggleComRecompensa('chat-jesus-container')">
-//   🎥 Assistir e abrir Chat com Jesus
-// </button>
-//
-// <button onclick="abrirToggleComRecompensa('salmo-container')">
-//   🎥 Assistir e abrir Salmo do Dia
-// </button>
