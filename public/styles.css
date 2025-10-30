@@ -953,23 +953,3 @@ input[type='text'] {
   background: #0056b3;
 }
 
-/* ADS */
-.chat-toggle-group {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-}
-
-.ad-btn {
-  width: 42px;
-  height: 42px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.ad-btn:hover {
-  background-color: #ddd;
-  color: #eee;
-}
