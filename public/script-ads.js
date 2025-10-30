@@ -1,102 +1,91 @@
-/* ==========================================
-   script-ads.js — Simulação de vídeo recompensado
-   Compatível com layout e classes existentes
-   ========================================== */
+/* =======================================
+   script-ads.js — Controle de vídeo recompensado diário
+   Compatível com Playwire e PWA
+======================================= */
 
-// Variável para substituição futura quando Playwire estiver ativo
-const PLAYWIRE_AD_UNIT_ID = 'SEU_AD_UNIT_ID_AQUI'; // ex: '12345/chatjesus_rewarded'
+// Substitua pelo ID/Player do Playwire quando for aprovado
+const PLAYWIRE_UNIT_IDS = {
+  jesus: 'playwire_unit_id_jesus',
+  biblia: 'playwire_unit_id_biblia',
+  salmo: 'playwire_unit_id_salmo'
+};
 
-// === Função principal (sem alterar classes do CSS existente) ===
-function abrirToggleComRecompensa(containerId) {
-  const container = document.getElementById(containerId);
-
-  if (!container) {
-    console.error(`❌ Container "${containerId}" não encontrado.`);
-    return;
-  }
-
-  // Fecha outros containers abertos (opcional)
-  document.querySelectorAll('.chat-container.expanded').forEach(el => {
-    if (el !== container) el.classList.remove('expanded');
-  });
-
-  // Impede reabrir se já estiver aberto
-  if (container.classList.contains('expanded')) {
-    container.classList.remove('expanded');
-    return;
-  }
-
-  // --- Exibe "vídeo simulado" ---
-  const overlay = document.createElement('div');
-  overlay.className = 'rewarded-overlay';
-  overlay.innerHTML = `
-    <div class="rewarded-popup">
-      <h3>🎥 Assistindo vídeo recompensado...</h3>
-      <div class="rewarded-video"></div>
-      <p id="rewarded-countdown">5</p>
-    </div>
-  `;
-  document.body.appendChild(overlay);
-
-  // Contagem regressiva (simulação)
-  let timeLeft = 5;
-  const countdown = overlay.querySelector('#rewarded-countdown');
-  const timer = setInterval(() => {
-    timeLeft--;
-    countdown.textContent = timeLeft;
-    if (timeLeft <= 0) {
-      clearInterval(timer);
-      overlay.remove();
-      container.classList.add('expanded'); // usa sua classe original
-    }
-  }, 1000);
+// Função auxiliar: verifica se já assistiu hoje
+function jaAssistiuHoje(chave) {
+  const dataHoje = new Date().toDateString();
+  const ultimaData = localStorage.getItem(`rewarded_${chave}_date`);
+  return ultimaData === dataHoje;
 }
 
-/* ==========================================
-   Estilos injetados (compatíveis com tema atual)
-   ========================================== */
+// Função auxiliar: salva que assistiu hoje
+function marcarComoAssistidoHoje(chave) {
+  const dataHoje = new Date().toDateString();
+  localStorage.setItem(`rewarded_${chave}_date`, dataHoje);
+}
+
+/* ===========================================================
+   Função principal: abrir toggle com vídeo recompensado diário
+=========================================================== */
+function abrirToggleComRecompensa(toggleId, chave) {
+  const toggle = document.getElementById(toggleId);
+  if (!toggle) {
+    console.error(`❌ Toggle "${toggleId}" não encontrado.`);
+    return;
+  }
+
+  // Se já assistiu hoje, abre direto
+  if (jaAssistiuHoje(chave)) {
+    console.log(`🎬 Já assistiu o vídeo de ${chave} hoje. Liberando...`);
+    toggle.classList.toggle('expanded');
+    return;
+  }
+
+  // Caso ainda não tenha assistido hoje → exibir vídeo
+  console.log(`🎥 Exibindo vídeo recompensado para ${chave}...`);
+
+  // Aqui entra o player do Playwire quando você for aprovado
+  // Por enquanto usamos simulação de carregamento:
+  const videoSimulado = document.createElement('div');
+  videoSimulado.className = 'video-rewarded-overlay';
+  videoSimulado.innerHTML = `
+    <div class="video-box">
+      <p>🎞️ Assistindo ao vídeo recompensado de ${chave}...</p>
+      <p>(simulação de 5 segundos)</p>
+    </div>
+  `;
+  document.body.appendChild(videoSimulado);
+
+  // Simula o tempo do vídeo (5s)
+  setTimeout(() => {
+    videoSimulado.remove();
+    marcarComoAssistidoHoje(chave);
+    console.log(`✅ Vídeo recompensado de ${chave} concluído!`);
+    toggle.classList.add('expanded');
+  }, 5000);
+}
+
+/* ===========================================================
+   CSS temporário do player simulado
+=========================================================== */
 const style = document.createElement('style');
 style.textContent = `
-.rewarded-overlay {
+.video-rewarded-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.85);
+  inset: 0;
+  background: rgba(0,0,0,0.8);
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #fff;
+  font-family: Arial, sans-serif;
   z-index: 9999;
 }
-.rewarded-popup {
-  background: #1e1e1e;
-  color: #fff;
-  padding: 20px 30px;
+.video-box {
+  background: #222;
+  padding: 20px 40px;
   border-radius: 12px;
   text-align: center;
-  max-width: 320px;
-  box-shadow: 0 0 20px rgba(255,255,255,0.3);
-  font-family: inherit;
-}
-.rewarded-video {
-  background: linear-gradient(135deg, #444, #222);
-  width: 280px;
-  height: 160px;
-  border-radius: 8px;
-  margin: 10px auto;
-  position: relative;
-}
-.rewarded-video::before {
-  content: "▶";
-  position: absolute;
-  font-size: 48px;
-  color: rgba(255,255,255,0.6);
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-}
-#rewarded-countdown {
-  font-size: 24px;
-  font-weight: bold;
-  margin-top: 8px;
-  color: #fdd835;
+  box-shadow: 0 0 10px #000;
 }
 `;
 document.head.appendChild(style);
