@@ -1,66 +1,54 @@
 /* ============================
    script-ads.js
-   Exibe vídeo recompensado (Rewarded Ad)
-   antes de abrir um toggle do app
+   Vídeo recompensado Playwire
 ============================ */
 
-// Substitua pelo caminho da sua unidade de anúncio do Google Ad Manager
-const AD_UNIT_PATH = '/1234567/chatjesus_rewarded';
+// Adicione o script da sua conta Playwire no HTML ou dinamicamente
+// Exemplo: <script src="https://cdn.playwire.com/seu-id.js" async></script>
 
-// Inicializa GPT (Google Publisher Tag)
-(function() {
-  const gptScript = document.createElement('script');
-  gptScript.src = 'https://securepubads.g.doubleclick.net/tag/js/gpt.js';
-  gptScript.async = true;
-  document.head.appendChild(gptScript);
-})();
-
-window.googletag = window.googletag || { cmd: [] };
-
-// Inicializa o serviço de anúncios
-googletag.cmd.push(function() {
-  googletag.pubads().enableSingleRequest();
-  googletag.enableServices();
-});
-
-/* ==============================================
-Função para abrir toggle após vídeo recompensado
-================================================= */
-function abrirToggleComRecompensa(toggleId) {
-  const toggle = document.getElementById(toggleId);
-  if (!toggle) return console.error('Toggle não encontrado:', toggleId);
-
-  const containerId = toggle.dataset.target;
+// Função para abrir toggle com recompensa
+function abrirToggleComRecompensa(containerId) {
   const container = document.getElementById(containerId);
-  if (!container) return console.error('Container não encontrado:', containerId);
+  if (!container) return console.error(`Container "${containerId}" não encontrado.`);
 
-  console.log('🎥 Carregando anúncio recompensado...');
+  console.log('🎥 Carregando vídeo recompensado Playwire...');
 
-  // Aqui você insere o código do Playwire/AdinPlay/etc.
-  // Exemplo genérico com iframe para teste:
+  // Cria container temporário para o vídeo
   const adContainer = document.createElement('div');
+  adContainer.id = 'playwire-rewarded-ad';
   adContainer.style.width = '100%';
   adContainer.style.height = '400px';
-  adContainer.innerHTML = `<iframe src="https://seu-fornecedor-de-ads.com/rewarded-video" style="width:100%;height:100%;border:none;" allow="autoplay"></iframe>`;
   container.prepend(adContainer);
 
-  // Simula evento de recompensa (10s) - substitua pelo callback real da rede
-  setTimeout(() => {
-    adContainer.remove(); // remove o vídeo
-    container.classList.add('expanded'); // marca container como expandido
-    toggle.classList.add('expanded'); // muda visual do botão
-    console.log('🎉 Recompensa liberada!');
-  }, 10000);
+  // Função Playwire para Rewarded Video
+  // Substitua 'SEU_AD_UNIT_ID' pelo ID real fornecido pelo Playwire
+  if (typeof PW !== 'undefined' && PW.Rewarded) {
+    const rewarded = new PW.Rewarded({
+      adUnit: 'SEU_AD_UNIT_ID', // ID da unidade de anúncio Playwire
+      container: adContainer,
+      onComplete: () => {
+        console.log('🎉 Recompensa liberada!');
+        adContainer.remove();              // remove vídeo
+        container.classList.add('expanded'); // expande o container
+        // também marca o botão
+        const toggleBtn = document.querySelector(`[data-target="${containerId}"]`);
+        if (toggleBtn) toggleBtn.classList.add('expanded');
+      },
+      onError: () => {
+        console.warn('❌ Erro ao carregar vídeo. Abrindo chat mesmo assim.');
+        adContainer.remove();
+        container.classList.add('expanded');
+      }
+    });
+
+    rewarded.show();
+  } else {
+    console.warn('⚠️ Playwire não carregado. Abrindo chat sem vídeo.');
+    container.classList.add('expanded');
+  }
 }
 
-// Adiciona listener ao botão do toggle
-document.getElementById('toggle-jesus').addEventListener('click', () => {
-  abrirToggleComRecompensa('toggle-jesus');
+// Adiciona listener em todos os toggles
+document.querySelectorAll('.chat-toggle').forEach(btn => {
+  btn.addEventListener('click', () => abrirToggleComRecompensa(btn.dataset.target));
 });
-
-
-    // Exibe o anúncio
-    googletag.display(slot);
-  });
-}
-
