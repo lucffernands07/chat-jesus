@@ -963,11 +963,6 @@ input[type='text'] {
 }
 
 .ad-btn {
-  background-color: #fff;
-  border: 2px solid #8B0000;
-  color: #8B0000;
-  border-radius: 50%;
-  font-size: 1.2em;
   width: 42px;
   height: 42px;
   cursor: pointer;
@@ -975,6 +970,6 @@ input[type='text'] {
 }
 
 .ad-btn:hover {
-  background-color: #8B0000;
-  color: #fff;
+  background-color: #ddd;
+  color: #eee;
 }
