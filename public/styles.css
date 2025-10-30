@@ -648,37 +648,6 @@ input[type='text'] {
   transition: background-color 0.3s ease;
 }
 
-/* ==== Correção visual dos toggles ==== */
-#toggle-jesus,
-#toggle-biblia,
-#salmo-toggle {
-  color: #000 !important;
-  border: 1px solid #ccc !important;
-  border-radius: 4px !important;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-#toggle-jesus {
-  background-color: #9ec9db !important;
-}
-
-#toggle-biblia {
-  background-color: #add8e6 !important;
-}
-
-#salmo-toggle {
-  background-color: #D0E9F9 !important;
-  border-radius: 0 !important;
-}
-
-#toggle-jesus:hover,
-#toggle-biblia:hover,
-#salmo-toggle:hover {
-  filter: brightness(0.9);
-}
-
-
 /* === 🔹 Área recolhível dos chats === */
 .chat-container {
   display: none;
