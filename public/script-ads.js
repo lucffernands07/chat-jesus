@@ -1,98 +1,104 @@
-/* ===========================================================
-   script-ads.js
-   Exibe vídeo recompensado (Rewarded Ad) do Playwire
-   antes de abrir um toggle (chat, salmo, etc.)
-   =========================================================== */
+/* ==========================================
+   script-ads.js (modo simulação Playwire)
+   Exibe um vídeo recompensado simulado
+   e expande o toggle ao final.
+   ========================================== */
 
-// === CONFIGURAÇÃO ===
-// Substitua pelo seu ID do Playwire (fornecido no painel)
-const PLAYWIRE_AD_UNIT_ID = 'SEU_AD_UNIT_ID_AQUI';
+// 👉 quando o Playwire estiver ativo, substitua esta variável
+const PLAYWIRE_AD_UNIT_ID = 'SEU_AD_UNIT_ID_AQUI'; // ex: '12345/chatjesus_rewarded'
 
-// Carrega o script da Playwire (se ainda não estiver carregado)
-(function () {
-  if (!document.getElementById('playwire-lib')) {
-    const pwScript = document.createElement('script');
-    pwScript.id = 'playwire-lib';
-    pwScript.src = 'https://cdn.playwire.com/bolt/js/zeus/zeus.min.js';
-    pwScript.async = true;
-    document.head.appendChild(pwScript);
+// === Função principal ===
+function abrirToggleComRecompensa(containerId) {
+  const container = document.getElementById(containerId);
+  const toggleButton = document.querySelector(`[onclick*="${containerId}"]`);
+
+  if (!container) {
+    console.error(`❌ Container "${containerId}" não encontrado.`);
+    return;
   }
-})();
 
-/* ===========================================================
-   Função auxiliar: Mostrar vídeo recompensado Playwire
-=========================================================== */
-function mostrarVideoRecompensado(callbackSucesso, callbackErro) {
-  if (typeof PW !== 'undefined' && PW.Rewarded) {
-    console.log('🎬 Exibindo vídeo recompensado Playwire...');
-    const rewarded = new PW.Rewarded({
-      adUnit: PLAYWIRE_AD_UNIT_ID,
-      container: document.createElement('div'),
-      onComplete: () => {
-        console.log('🎉 Vídeo assistido até o fim!');
-        callbackSucesso && callbackSucesso();
-      },
-      onError: (err) => {
-        console.warn('⚠️ Erro ao carregar vídeo:', err);
-        callbackErro && callbackErro();
-      }
-    });
+  // Evita abrir vários ao mesmo tempo
+  document.querySelectorAll('.chat-container.expanded').forEach(el => {
+    if (el !== container) el.classList.remove('expanded');
+  });
 
-    document.body.appendChild(rewarded.container);
-    rewarded.show();
-  } else {
-    console.warn('⚠️ Playwire não disponível — abrindo conteúdo direto.');
-    callbackErro && callbackErro();
-  }
+  // Simulação de vídeo recompensado
+  const overlay = document.createElement('div');
+  overlay.className = 'video-overlay';
+  overlay.innerHTML = `
+    <div class="video-popup">
+      <h3>🎥 Assistindo vídeo recompensado...</h3>
+      <div class="fake-video"></div>
+      <p id="countdown">5</p>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  let timeLeft = 5;
+  const countdown = overlay.querySelector('#countdown');
+  const timer = setInterval(() => {
+    timeLeft--;
+    countdown.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      overlay.remove();
+
+      // Expande o container
+      container.classList.add('expanded');
+      if (toggleButton) toggleButton.classList.add('expanded');
+    }
+  }, 1000);
 }
 
-/* ===========================================================
-   Intercepta cliques nos botões .chat-toggle
-   e exibe o vídeo antes de deixar o script.js expandir
-=========================================================== */
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.chat-toggle').forEach(btn => {
-    btn.addEventListener('click', event => {
-      // Impede o script principal de expandir imediatamente
-      event.stopImmediatePropagation();
-      event.preventDefault();
-
-      const targetId = btn.dataset.target;
-      const container = document.getElementById(targetId);
-
-      console.log('🎥 Iniciando anúncio recompensado para:', targetId);
-
-      // Cria um contêiner visual temporário para o vídeo
-      const adOverlay = document.createElement('div');
-      adOverlay.id = 'playwire-rewarded-overlay';
-      adOverlay.style.position = 'fixed';
-      adOverlay.style.top = '0';
-      adOverlay.style.left = '0';
-      adOverlay.style.width = '100%';
-      adOverlay.style.height = '100%';
-      adOverlay.style.background = 'rgba(0, 0, 0, 0.8)';
-      adOverlay.style.display = 'flex';
-      adOverlay.style.justifyContent = 'center';
-      adOverlay.style.alignItems = 'center';
-      adOverlay.style.zIndex = '9999';
-      adOverlay.innerHTML = '<div id="playwire-ad-slot" style="width: 90%; max-width: 600px; height: 400px; background: #000; border-radius: 12px; overflow: hidden;"></div>';
-      document.body.appendChild(adOverlay);
-
-      // Mostra o vídeo
-      mostrarVideoRecompensado(
-        () => {
-          // ✅ Sucesso: remove o overlay e libera o toggle
-          adOverlay.remove();
-          console.log('🎉 Liberando o chat após vídeo.');
-          btn.click(); // chama o clique de novo → o script.js cuida da expansão
-        },
-        () => {
-          // ⚠️ Falha: remove o overlay e libera mesmo assim
-          adOverlay.remove();
-          console.warn('⚠️ Sem vídeo, abrindo chat direto.');
-          btn.click();
-        }
-      );
-    }, true); // captura antes do script.js
-  });
-});
+/* ==========================================
+   Estilos injetados para simulação
+   ========================================== */
+const style = document.createElement('style');
+style.textContent = `
+.video-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.video-popup {
+  background: #1e1e1e;
+  color: #fff;
+  padding: 20px 30px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 320px;
+  box-shadow: 0 0 20px rgba(255,255,255,0.2);
+}
+.fake-video {
+  background: linear-gradient(135deg, #444, #222);
+  width: 280px;
+  height: 160px;
+  border-radius: 8px;
+  margin: 10px auto;
+  position: relative;
+  overflow: hidden;
+}
+.fake-video::before {
+  content: "▶";
+  position: absolute;
+  font-size: 48px;
+  color: rgba(255,255,255,0.6);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#countdown {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 8px;
+  color: #fdd835;
+}
+`;
+document.head.appendChild(style);
