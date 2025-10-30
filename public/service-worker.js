@@ -1,5 +1,5 @@
 // Defina a versão aqui (padrão semântico)
-const version = '1.4.3'; // 🔁 Atualize conforme mudança 
+const version = '1.4.4'; // 🔁 Atualize conforme mudança 
 
 self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
