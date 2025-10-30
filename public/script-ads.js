@@ -11,42 +11,52 @@ function abrirToggleComRecompensa(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return console.error(`Container "${containerId}" não encontrado.`);
 
+  const isExpanded = container.classList.contains('expanded');
+  const toggleBtn = document.querySelector(`[data-target="${containerId}"]`);
+
+  // 🔹 Se já estiver expandido, fecha
+  if (isExpanded) {
+    container.classList.remove('expanded');
+    if (toggleBtn) toggleBtn.classList.remove('expanded');
+    return;
+  }
+
+  // 🔹 Se ainda não estiver, abre com vídeo (ou direto se Playwire não estiver pronto)
   console.log('🎥 Carregando vídeo recompensado Playwire...');
 
-  // Cria container temporário para o vídeo
   const adContainer = document.createElement('div');
   adContainer.id = 'playwire-rewarded-ad';
   adContainer.style.width = '100%';
   adContainer.style.height = '400px';
   container.prepend(adContainer);
 
-  // Função Playwire para Rewarded Video
-  // Substitua 'SEU_AD_UNIT_ID' pelo ID real fornecido pelo Playwire
   if (typeof PW !== 'undefined' && PW.Rewarded) {
     const rewarded = new PW.Rewarded({
-      adUnit: 'SEU_AD_UNIT_ID', // ID da unidade de anúncio Playwire
+      adUnit: 'SEU_AD_UNIT_ID',
       container: adContainer,
       onComplete: () => {
         console.log('🎉 Recompensa liberada!');
-        adContainer.remove();              // remove vídeo
-        container.classList.add('expanded'); // expande o container
-        // também marca o botão
-        const toggleBtn = document.querySelector(`[data-target="${containerId}"]`);
+        adContainer.remove();
+        container.classList.add('expanded');
         if (toggleBtn) toggleBtn.classList.add('expanded');
       },
       onError: () => {
-        console.warn('❌ Erro ao carregar vídeo. Abrindo chat mesmo assim.');
+        console.warn('⚠️ Erro no vídeo. Abrindo chat mesmo assim.');
         adContainer.remove();
         container.classList.add('expanded');
+        if (toggleBtn) toggleBtn.classList.add('expanded');
       }
     });
 
     rewarded.show();
   } else {
     console.warn('⚠️ Playwire não carregado. Abrindo chat sem vídeo.');
+    adContainer.remove();
     container.classList.add('expanded');
+    if (toggleBtn) toggleBtn.classList.add('expanded');
   }
 }
+
 
 // Adiciona listener em todos os toggles
 document.querySelectorAll('.chat-toggle').forEach(btn => {
