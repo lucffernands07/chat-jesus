@@ -953,8 +953,13 @@ input[type='text'] {
   background: #0056b3;
 }
 
-.chat-toggle-group {
+.chat-toggle {
   display: flex;
-  justfy-content: space beetwen;
-  align-itens: center;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%; /* ou o tamanho que quiser */
+}
+
+.chat-toggle .toggle-ads {
+  margin-left: auto; /* empurra o ícone 🎥 pro canto direito */
 }
