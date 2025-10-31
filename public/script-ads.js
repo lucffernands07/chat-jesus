@@ -30,6 +30,13 @@ function abrirToggleComRecompensa(toggleId, chave) {
     return;
   }
 
+  // Fecha outros toggles abertos (exceto o que foi clicado)
+  document.querySelectorAll('.chat-toggle.expanded').forEach(otherToggle => {
+    if (otherToggle !== toggle) {
+      otherToggle.classList.remove('expanded');
+    }
+  });
+
   // Se já assistiu hoje → abre/fecha normalmente
   if (jaAssistiuHoje(chave)) {
     toggle.classList.toggle('expanded');
@@ -58,7 +65,7 @@ function abrirToggleComRecompensa(toggleId, chave) {
       clearInterval(timer);
       overlay.remove();
       marcarComoAssistidoHoje(chave);   // marca como assistido
-      toggle.classList.add('expanded'); // expande o toggle
+      toggle.classList.add('expanded'); // expande o toggle clicado
     }
   }, 1000);
 }
